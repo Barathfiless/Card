@@ -1,0 +1,35 @@
+.custom-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    z-index: 10000;
+    pointer-events: none;
+    user-select: none;
+    transition: transform 0.1s ease-out, scale 0.2s ease;
+    will-change: transform;
+}
+
+.custom-cursor svg {
+    filter: drop-shadow(0 2px 5px rgba(0,0,0,0.15));
+    transform: rotate(-15deg);
+}
+
+.cursor-pointer {
+    scale: 1.15;
+}
+
+.cursor-pointer svg path {
+    fill: #1a1a1a;
+}
+
+/* Hide default cursor globally */
+html, body, * {
+    cursor: none !important;
+}
+
+/* Ensure interactive elements still trigger events but don't show cursor */
+a, button, input, select, textarea {
+    cursor: none !important;
+}
