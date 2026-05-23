@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { projects } from '../data/projects';
+import { getProjects } from '../data/projects';
 import './ProjectDetail.css';
 
 function ProjectDetail() {
   const { projectId } = useParams();
   const navigate = useNavigate();
-  const project = projects.find(p => p.id === projectId);
+  const allProjects = getProjects();
+  const project = allProjects.find(p => p.id === projectId);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -47,10 +48,16 @@ function ProjectDetail() {
             <div className="project-features">
               <h2>Key Features</h2>
               <ul>
-                <li>High Performance Architecture</li>
-                <li>Intuitive User Interface</li>
-                <li>Scalable Cloud Infrastructure</li>
-                <li>Modern Security Standards</li>
+                {project.features && project.features.length > 0 ? (
+                  project.features.map((feat, idx) => <li key={idx}>{feat}</li>)
+                ) : (
+                  <>
+                    <li>High Performance Architecture</li>
+                    <li>Intuitive User Interface</li>
+                    <li>Scalable Cloud Infrastructure</li>
+                    <li>Modern Security Standards</li>
+                  </>
+                )}
               </ul>
             </div>
           </div>
@@ -59,6 +66,11 @@ function ProjectDetail() {
             <div className="project-image-wrapper">
               <img src={project.image} alt={project.title} />
             </div>
+            {project.imageDescription && (
+              <p className="project-image-caption">
+                {project.imageDescription}
+              </p>
+            )}
             <div className="project-cta-box">
               <h3>Interested in this project?</h3>
               <p>Let's talk about how I can bring similar value to your team.</p>
@@ -66,6 +78,27 @@ function ProjectDetail() {
             </div>
           </div>
         </div>
+
+        {/* Gallery Section */}
+        {project.gallery && project.gallery.length > 0 && (
+          <div className="project-gallery-section">
+            <h2 className="gallery-section-title">Project Gallery</h2>
+            <div className="gallery-grid">
+              {project.gallery.map((img, idx) => (
+                <div key={idx} className="gallery-card">
+                  <div className="gallery-img-wrapper">
+                    <img src={img.url} alt={img.description || `Gallery ${idx + 1}`} />
+                  </div>
+                  {img.description && (
+                    <div className="gallery-img-caption">
+                      <p>{img.description}</p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

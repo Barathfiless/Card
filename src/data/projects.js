@@ -30,3 +30,47 @@ export const projects = [
     image: 'https://images.unsplash.com/photo-1568667256549-094345857637?auto=format&fit=crop&q=80&w=1000'
   }
 ];
+
+export const getProjects = () => {
+  if (typeof window === 'undefined') return projects;
+  const local = localStorage.getItem('custom_projects');
+  if (local) {
+    try {
+      const parsed = JSON.parse(local);
+      return [...projects, ...parsed];
+    } catch (e) {
+      console.error('Failed to parse custom projects', e);
+    }
+  }
+  return projects;
+};
+
+export const addProject = (project) => {
+  if (typeof window === 'undefined') return;
+  const local = localStorage.getItem('custom_projects');
+  let custom = [];
+  if (local) {
+    try {
+      custom = JSON.parse(local);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  custom.push(project);
+  localStorage.setItem('custom_projects', JSON.stringify(custom));
+};
+
+export const deleteProject = (id) => {
+  if (typeof window === 'undefined') return;
+  const local = localStorage.getItem('custom_projects');
+  let custom = [];
+  if (local) {
+    try {
+      custom = JSON.parse(local);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  custom = custom.filter(p => p.id !== id);
+  localStorage.setItem('custom_projects', JSON.stringify(custom));
+};

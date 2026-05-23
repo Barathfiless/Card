@@ -6,11 +6,17 @@ import ProjectDetail from './components/ProjectDetail';
 import Footer from './components/Footer';
 import Intro from './components/Intro';
 import CustomCursor from './components/CustomCursor';
+import Login from './components/Login';
+import ProtectedRoute from './admin/ProtectedRoute';
+import AdminLayout from './admin/AdminLayout';
+import Dashboard from './admin/Dashboard';
+import UploadProject from './admin/UploadProject';
 import './App.css';
 
 function App() {
   const [showIntro, setShowIntro] = useState(true);
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+  const location = useLocation();
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -20,8 +26,6 @@ function App() {
   const toggleTheme = () => {
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
   };
-
-  const location = useLocation();
 
   useEffect(() => {
     // Redirect to root if refreshed with a hash
@@ -73,28 +77,51 @@ function App() {
     };
   }, [location.pathname, showIntro]);
 
+  const isLoginPage = location.pathname === '/login';
+  const isAdminPage = location.pathname.startsWith('/admin');
+  const isPortalPage = isLoginPage || isAdminPage;
+
   useEffect(() => {
-    if (showIntro) {
+    if (isPortalPage) {
+      document.body.style.overflow = 'auto';
+    } else if (showIntro) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'auto';
     }
-  }, [showIntro]);
+  }, [showIntro, isPortalPage]);
 
   return (
     <>
-      <CustomCursor />
-      {showIntro && <Intro onFinish={() => setShowIntro(false)} />}
-      <Navbar toggleTheme={toggleTheme} theme={theme} />
-      <main className="main-wrapper">
+      {!isAdminPage && <CustomCursor />}
+      {!isPortalPage && showIntro && <Intro onFinish={() => setShowIntro(false)} />}
+      {!isPortalPage && <Navbar toggleTheme={toggleTheme} theme={theme} />}
+      
+      {isAdminPage ? (
         <Routes>
-          <Route path="/" element={<HomeHero />} />
-          <Route path="/project/:projectId" element={<ProjectDetail />} />
+          <Route path="/admin" element={
+            <ProtectedRoute>
+              <AdminLayout />
+            </ProtectedRoute>
+          }>
+            <Route index element={<Dashboard />} />
+            <Route path="upload" element={<UploadProject />} />
+          </Route>
         </Routes>
-      </main>
-      <Footer />
+      ) : (
+        <main className="main-wrapper">
+          <Routes>
+            <Route path="/" element={<HomeHero />} />
+            <Route path="/project/:projectId" element={<ProjectDetail />} />
+            <Route path="/login" element={<Login />} />
+          </Routes>
+        </main>
+      )}
+      
+      {!isPortalPage && <Footer />}
     </>
   );
 }
 
 export default App;
+
