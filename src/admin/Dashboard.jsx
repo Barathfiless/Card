@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { getProjects, deleteProject } from '../data/projects';
 import './Dashboard.css';
 
+const DEFAULT_PROJECT_IDS = new Set(['finos', 'vhire', 'documind-ai']);
+
 function Dashboard() {
   const [projectsList, setProjectsList] = useState([]);
   const [stats, setStats] = useState({
