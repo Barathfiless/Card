@@ -117,20 +117,24 @@ img {
     transform: translateY(0);
 }
 
-/* Scrollbar */
+/* Hide Scrollbar for a clean app aesthetic */
 ::-webkit-scrollbar {
-    width: 6px;
+    display: none;
 }
 
-::-webkit-scrollbar-track {
-    background: var(--bg-color);
+html {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
 }
 
-::-webkit-scrollbar-thumb {
-    background: var(--msci-navy);
-    border-radius: 3px;
+/* ── Global Viewport Protection against Horizontal Overflow ── */
+html, body {
+    overflow-x: hidden;
+    max-width: 100%;
 }
 
-::-webkit-scrollbar-thumb:hover {
-    background: var(--msci-gold);
+@media (max-width: 768px) {
+    .container {
+        padding: 0 20px !important;
+    }
 }

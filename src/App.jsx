@@ -11,6 +11,7 @@ import ProtectedRoute from './admin/ProtectedRoute';
 import AdminLayout from './admin/AdminLayout';
 import Dashboard from './admin/Dashboard';
 import UploadProject from './admin/UploadProject';
+import Trash from './admin/Trash';
 import './App.css';
 
 function App() {
@@ -106,6 +107,7 @@ function App() {
           }>
             <Route index element={<Dashboard />} />
             <Route path="upload" element={<UploadProject />} />
+            <Route path="trash" element={<Trash />} />
           </Route>
         </Routes>
       ) : (

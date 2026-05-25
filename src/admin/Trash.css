@@ -1,0 +1,67 @@
+/* ═══════════════════════════════════════
+   TRASH LAYOUT STYLES
+   ═══════════════════════════════════════ */
+.trash-container {
+  display: flex;
+  flex-direction: column;
+  animation: fadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.project-row-deleted-view td {
+  background-color: rgba(239, 68, 68, 0.01) !important;
+}
+
+.project-row-deleted-view:hover td {
+  background-color: rgba(239, 68, 68, 0.02) !important;
+}
+
+.badge-deleted {
+  background: rgba(239, 68, 68, 0.06) !important;
+  color: #ef4444 !important;
+  border-color: rgba(239, 68, 68, 0.15) !important;
+}
+
+/* ── Undo/Restore Button ── */
+.undo-btn {
+  background: rgba(124, 58, 237, 0.08);
+  color: #7c3aed;
+  border: 1px solid rgba(124, 58, 237, 0.2);
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-decoration: none;
+}
+
+[data-theme='dark'] .undo-btn {
+  color: #a78bfa;
+  border-color: rgba(167, 139, 250, 0.2);
+  background: rgba(167, 139, 250, 0.08);
+}
+
+.undo-btn:hover {
+  background: #7c3aed;
+  color: #ffffff;
+  border-color: #7c3aed;
+  transform: translateY(-1.5px);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+}
+
+[data-theme='dark'] .undo-btn:hover {
+  background: #a78bfa;
+  color: #0c0f16;
+  border-color: #a78bfa;
+  box-shadow: 0 4px 12px rgba(167, 139, 250, 0.35);
+}
+
+.undo-btn svg {
+  transition: transform 0.3s ease;
+}
+
+.undo-btn:hover svg {
+  transform: rotate(-120deg);
+}

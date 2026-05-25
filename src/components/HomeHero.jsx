@@ -1,13 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useForm, ValidationError } from '@formspree/react';
 import { getProjects } from '../data/projects';
+import TypingHeader from './TypingHeader';
 import './HomeHero.css';
 
 function HomeHero() {
   const [state, handleSubmit] = useForm("mbdwjndz");
   const [isPaused, setIsPaused] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
+  const [allProjects, setAllProjects] = useState([]);
+
+  // Keep main page in sync with admin-managed projects
+  useEffect(() => {
+    setAllProjects(getProjects());
+
+    // Re-sync whenever admin adds / deletes a project in the same browser tab
+    const handleProjectsUpdated = () => setAllProjects(getProjects());
+    // 'projectsUpdated' fires for same-tab SPA actions
+    window.addEventListener('projectsUpdated', handleProjectsUpdated);
+    // native 'storage' fires when another tab changes localStorage
+    window.addEventListener('storage', handleProjectsUpdated);
+    return () => {
+      window.removeEventListener('projectsUpdated', handleProjectsUpdated);
+      window.removeEventListener('storage', handleProjectsUpdated);
+    };
+  }, []);
 
   const togglePause = () => {
     setIsPaused(!isPaused);
@@ -15,15 +33,27 @@ function HomeHero() {
 
   const tickerItems = [
     {
-      name: 'React',
+      name: 'React.js',
       logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg'
+    },
+    {
+      name: 'Next.js',
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg'
+    },
+    {
+      name: 'JavaScript',
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg'
     },
     {
       name: 'TypeScript',
       logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg'
     },
     {
-      name: 'NodeJS',
+      name: 'Tailwind CSS',
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg'
+    },
+    {
+      name: 'Node.js',
       logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg'
     },
     {
@@ -31,8 +61,44 @@ function HomeHero() {
       logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nestjs/nestjs-original.svg'
     },
     {
+      name: 'Java / Spring Boot',
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg'
+    },
+    {
+      name: 'Python',
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'
+    },
+    {
+      name: 'PostgreSQL',
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg'
+    },
+    {
+      name: 'MySQL',
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg'
+    },
+    {
+      name: 'MongoDB',
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg'
+    },
+    {
+      name: 'Redis',
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg'
+    },
+    {
+      name: 'Git',
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg'
+    },
+    {
       name: 'Docker',
       logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg'
+    },
+    {
+      name: 'AWS',
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg'
+    },
+    {
+      name: 'Postman',
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postman/postman-original.svg'
     }
   ];
 
@@ -148,7 +214,7 @@ function HomeHero() {
       <section id="about" className="msci-featured-section">
         <div className="container">
           <div className="msci-featured-header">
-            <h2 className="msci-featured-title">About Barath</h2>
+            <TypingHeader text="About Barath" className="msci-featured-title" />
             <h3 className="msci-featured-subtitle">Forward-thinking Software Development Engineer</h3>
           </div>
 
@@ -200,39 +266,58 @@ function HomeHero() {
       {/* 4. Education / Milestones Section */}
       <section id="education" className="msci-edu-section">
         <div className="container">
-          <div className="msci-section-header">
-            <h2 className="msci-section-title">Academic Milestones</h2>
-          </div>
-
-          <div className="msci-timeline">
-            <div className="msci-timeline-item">
-              <div className="msci-timeline-dot"></div>
-              <div className="msci-timeline-date">Nov 2022 — Apr 2026</div>
-              <h3 className="msci-timeline-title">UG - Bachelor of Technology in Computer Science and Business Systems</h3>
-              <div className="msci-timeline-inst">Bannari Amman Institute of Technology - Sathy</div>
-              <p className="msci-timeline-desc">
-                Engaged in deep coursework covering full-stack software development, data structures, and business operations. Executed technical projects and developed multiple production-ready web applications.
+          <div className="msci-edu-grid">
+            <div className="msci-edu-info">
+              <TypingHeader text="Academic Milestones" className="msci-edu-title" />
+              <h3 className="msci-edu-subtitle">Foundations of engineering & systems expertise</h3>
+              <p className="msci-edu-desc">
+                A structured academic background in Computer Science and Business Systems, combining core technological principles with business strategy.
               </p>
+              <div className="msci-edu-graphic">
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="edu-svg">
+                  <circle cx="100" cy="100" r="80" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="4 4" />
+                  <circle cx="100" cy="100" r="50" fill="none" stroke="currentColor" strokeWidth="1.5" />
+                  <circle cx="100" cy="100" r="20" fill="none" stroke="currentColor" strokeWidth="2" />
+                  <line x1="20" y1="100" x2="180" y2="100" stroke="currentColor" strokeWidth="1" />
+                  <line x1="100" y1="20" x2="100" y2="180" stroke="currentColor" strokeWidth="1" />
+                  <circle cx="100" cy="50" r="4" fill="#00c0a5" />
+                  <circle cx="100" cy="150" r="4" fill="#00c0a5" />
+                  <circle cx="50" cy="100" r="4" fill="#00c0a5" />
+                  <circle cx="150" cy="100" r="4" fill="#00c0a5" />
+                </svg>
+              </div>
             </div>
 
-            <div className="msci-timeline-item">
-              <div className="msci-timeline-dot"></div>
-              <div className="msci-timeline-date">Jun 2021 — Mar 2022</div>
-              <h3 className="msci-timeline-title">Higher Secondary Education</h3>
-              <div className="msci-timeline-inst">Amala Matriculation · Gobi</div>
-              <p className="msci-timeline-desc">
-                Focused on Mathematics, Physics, and Computer Sciences. Laid a strong foundation for analytical reasoning.
-              </p>
-            </div>
+            <div className="msci-timeline">
+              <div className="msci-timeline-item">
+                <div className="msci-timeline-dot"></div>
+                <div className="msci-timeline-date">Nov 2022 — Apr 2026</div>
+                <h3 className="msci-timeline-title">UG - Bachelor of Technology in Computer Science and Business Systems</h3>
+                <div className="msci-timeline-inst">Bannari Amman Institute of Technology - Sathy</div>
+                <p className="msci-timeline-desc">
+                  Engaged in deep coursework covering full-stack software development, data structures, and business operations. Executed technical projects and developed multiple production-ready web applications.
+                </p>
+              </div>
 
-            <div className="msci-timeline-item">
-              <div className="msci-timeline-dot"></div>
-              <div className="msci-timeline-date">Jul 2019 — Mar 2020</div>
-              <h3 className="msci-timeline-title">Secondary Education</h3>
-              <div className="msci-timeline-inst">Amala Matriculation · Gobi</div>
-              <p className="msci-timeline-desc">
-                Completed secondary schooling with outstanding academic merit. Initiated first peer-learning sessions inside computer lab environments.
-              </p>
+              <div className="msci-timeline-item">
+                <div className="msci-timeline-dot"></div>
+                <div className="msci-timeline-date">Jun 2021 — Mar 2022</div>
+                <h3 className="msci-timeline-title">Higher Secondary Education</h3>
+                <div className="msci-timeline-inst">Amala Matriculation · Gobi</div>
+                <p className="msci-timeline-desc">
+                  Focused on Mathematics, Physics, and Computer Sciences. Laid a strong foundation for analytical reasoning.
+                </p>
+              </div>
+
+              <div className="msci-timeline-item">
+                <div className="msci-timeline-dot"></div>
+                <div className="msci-timeline-date">Jul 2019 — Mar 2020</div>
+                <h3 className="msci-timeline-title">Secondary Education</h3>
+                <div className="msci-timeline-inst">Amala Matriculation · Gobi</div>
+                <p className="msci-timeline-desc">
+                  Completed secondary schooling with outstanding academic merit. Initiated first peer-learning sessions inside computer lab environments.
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -240,8 +325,6 @@ function HomeHero() {
 
       {/* 5. Projects Section (Research & Insights style with Slide bar) */}
       {(() => {
-        const allProjects = getProjects();
-
         // Chunk projects into arrays of maximum 3
         const projectChunks = [];
         for (let i = 0; i < allProjects.length; i += 3) {
@@ -253,7 +336,7 @@ function HomeHero() {
             <div className="container">
               <div className="msci-projects-header">
                 <div className="msci-projects-header-left">
-                  <h2 className="msci-projects-title">Recent Engineering Projects</h2>
+                  <TypingHeader text="Recent Engineering Projects" className="msci-projects-title" />
                   <h3 className="msci-projects-subtitle">Innovative solutions for complex problems</h3>
                 </div>
 
@@ -391,7 +474,7 @@ function HomeHero() {
       <section id="skills" className="msci-news-section">
         <div className="container">
           <div className="msci-news-header">
-            <h2 className="msci-news-title">Skills & System Competencies</h2>
+            <TypingHeader text="Skills & System Competencies" className="msci-news-title" />
           </div>
 
           <div className="msci-news-grid">
@@ -508,13 +591,14 @@ function HomeHero() {
           <div className="msci-subscribe-grid">
             <div className="msci-subscribe-content">
               <h2 className="msci-subscribe-title">
-                <span className="msci-subscribe-light">Subscribe today</span><br />
-                <span className="msci-subscribe-bold">for insights delivered<br />direct to your inbox.</span>
+                <TypingHeader text="Let's connect" className="msci-subscribe-light" tag="span" />
+                <br />
+                <TypingHeader text="Reach out to discuss projects, collaborations, or opportunities." className="msci-subscribe-bold" tag="span" delay={25} />
               </h2>
 
               {state.succeeded ? (
                 <div className="subscribe-success-message">
-                  <p>Thank you for subscribing!</p>
+                  <p>Thank you! I'll get in touch with you shortly.</p>
                 </div>
               ) : (
                 <form className="msci-subscribe-form" onSubmit={handleSubmit}>
@@ -528,7 +612,7 @@ function HomeHero() {
                       className="msci-subscribe-input"
                     />
                     <button type="submit" className="msci-subscribe-btn" disabled={state.submitting}>
-                      Get access
+                      Let's talk
                     </button>
                   </div>
                   <ValidationError prefix="Email" field="email" errors={state.errors} />
