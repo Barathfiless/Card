@@ -1,5 +1,6 @@
 import express from 'express';
 import Project from '../models/Project.js';
+import { requireAdminAuth } from '../middleware/requireAdminAuth.js';
 
 const router = express.Router();
 
@@ -13,8 +14,8 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET all projects (both active and soft-deleted)
-router.get('/all', async (req, res) => {
+// GET all projects (both active and soft-deleted) — admin only
+router.get('/all', requireAdminAuth, async (req, res) => {
   try {
     const projects = await Project.find().sort({ order: 1, createdAt: -1 });
     res.json(projects);
@@ -23,8 +24,8 @@ router.get('/all', async (req, res) => {
   }
 });
 
-// GET only soft-deleted projects
-router.get('/deleted', async (req, res) => {
+// GET only soft-deleted projects — admin only
+router.get('/deleted', requireAdminAuth, async (req, res) => {
   try {
     const projects = await Project.find({ isDeleted: true }).sort({ updatedAt: -1 });
     res.json(projects);
@@ -33,8 +34,8 @@ router.get('/deleted', async (req, res) => {
   }
 });
 
-// POST - Create or Update a project (Upsert)
-router.post('/', async (req, res) => {
+// POST - Create or Update a project (Upsert) — admin only
+router.post('/', requireAdminAuth, async (req, res) => {
   const {
     id,
     title,
@@ -91,8 +92,8 @@ router.post('/', async (req, res) => {
   }
 });
 
-// PUT - Soft-delete a project
-router.put('/:id/delete', async (req, res) => {
+// PUT - Soft-delete a project — admin only
+router.put('/:id/delete', requireAdminAuth, async (req, res) => {
   const { id } = req.params;
   try {
     const project = await Project.findOneAndUpdate(
@@ -109,8 +110,8 @@ router.put('/:id/delete', async (req, res) => {
   }
 });
 
-// PUT - Restore a soft-deleted project
-router.put('/:id/restore', async (req, res) => {
+// PUT - Restore a soft-deleted project — admin only
+router.put('/:id/restore', requireAdminAuth, async (req, res) => {
   const { id } = req.params;
   try {
     const project = await Project.findOneAndUpdate(
@@ -127,8 +128,8 @@ router.put('/:id/restore', async (req, res) => {
   }
 });
 
-// PUT - Reorder projects (bulk update)
-router.put('/reorder', async (req, res) => {
+// PUT - Reorder projects (bulk update) — admin only
+router.put('/reorder', requireAdminAuth, async (req, res) => {
   const { orders } = req.body;
   if (!orders || !Array.isArray(orders)) {
     return res.status(400).json({ message: 'Invalid reorder data' });

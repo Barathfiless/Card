@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 function Navbar({ toggleTheme, theme }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const searchRef = useRef(null);
   const location = useLocation();
 
   useEffect(() => {
@@ -24,6 +27,8 @@ function Navbar({ toggleTheme, theme }) {
 
   const handleNavClick = (path) => {
     setMobileOpen(false);
+    setSearchOpen(false);
+    setSearchQuery('');
     if (path.startsWith('/#')) {
       const id = path.replace('/#', '');
       const element = document.getElementById(id);
@@ -32,6 +37,38 @@ function Navbar({ toggleTheme, theme }) {
       }
     }
   };
+
+  const filteredSearchItems = menuItems.filter((item) =>
+    item.label.toLowerCase().includes(searchQuery.trim().toLowerCase())
+  );
+
+  useEffect(() => {
+    if (!searchOpen) return undefined;
+
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setSearchOpen(false);
+      }
+    };
+
+    const handleEscape = (event) => {
+      if (event.key === 'Escape') {
+        setSearchOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscape);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [searchOpen]);
+
+  useEffect(() => {
+    setSearchOpen(false);
+    setSearchQuery('');
+  }, [location.pathname, location.hash]);
 
   return (
     <>
@@ -64,13 +101,61 @@ function Navbar({ toggleTheme, theme }) {
 
           {/* Right Search and Action CTA */}
           <div className="nav-actions">
-            {/* MSCI-style Search Bar */}
-            <div className="msci-search-bar">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-              </svg>
-              <input type="text" placeholder="Search" aria-label="Search" />
+            {/* MSCI-style Search — opens section list on click */}
+            <div className="msci-search-wrap" ref={searchRef}>
+              <div
+                className={`msci-search-bar ${searchOpen ? 'is-open' : ''}`}
+                onClick={() => setSearchOpen(true)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setSearchOpen(true);
+                  }
+                }}
+                role="combobox"
+                aria-expanded={searchOpen}
+                aria-controls="nav-search-list"
+                aria-haspopup="listbox"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                <input
+                  type="text"
+                  placeholder="Search sections"
+                  aria-label="Search site sections"
+                  aria-autocomplete="list"
+                  aria-controls="nav-search-list"
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setSearchOpen(true);
+                  }}
+                  onFocus={() => setSearchOpen(true)}
+                />
+              </div>
+              {searchOpen && (
+                <ul id="nav-search-list" className="msci-search-dropdown" role="listbox">
+                  {filteredSearchItems.length > 0 ? (
+                    filteredSearchItems.map((item) => (
+                      <li key={item.label} role="option">
+                        <Link
+                          to={item.path}
+                          className="msci-search-dropdown-item"
+                          onClick={() => handleNavClick(item.path)}
+                        >
+                          {item.label}
+                        </Link>
+                      </li>
+                    ))
+                  ) : (
+                    <li className="msci-search-dropdown-empty" role="option">
+                      No matching sections
+                    </li>
+                  )}
+                </ul>
+              )}
             </div>
 
             <a href="#contact" className="msci-get-in-touch-btn">

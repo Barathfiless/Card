@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getAllInventoryProjects, getProjects, deleteProject, isProjectDeleted } from '../data/projects';
+import { adminFetch } from '../utils/adminApi';
 import './Dashboard.css';
 
 function Dashboard() {
@@ -86,7 +87,7 @@ function Dashboard() {
         order: idx
       }));
 
-      const res = await fetch('/api/projects/reorder', {
+      const res = await adminFetch('/api/projects/reorder', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ orders })
@@ -152,7 +153,7 @@ function Dashboard() {
         </div>
 
         <div className="stat-card">
-          <div className="stat-icon-wrapper purple-glow">
+          <div className="stat-icon-wrapper netflix-red-glow">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c084fc" strokeWidth="2.5">
               <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
             </svg>

@@ -23,7 +23,7 @@
 .stat-card {
   background: var(--admin-card-bg);
   border: 1px solid var(--admin-border);
-  border-radius: 16px;
+  border-radius: 4px;
   padding: 24px;
   display: flex;
   align-items: center;
@@ -33,8 +33,8 @@
 }
 
 .stat-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(124, 58, 237, 0.25);
+  transform: scale(1.02);
+  border-color: rgba(229, 9, 20, 0.5);
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), var(--admin-shadow);
 }
 
@@ -87,11 +87,11 @@
 }
 
 .stat-label {
-  font-size: 0.725rem;
+  font-size: 0.8rem;
   color: var(--admin-text-muted);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
   margin-top: 6px;
 }
 
@@ -99,7 +99,7 @@
 .dashboard-content-panel {
   background: var(--admin-card-bg);
   border: 1px solid var(--admin-border);
-  border-radius: 18px;
+  border-radius: 4px;
   padding: 30px;
   box-shadow: var(--admin-shadow);
   transition: background-color 0.25s, border-color 0.25s;
@@ -122,24 +122,23 @@
 }
 
 .upload-project-btn {
-  background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+  background: #e50914;
   color: #ffffff;
   font-size: 0.85rem;
   font-weight: 600;
   text-decoration: none;
   padding: 10px 20px;
-  border-radius: 30px;
+  border-radius: 4px;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  box-shadow: 0 4px 15px rgba(124, 58, 237, 0.25);
+  transition: background 0.2s ease, transform 0.2s ease;
+  box-shadow: none;
 }
 
 .upload-project-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.35);
-  filter: brightness(1.08);
+  background: #f40612;
+  transform: none;
 }
 
 /* ── Custom Table ── */
@@ -161,10 +160,10 @@
   background: var(--admin-table-header-bg);
   border-bottom: 1px solid var(--admin-border);
   color: var(--admin-text-muted);
-  font-size: 0.725rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 .projects-table td {
@@ -337,9 +336,9 @@
 
 /* ── Undo/Restore Action ── */
 .undo-btn {
-  background: rgba(124, 58, 237, 0.08);
-  color: #7c3aed;
-  border: 1px solid rgba(124, 58, 237, 0.2);
+  background: rgba(229, 9, 20, 0.12);
+  color: #e50914;
+  border: 1px solid rgba(229, 9, 20, 0.35);
   padding: 6px 14px;
   border-radius: 6px;
   font-weight: 600;
@@ -351,25 +350,12 @@
   align-self: flex-end;
 }
 
-[data-theme='dark'] .undo-btn {
-  color: #a78bfa;
-  border-color: rgba(167, 139, 250, 0.2);
-  background: rgba(167, 139, 250, 0.08);
-}
-
 .undo-btn:hover {
-  background: #7c3aed;
+  background: #e50914;
   color: #ffffff;
-  border-color: #7c3aed;
-  transform: translateY(-1.5px);
-  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
-}
-
-[data-theme='dark'] .undo-btn:hover {
-  background: #a78bfa;
-  color: #0c0f16;
-  border-color: #a78bfa;
-  box-shadow: 0 4px 12px rgba(167, 139, 250, 0.35);
+  border-color: #e50914;
+  transform: none;
+  box-shadow: 0 4px 12px rgba(229, 9, 20, 0.35);
 }
 
 .undo-btn svg {
@@ -384,7 +370,7 @@
   text-align: center;
   padding: 50px !important;
   color: var(--admin-text-muted);
-  font-style: italic;
+  font-style: normal;
 }
 
 .text-right {
@@ -411,7 +397,7 @@
 .projects-table tr.dragging {
   opacity: 0.35;
   background: var(--admin-table-row-hover);
-  border: 2px dashed #7c3aed !important;
+  border: 2px dashed #e50914 !important;
 }
 
 .drag-handle-cell {
@@ -431,9 +417,5 @@
 
 .draggable-row:hover .drag-handle-icon {
   opacity: 1;
-  color: #7c3aed;
-}
-
-[data-theme='dark'] .draggable-row:hover .drag-handle-icon {
-  color: #c084fc;
+  color: #e50914;
 }

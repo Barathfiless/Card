@@ -1233,7 +1233,7 @@ function UploadProject() {
                             </button>
                           </>
                         ) : (
-                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#9ca3af', fontStyle: 'italic', fontSize: '0.8rem' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#9ca3af', fontStyle: 'normal', fontSize: '0.8rem' }}>
                             {gallery[activeClipIndex]?.isUploading ? 'Uploading screenshot...' : 'No image uploaded'}
                           </div>
                         )}

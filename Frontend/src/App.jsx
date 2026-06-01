@@ -12,12 +12,26 @@ import AdminLayout from './admin/AdminLayout';
 import Dashboard from './admin/Dashboard';
 import UploadProject from './admin/UploadProject';
 import Trash from './admin/Trash';
+import { useAdminAuth } from './context/AdminAuthContext';
+import { purgePersistedAdminAuth } from './utils/adminAuth';
 import './App.css';
 
 function App() {
   const [showIntro, setShowIntro] = useState(true);
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
   const location = useLocation();
+  const { logout } = useAdminAuth();
+
+  useEffect(() => {
+    purgePersistedAdminAuth();
+  }, []);
+
+  useEffect(() => {
+    const path = location.pathname;
+    if (!path.startsWith('/admin') && path !== '/login') {
+      logout({ skipGoogle: true });
+    }
+  }, [location.pathname, logout]);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);

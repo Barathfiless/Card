@@ -3,7 +3,9 @@
  * All state is stored in MongoDB instead of local storage.
  */
 
-// GET active projects (isDeleted: false)
+import { adminFetch } from '../utils/adminApi';
+
+// GET active projects (isDeleted: false) — public
 export const getProjects = async () => {
   try {
     const res = await fetch('/api/projects');
@@ -15,10 +17,10 @@ export const getProjects = async () => {
   }
 };
 
-// GET all inventory projects (including soft-deleted ones)
+// GET all inventory projects (including soft-deleted ones) — admin only
 export const getAllInventoryProjects = async () => {
   try {
-    const res = await fetch('/api/projects/all');
+    const res = await adminFetch('/api/projects/all');
     if (!res.ok) throw new Error('Failed to fetch all projects');
     return await res.json();
   } catch (err) {
@@ -27,10 +29,10 @@ export const getAllInventoryProjects = async () => {
   }
 };
 
-// GET only soft-deleted projects
+// GET only soft-deleted projects — admin only
 export const getDeletedProjects = async () => {
   try {
-    const res = await fetch('/api/projects/deleted');
+    const res = await adminFetch('/api/projects/deleted');
     if (!res.ok) throw new Error('Failed to fetch deleted projects');
     return await res.json();
   } catch (err) {
@@ -39,9 +41,9 @@ export const getDeletedProjects = async () => {
   }
 };
 
-// POST - Create or update a project (Upsert)
+// POST - Create or update a project (Upsert) — admin only
 export const addProject = async (project) => {
-  const res = await fetch('/api/projects', {
+  const res = await adminFetch('/api/projects', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(project)
@@ -52,9 +54,9 @@ export const addProject = async (project) => {
   return await res.json();
 };
 
-// PUT - Soft-delete a project (moves it to trash)
+// PUT - Soft-delete a project (moves it to trash) — admin only
 export const deleteProject = async (id) => {
-  const res = await fetch(`/api/projects/${id}/delete`, {
+  const res = await adminFetch(`/api/projects/${id}/delete`, {
     method: 'PUT'
   });
   if (!res.ok) {
@@ -63,9 +65,9 @@ export const deleteProject = async (id) => {
   return await res.json();
 };
 
-// PUT - Restore a soft-deleted project from trash
+// PUT - Restore a soft-deleted project from trash — admin only
 export const restoreProject = async (id) => {
-  const res = await fetch(`/api/projects/${id}/restore`, {
+  const res = await adminFetch(`/api/projects/${id}/restore`, {
     method: 'PUT'
   });
   if (!res.ok) {
