@@ -12,37 +12,90 @@ function Dashboard() {
     uniqueTags: 0
   });
 
-  const refreshDashboardData = () => {
-    const all = getAllInventoryProjects();
-    const active = getProjects();
-    setProjectsList(active);
+  const [draggedIndex, setDraggedIndex] = useState(null);
 
-    const deletedProjectsCount = all.length - active.length;
+  const refreshDashboardData = async () => {
+    try {
+      const all = await getAllInventoryProjects();
+      const active = await getProjects();
+      const sortedActive = active.sort((a, b) => (a.order || 0) - (b.order || 0));
+      setProjectsList(sortedActive);
 
-    // Calculate unique tags for active projects only
-    const tagsSet = new Set();
-    active.forEach(p => {
-      if (Array.isArray(p.tags)) {
-        p.tags.forEach(t => tagsSet.add(t));
-      }
-    });
+      const deletedProjectsCount = all.length - active.length;
 
-    setStats({
-      totalProjects: all.length,
-      activeProjects: active.length,
-      deletedProjects: deletedProjectsCount,
-      uniqueTags: tagsSet.size
-    });
+      // Calculate unique tags for active projects only
+      const tagsSet = new Set();
+      active.forEach(p => {
+        if (Array.isArray(p.tags)) {
+          p.tags.forEach(t => tagsSet.add(t));
+        }
+      });
+
+      setStats({
+        totalProjects: all.length,
+        activeProjects: active.length,
+        deletedProjects: deletedProjectsCount,
+        uniqueTags: tagsSet.size
+      });
+    } catch (err) {
+      console.error('Error refreshing dashboard stats:', err);
+    }
   };
 
   useEffect(() => {
     refreshDashboardData();
   }, []);
 
-  const handleDelete = (id, title) => {
-    if (window.confirm(`Are you sure you want to delete the project "${title}"? It will move to Trash.`)) {
-      deleteProject(id);
-      refreshDashboardData();
+  const handleDelete = async (id, title) => {
+    const plainTitle = title.replace(/<[^>]*>/g, '');
+    if (window.confirm(`Are you sure you want to delete the project "${plainTitle}"? It will move to Trash.`)) {
+      try {
+        await deleteProject(id);
+        refreshDashboardData();
+      } catch (err) {
+        console.error('Error deleting project:', err);
+      }
+    }
+  };
+
+  const handleDragStart = (e, index) => {
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = 'move';
+    e.currentTarget.classList.add('dragging');
+  };
+
+  const handleDragOver = (e, index) => {
+    e.preventDefault();
+    if (draggedIndex === null || draggedIndex === index) return;
+
+    const listCopy = [...projectsList];
+    const draggedItem = listCopy[draggedIndex];
+    listCopy.splice(draggedIndex, 1);
+    listCopy.splice(index, 0, draggedItem);
+    setDraggedIndex(index);
+    setProjectsList(listCopy);
+  };
+
+  const handleDragEnd = async (e) => {
+    e.currentTarget.classList.remove('dragging');
+    setDraggedIndex(null);
+
+    try {
+      const orders = projectsList.map((project, idx) => ({
+        id: project.id,
+        order: idx
+      }));
+
+      const res = await fetch('/api/projects/reorder', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orders })
+      });
+
+      if (!res.ok) throw new Error('Failed to update project order');
+      console.log('Project order updated successfully');
+    } catch (err) {
+      console.error('Error saving project order:', err);
     }
   };
 
@@ -128,6 +181,7 @@ function Dashboard() {
           <table className="projects-table">
             <thead>
               <tr>
+                <th style={{ width: '40px' }}></th>
                 <th>Project Details</th>
                 <th>Category</th>
                 <th className="text-right">Actions</th>
@@ -136,16 +190,35 @@ function Dashboard() {
             <tbody>
               {projectsList.length === 0 ? (
                 <tr>
-                  <td colSpan="3" className="empty-table-state">No active projects found. Create one above!</td>
+                  <td colSpan="4" className="empty-table-state">No active projects found. Create one above!</td>
                 </tr>
               ) : (
-                projectsList.map(project => (
-                  <tr key={project.id}>
+                projectsList.map((project, index) => (
+                  <tr 
+                    key={project.id}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, index)}
+                    onDragOver={(e) => handleDragOver(e, index)}
+                    onDragEnd={handleDragEnd}
+                    className="draggable-row"
+                  >
+                    <td className="drag-handle-cell">
+                      <div className="drag-handle-icon">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ opacity: 0.5 }}>
+                          <circle cx="9" cy="5" r="1.5"/>
+                          <circle cx="9" cy="12" r="1.5"/>
+                          <circle cx="9" cy="19" r="1.5"/>
+                          <circle cx="15" cy="5" r="1.5"/>
+                          <circle cx="15" cy="12" r="1.5"/>
+                          <circle cx="15" cy="19" r="1.5"/>
+                        </svg>
+                      </div>
+                    </td>
                     <td>
                       <div className="project-cell">
-                        <img src={project.image} alt={project.title} className="table-project-img" />
+                        <img src={project.image} alt={project.title.replace(/<[^>]*>/g, '')} className="table-project-img" />
                         <div className="project-cell-meta">
-                          <span className="project-cell-title">{project.title}</span>
+                          <span className="project-cell-title" dangerouslySetInnerHTML={{ __html: project.title }} />
                           <span className="project-cell-id">ID: {project.id}</span>
                         </div>
                       </div>

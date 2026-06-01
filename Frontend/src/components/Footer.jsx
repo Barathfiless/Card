@@ -24,11 +24,11 @@ function Footer() {
         </div>
 
         <div className="footer-col">
-          <h4>Products & Solutions</h4>
+          <h4>Highlights</h4>
           <ul>
-            <li><a href="/project/finos">FinOS Platform</a></li>
-            <li><a href="/project/vhire">VHire Application</a></li>
-            <li><a href="/project/documind-ai">DocuMind AI Tool</a></li>
+            <li><a href="#projects">Recent Projects</a></li>
+            <li><a href="#about">About Developer</a></li>
+            <li><a href="#skills">Competencies</a></li>
           </ul>
         </div>
 

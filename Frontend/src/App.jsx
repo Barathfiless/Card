@@ -80,7 +80,9 @@ function App() {
 
   const isLoginPage = location.pathname === '/login';
   const isAdminPage = location.pathname.startsWith('/admin');
+  const isProjectPage = location.pathname.startsWith('/project/');
   const isPortalPage = isLoginPage || isAdminPage;
+  const hideHeaderFooter = isPortalPage || isProjectPage;
 
   useEffect(() => {
     if (isPortalPage) {
@@ -96,7 +98,7 @@ function App() {
     <>
       {!isAdminPage && <CustomCursor />}
       {!isPortalPage && showIntro && <Intro onFinish={() => setShowIntro(false)} />}
-      {!isPortalPage && <Navbar toggleTheme={toggleTheme} theme={theme} />}
+      {!hideHeaderFooter && <Navbar toggleTheme={toggleTheme} theme={theme} />}
       
       {isAdminPage ? (
         <Routes>
@@ -120,7 +122,7 @@ function App() {
         </main>
       )}
       
-      {!isPortalPage && <Footer />}
+      {!hideHeaderFooter && <Footer />}
     </>
   );
 }

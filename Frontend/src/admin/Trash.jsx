@@ -5,19 +5,28 @@ import './Trash.css';
 function Trash() {
   const [deletedProjects, setDeletedProjects] = useState([]);
 
-  const loadDeletedProjects = () => {
-    setDeletedProjects(getDeletedProjects());
+  const loadDeletedProjects = async () => {
+    try {
+      const data = await getDeletedProjects();
+      setDeletedProjects(data);
+    } catch (err) {
+      console.error('Error loading deleted projects:', err);
+    }
   };
 
   useEffect(() => {
     loadDeletedProjects();
   }, []);
 
-  const handleRestore = (id, title) => {
-    restoreProject(id);
-    loadDeletedProjects();
-    // Dispatch storage event to alert main layout if needed
-    window.dispatchEvent(new Event('storage'));
+  const handleRestore = async (id, title) => {
+    try {
+      await restoreProject(id);
+      loadDeletedProjects();
+      // Dispatch storage event to alert main layout if needed
+      window.dispatchEvent(new Event('storage'));
+    } catch (err) {
+      console.error('Error restoring project:', err);
+    }
   };
 
   return (
@@ -53,9 +62,9 @@ function Trash() {
                   <tr key={project.id} className="project-row-deleted-view">
                     <td>
                       <div className="project-cell">
-                        <img src={project.image} alt={project.title} className="table-project-img" />
+                        <img src={project.image} alt={project.title.replace(/<[^>]*>/g, '')} className="table-project-img" />
                         <div className="project-cell-meta">
-                          <span className="project-cell-title">{project.title}</span>
+                          <span className="project-cell-title" dangerouslySetInnerHTML={{ __html: project.title }} />
                           <span className="project-cell-id">ID: {project.id}</span>
                         </div>
                       </div>

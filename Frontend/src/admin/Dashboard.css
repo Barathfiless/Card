@@ -398,3 +398,42 @@
     display: none;
   }
 }
+
+/* Drag and Drop Reordering */
+.projects-table tr.draggable-row {
+  cursor: grab;
+}
+
+.projects-table tr.draggable-row:active {
+  cursor: grabbing;
+}
+
+.projects-table tr.dragging {
+  opacity: 0.35;
+  background: var(--admin-table-row-hover);
+  border: 2px dashed #7c3aed !important;
+}
+
+.drag-handle-cell {
+  width: 40px;
+  text-align: center;
+  padding-right: 0 !important;
+  color: var(--admin-text-muted);
+}
+
+.drag-handle-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.5;
+  transition: opacity 0.2s, color 0.2s;
+}
+
+.draggable-row:hover .drag-handle-icon {
+  opacity: 1;
+  color: #7c3aed;
+}
+
+[data-theme='dark'] .draggable-row:hover .drag-handle-icon {
+  color: #c084fc;
+}

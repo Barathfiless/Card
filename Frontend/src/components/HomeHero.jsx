@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useForm, ValidationError } from '@formspree/react';
 import { getProjects } from '../data/projects';
 import TypingHeader from './TypingHeader';
+import { getTagLogoUrl } from '../utils/tags';
 import './HomeHero.css';
 
 function HomeHero() {
@@ -13,17 +14,19 @@ function HomeHero() {
 
   // Keep main page in sync with admin-managed projects
   useEffect(() => {
-    setAllProjects(getProjects());
+    const fetchProjectsList = async () => {
+      const data = await getProjects();
+      setAllProjects(data);
+    };
+    fetchProjectsList();
 
     // Re-sync whenever admin adds / deletes a project in the same browser tab
-    const handleProjectsUpdated = () => setAllProjects(getProjects());
-    // 'projectsUpdated' fires for same-tab SPA actions
-    window.addEventListener('projectsUpdated', handleProjectsUpdated);
+    window.addEventListener('projectsUpdated', fetchProjectsList);
     // native 'storage' fires when another tab changes localStorage
-    window.addEventListener('storage', handleProjectsUpdated);
+    window.addEventListener('storage', fetchProjectsList);
     return () => {
-      window.removeEventListener('projectsUpdated', handleProjectsUpdated);
-      window.removeEventListener('storage', handleProjectsUpdated);
+      window.removeEventListener('projectsUpdated', fetchProjectsList);
+      window.removeEventListener('storage', fetchProjectsList);
     };
   }, []);
 
@@ -373,84 +376,103 @@ function HomeHero() {
                 )}
               </div>
 
-              <div className="msci-projects-slider-viewport">
-                <div
-                  className="msci-projects-slider-track"
-                  style={{ transform: `translateX(-${activeSlide * 100}%)` }}
-                >
-                  {projectChunks.map((chunk, slideIdx) => {
-                    const mainProject = chunk[0];
-                    const otherProjects = chunk.slice(1);
+              {projectChunks.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '80px 20px', background: 'var(--msci-light-gray)', borderRadius: '16px', border: '1px dashed var(--msci-border)' }}>
+                  <p style={{ fontSize: '1.2rem', color: 'var(--text-muted)', marginBottom: '20px' }}>No engineering projects published yet.</p>
+                  <Link to="/login" className="msci-projects-explore-btn" style={{ textDecoration: 'none' }}>
+                    Access Admin Panel
+                  </Link>
+                </div>
+              ) : (
+                <div className="msci-projects-slider-viewport">
+                  <div
+                    className="msci-projects-slider-track"
+                    style={{ transform: `translateX(-${activeSlide * 100}%)` }}
+                  >
+                    {projectChunks.map((chunk, slideIdx) => {
+                      const mainProject = chunk[0];
+                      const otherProjects = chunk.slice(1);
 
-                    return (
-                      <div key={slideIdx} className="msci-project-slide">
-                        <div className="msci-projects-layout">
-                          {/* Left Large Card */}
-                          {mainProject && (
-                            <div className="msci-project-card-large">
-                              <div className="msci-project-large-graphic">
-                                <div className="graphic-circle-img">
-                                  <img src={mainProject.image} alt={mainProject.title} />
-                                </div>
-                                <svg viewBox="0 0 200 200" className="graphic-overlay-svg" xmlns="http://www.w3.org/2000/svg">
-                                  <circle cx="0" cy="100" r="90" fill="none" stroke="#00c0a5" strokeWidth="1" />
-                                  <circle cx="30" cy="100" r="90" fill="none" stroke="#00c0a5" strokeWidth="1" />
-                                  <circle cx="60" cy="100" r="90" fill="none" stroke="#00c0a5" strokeWidth="1" />
-                                  <circle cx="150" cy="100" r="4" fill="#00c0a5" />
-                                </svg>
-                              </div>
-                              <div className="msci-project-large-content">
-                                <h3 className="msci-project-large-title">{mainProject.title}</h3>
-                                <p className="msci-project-large-desc">{mainProject.description}</p>
-                                <Link to={`/project/${mainProject.id}`} className="msci-outline-btn-black">
-                                  Read the report
-                                </Link>
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Right Stacked Cards */}
-                          <div className="msci-projects-right-stack">
-                            {otherProjects.length > 0 ? (
-                              otherProjects.map((project) => {
-                                // Check if custom project has color, otherwise alternate defaults
-                                const isCustom = !['finos', 'vhire', 'documind-ai'].includes(project.id);
-                                const cardClass = isCustom
-                                  ? ''
-                                  : (project.id === 'vhire' ? 'black-card' : 'blue-card');
-                                const bgStyle = project.color ? { backgroundColor: project.color } : {};
-
-                                return (
-                                  <div
-                                    key={project.id}
-                                    className={`msci-project-card-horizontal ${cardClass}`}
-                                    style={bgStyle}
-                                  >
-                                    <div className="horizontal-content">
-                                      <h3 className="horizontal-title">{project.title}</h3>
-                                      <p className="horizontal-desc">{project.description}</p>
-                                      <Link to={`/project/${project.id}`} className="msci-outline-btn-white">
-                                        Learn more
-                                      </Link>
-                                    </div>
-                                    <div className="horizontal-image">
-                                      <img src={project.image} alt={project.title} />
-                                    </div>
+                      return (
+                        <div key={slideIdx} className="msci-project-slide">
+                          <div className="msci-projects-layout">
+                            {/* Left Large Card */}
+                            {mainProject && (
+                              <div
+                                className="msci-project-card-large"
+                                style={{
+                                  backgroundColor: mainProject.color || '#f4f4f6',
+                                  color: mainProject.textColor || '#0b1a30',
+                                }}
+                              >
+                                <div className="msci-project-large-graphic">
+                                  <div className="graphic-circle-img">
+                                    <img src={mainProject.image} alt={mainProject.title.replace(/<[^>]*>/g, '')} />
                                   </div>
-                                );
-                              })
-                            ) : (
-                              <div className="msci-empty-stack-placeholder">
-                                {/* Keep spacing even if last slide has only 1 project */}
+                                  <svg viewBox="0 0 200 200" className="graphic-overlay-svg" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="0" cy="100" r="90" fill="none" stroke="#00c0a5" strokeWidth="1" />
+                                    <circle cx="30" cy="100" r="90" fill="none" stroke="#00c0a5" strokeWidth="1" />
+                                    <circle cx="60" cy="100" r="90" fill="none" stroke="#00c0a5" strokeWidth="1" />
+                                    <circle cx="150" cy="100" r="4" fill="#00c0a5" />
+                                  </svg>
+                                </div>
+                                <div className="msci-project-large-content">
+                                  <h3 className="msci-project-large-title" dangerouslySetInnerHTML={{ __html: mainProject.title }} />
+                                  <p className="msci-project-large-desc" dangerouslySetInnerHTML={{ __html: mainProject.description }} />
+                                  <Link to={`/project/${mainProject.id}`} className="msci-outline-btn-black">
+                                    Read the report
+                                  </Link>
+                                </div>
                               </div>
                             )}
+
+                            {/* Right Stacked Cards */}
+                            <div className="msci-projects-right-stack">
+                              {otherProjects.length > 0 ? (
+                                otherProjects.map((project) => {
+                                  const accentColor = project.color || '#1b36d1';
+                                  const cardStyle = {
+                                    backgroundColor: accentColor,
+                                    color: project.textColor || '#ffffff',
+                                  };
+
+                                  return (
+                                    <div
+                                      key={project.id}
+                                      className="msci-project-card-horizontal"
+                                      style={cardStyle}
+                                    >
+                                      <div className="horizontal-content">
+                                        <h3 className="horizontal-title" dangerouslySetInnerHTML={{ __html: project.title }} />
+                                        <p className="horizontal-desc" dangerouslySetInnerHTML={{ __html: project.description }} />
+                                        <Link to={`/project/${project.id}`} className="msci-outline-btn-white">
+                                          Learn more
+                                        </Link>
+                                      </div>
+                                      <div
+                                        className="horizontal-image"
+                                        style={{ backgroundColor: accentColor }}
+                                      >
+                                        {project.image && (
+                                          <img src={project.image} alt={project.title.replace(/<[^>]*>/g, '')} />
+                                        )}
+                                      </div>
+                                    </div>
+                                  );
+                                })
+                              ) : (
+                                <div className="msci-empty-stack-placeholder">
+                                  {/* Keep spacing even if last slide has only 1 project */}
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {projectChunks.length > 1 && (
                 <div className="msci-slider-dots">

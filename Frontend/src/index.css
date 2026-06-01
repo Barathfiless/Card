@@ -40,20 +40,29 @@
 }
 
 [data-theme='dark'] {
-    --bg-color: #0d1117;
-    --card-bg: #161b22;
-    --card-border: rgba(255, 255, 255, 0.1);
+    color-scheme: dark;
+    /* White (#fff) surfaces → black */
+    --surface-white: #000000;
+    /* Light gray sections → dark gray (not black) */
+    --bg-color: #121212;
+    --card-bg: #0a0a0a;
+    --card-border: rgba(255, 255, 255, 0.12);
     --card-hover-border: var(--msci-gold);
-    --text-primary: #e6edf3;
-    --text-secondary: #8b949e;
-    --nav-bg: #161b22;
+    --text-primary: #f0f0f0;
+    --text-secondary: #a3a3a3;
+    --nav-bg: #061124;
     --accent-color: var(--msci-gold);
-    --msci-off-white: #0d1117;
-    --msci-light-gray: #161b22;
+    --msci-off-white: #121212;
+    --msci-light-gray: #1a1a1a;
     --msci-mid-gray: rgba(255, 255, 255, 0.08);
     --msci-border: rgba(255, 255, 255, 0.12);
-    --msci-text-primary: #e6edf3;
-    --msci-text-secondary: #8b949e;
+    --msci-text-primary: #f0f0f0;
+    --msci-text-secondary: #a3a3a3;
+}
+
+[data-theme='dark'] html,
+[data-theme='dark'] body {
+    background-color: var(--bg-color);
 }
 
 * {
