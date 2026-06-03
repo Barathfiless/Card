@@ -10,6 +10,68 @@
     transition: background 0.3s ease, border-color 0.3s ease;
 }
 
+/* ── Hero image hover: flip navbar to light theme ── */
+.hero-image-hovered .navbar {
+    border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+.hero-image-hovered .logo-section .logo {
+    color: #0b1a30;
+    transition: color 0.5s ease;
+}
+
+.hero-image-hovered .msci-globe-icon {
+    color: rgba(11, 26, 48, 0.75);
+    transition: color 0.5s ease;
+}
+
+.hero-image-hovered .nav-links a {
+    color: rgba(11, 26, 48, 0.8);
+    transition: color 0.5s ease;
+}
+
+.hero-image-hovered .nav-links a:hover {
+    color: #0b1a30;
+}
+
+.hero-image-hovered .msci-get-in-touch-link {
+    color: rgba(11, 26, 48, 0.8);
+    transition: color 0.5s ease;
+}
+
+.hero-image-hovered .msci-get-in-touch-link:hover {
+    color: #0b1a30;
+}
+
+.hero-image-hovered .msci-search-bar {
+    background: rgba(0, 0, 0, 0.07);
+    transition: background 0.5s ease;
+}
+
+.hero-image-hovered .msci-search-bar svg {
+    color: rgba(11, 26, 48, 0.6);
+    transition: color 0.5s ease;
+}
+
+.hero-image-hovered .msci-search-bar input {
+    color: #0b1a30;
+    transition: color 0.5s ease;
+}
+
+.hero-image-hovered .msci-search-bar input::placeholder {
+    color: rgba(11, 26, 48, 0.45);
+}
+
+.hero-image-hovered .nav-actions .theme-btn {
+    color: rgba(11, 26, 48, 0.7);
+    transition: color 0.5s ease;
+}
+
+.hero-image-hovered .mobile-menu-btn span {
+    background: #0b1a30;
+    transition: background 0.5s ease;
+}
+
 .navbar-scrolled {
     background: #061124;
     border-bottom: 1px solid rgba(255, 255, 255, 0.15);

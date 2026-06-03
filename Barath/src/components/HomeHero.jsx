@@ -13,6 +13,17 @@ function HomeHero() {
   const [isPaused, setIsPaused] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [allProjects, setAllProjects] = useState([]);
+  const [profileHovered, setProfileHovered] = useState(false);
+
+  // Sync hover state → body class so the Navbar can react via CSS
+  useEffect(() => {
+    if (profileHovered) {
+      document.body.classList.add('hero-image-hovered');
+    } else {
+      document.body.classList.remove('hero-image-hovered');
+    }
+    return () => document.body.classList.remove('hero-image-hovered');
+  }, [profileHovered]);
 
   // Keep main page in sync with admin-managed projects
   useEffect(() => {
@@ -118,8 +129,8 @@ function HomeHero() {
   return (
     <div className="home-hero-container">
       {/* 1. Dark Gradient Hero Banner */}
-      <section className="msci-hero-banner">
-        <HeroParticles />
+      <section className={`msci-hero-banner${profileHovered ? ' hero-hovered' : ''}`}>
+        <HeroParticles isHovered={profileHovered} />
         <div className="container">
           <div className="msci-hero-grid">
             <div className="msci-hero-left">
@@ -131,7 +142,11 @@ function HomeHero() {
                 Software Developer Engineer
               </p>
               <div className="msci-hero-profile">
-                <div className="msci-hero-profile-wrapper">
+                <div
+                  className="msci-hero-profile-wrapper"
+                  onMouseEnter={() => setProfileHovered(true)}
+                  onMouseLeave={() => setProfileHovered(false)}
+                >
                   <img
                     src="/hero-profile.png"
                     alt="Barath M"

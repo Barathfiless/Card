@@ -16,6 +16,22 @@
     overflow: hidden;
 }
 
+/* White overlay that fades in on image hover */
+.msci-hero-banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #f0f6ff;
+    opacity: 0;
+    transition: opacity 0.55s ease;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.msci-hero-banner.hero-hovered::before {
+    opacity: 1;
+}
+
 /* Beautiful background graphic pattern overlay */
 .msci-hero-banner::after {
     content: '';
@@ -27,6 +43,11 @@
     background-image: radial-gradient(circle at 85% 50%, rgba(27, 92, 252, 0.15) 0%, transparent 60%);
     pointer-events: none;
     z-index: 1;
+    transition: opacity 0.55s ease;
+}
+
+.msci-hero-banner.hero-hovered::after {
+    opacity: 0;
 }
 
 .msci-hero-banner .container {
@@ -62,6 +83,11 @@
     letter-spacing: 0.02em;
     text-align: center;
     -webkit-font-smoothing: antialiased;
+    transition: color 0.5s ease;
+}
+
+.msci-hero-banner.hero-hovered .msci-hero-title {
+    color: #0b1a30;
 }
 
 .msci-hero-subtitle {
@@ -76,6 +102,11 @@
     margin-right: auto;
     text-align: center;
     letter-spacing: 0.04em;
+    transition: color 0.5s ease;
+}
+
+.msci-hero-banner.hero-hovered .msci-hero-subtitle {
+    color: #2d4a6e;
 }
 
 .msci-hero-profile {
