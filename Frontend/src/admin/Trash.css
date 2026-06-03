@@ -52,3 +52,36 @@
 .undo-btn:hover svg {
   transform: rotate(-120deg);
 }
+
+.trash-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.permanent-delete-btn {
+  background: rgba(229, 9, 20, 0.12);
+  color: #e50914;
+  border: 1px solid rgba(229, 9, 20, 0.35);
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-style: normal;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.permanent-delete-btn:hover {
+  background: #e50914;
+  color: #ffffff;
+  border-color: #e50914;
+}
+
+.permanent-delete-btn:hover svg {
+  transform: scale(1.05);
+}

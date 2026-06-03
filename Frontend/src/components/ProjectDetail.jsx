@@ -71,18 +71,27 @@ function ProjectDetail() {
       ? `A Platform with the tech stacks of ${project.tags.join(', ')}`
       : null);
 
-  const bannerBg = project.bannerImage 
-    ? project.bannerImage 
+  const bannerBg = project.bannerImage
+    ? project.bannerImage
     : (project.image ? project.image : null);
 
-  // Derive inline style for header background from project color and image
+  const plainTitle = project.title?.replace(/<[^>]*>/g, '').trim() || 'project';
+  const titleSlug = plainTitle.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '');
+  const liveUrlRaw = project.liveUrl?.trim() || '';
+  const liveUrlPlain = liveUrlRaw.replace(/<[^>]*>/g, '').trim();
+  const liveUrlIsHtml = liveUrlRaw.startsWith('<');
+  const defaultLiveLabel = `Live : www.${titleSlug}-barath.com`;
+
   const headerStyle = {
     '--project-color': project.color || '#1b36d1',
     backgroundColor: project.color || '#1b36d1',
-    backgroundImage: bannerBg ? `linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url(${bannerBg})` : 'none',
+    backgroundImage: bannerBg
+      ? `linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url(${bannerBg})`
+      : 'none',
     backgroundSize: 'cover',
     backgroundPosition: `center ${project.bannerPosY || '50'}%`,
-    minHeight: `${project.bannerHeight || '170'}px`,
+    minHeight: '45vh',
+    height: '45vh',
   };
 
   return (
@@ -106,24 +115,28 @@ function ProjectDetail() {
               <h1 className="pd-title" dangerouslySetInnerHTML={{ __html: project.title }} />
             </div>
 
-            {/* Right side: Live Link (rich support) + Tags */}
+            {/* Right side: Live link + tags */}
             <div className="pd-header-right">
-              {project.liveUrl && (
-                <div className="pd-live-row">
-                  {project.liveUrl.startsWith('<') ? (
-                    <div className="pd-live-link-rich" dangerouslySetInnerHTML={{ __html: project.liveUrl }} />
-                  ) : (
-                    <a
-                      href={project.liveUrl.startsWith('http') ? project.liveUrl : `https://${project.liveUrl}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="pd-live-link"
-                    >
-                      Live : {project.liveUrl.replace(/^https?:\/\//, '')}
-                    </a>
-                  )}
-                </div>
-              )}
+              <div className="pd-live-row">
+                {liveUrlIsHtml && liveUrlPlain ? (
+                  <div className="pd-live-link-rich" dangerouslySetInnerHTML={{ __html: liveUrlRaw }} />
+                ) : liveUrlPlain ? (
+                  <a
+                    href={
+                      liveUrlPlain.startsWith('http')
+                        ? liveUrlPlain
+                        : `https://${liveUrlPlain.replace(/^live\s*:\s*/i, '').trim()}`
+                    }
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="pd-live-link"
+                  >
+                    {/^live\s*:/i.test(liveUrlPlain) ? liveUrlPlain : `Live : ${liveUrlPlain.replace(/^https?:\/\//, '')}`}
+                  </a>
+                ) : (
+                  <span className="pd-live-link pd-live-link-static">{defaultLiveLabel}</span>
+                )}
+              </div>
               <div className="pd-tags">
                 {project.tags &&
                   project.tags.map(tag => {
@@ -144,21 +157,25 @@ function ProjectDetail() {
         </div>
       </div>
 
-      {/* ── Horizontal Divider ── */}
-      <div className="pd-divider" />
-
-      {/* ── 3-Column Content ── */}
-      <div className="pd-content">
+      {/* ── Main body: 3 columns + impact ── */}
+      <div className="pd-body">
+        <div className="pd-content">
 
         {/* Col 1 — Overview */}
         <div className="pd-col pd-col-overview pd-card">
-          <h2 className="pd-section-title">Overview</h2>
+          <h2
+            className="pd-section-title pd-section-title-custom"
+            dangerouslySetInnerHTML={{ __html: project.sectionTitleOverview || 'Overview' }}
+          />
           <p className="pd-overview-text" dangerouslySetInnerHTML={{ __html: project.longDescription || project.description }} />
         </div>
 
         {/* Col 2 — Key Features */}
         <div className="pd-col pd-col-features pd-card">
-          <h2 className="pd-section-title">Key Features</h2>
+          <h2
+            className="pd-section-title pd-section-title-custom"
+            dangerouslySetInnerHTML={{ __html: project.sectionTitleFeatures || 'Key Features' }}
+          />
           {Array.isArray(features) ? (
             <ul className="pd-features-list">
               {features.map((feat, idx) => (
@@ -175,7 +192,10 @@ function ProjectDetail() {
 
         {/* Col 3 — Clips */}
         <div className="pd-col pd-col-clips pd-card">
-          <h2 className="pd-section-title">Clips</h2>
+          <h2
+            className="pd-section-title pd-section-title-custom"
+            dangerouslySetInnerHTML={{ __html: project.sectionTitleClips || 'Clips' }}
+          />
           <div className="pd-clips-viewer">
             {clips.length > 0 ? (
               <>
@@ -236,43 +256,24 @@ function ProjectDetail() {
           </div>
         </div>
 
+        </div>
       </div>
 
-      {/* ── Impact Row ── */}
       {impactText && (
-        <div className="pd-impact-row">
-          {impactText.startsWith('<') ? (
-            <div className="pd-impact-text-rich pd-impact-line" dangerouslySetInnerHTML={{ __html: impactText }} />
-          ) : (
-            <p className="pd-impact-text pd-impact-line">
-              <span className="pd-impact-label">Impact -</span> {impactText}
-            </p>
-          )}
-        </div>
-      )}
-
-      {/* ── Gallery Section ── */}
-      {project.gallery && project.gallery.length > 0 && (
-        <div className="pd-gallery-section">
-          <h2 className="pd-gallery-title">Project Gallery</h2>
-          <div className="pd-gallery-grid">
-            {project.gallery.map((img, idx) => (
-              <div key={idx} className="pd-gallery-card">
-                <div className="pd-gallery-img-wrap">
-                  <img
-                    src={img.url}
-                    alt={img.description || `Gallery ${idx + 1}`}
-                  />
-                </div>
-                {img.description && (
-                  <div className="pd-gallery-caption">
-                    <p>{img.description}</p>
-                  </div>
-                )}
-              </div>
-            ))}
+        <footer className="pd-impact-footer">
+          <div className="pd-impact-footer-inner">
+            {impactText.startsWith('<') ? (
+              <div className="pd-impact-text-rich pd-impact-line" dangerouslySetInnerHTML={{ __html: impactText }} />
+            ) : (
+              <p className="pd-impact-text pd-impact-line">
+                {!/^impact\s*-/i.test(impactText.trim()) && (
+                  <span className="pd-impact-label">Impact -</span>
+                )}{' '}
+                {impactText}
+              </p>
+            )}
           </div>
-        </div>
+        </footer>
       )}
 
     </div>

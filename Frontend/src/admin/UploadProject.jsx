@@ -30,8 +30,34 @@ const BLANK_FORM = {
   impact: '',
   bannerPosY: '50',
   bannerImage: '',
-  bannerHeight: '170'
+  bannerHeight: '170',
+  sectionTitleOverview: '<span style="color:#ffffff">Overview</span>',
+  sectionTitleFeatures: '<span style="color:#ffffff">Key Features</span>',
+  sectionTitleClips: '<span style="color:#ffffff">Clips</span>',
 };
+
+/** Ensure section headings are visible on dark preview (white default text). */
+function normalizeSectionTitleHtml(value, fallbackLabel) {
+  const fallback = fallbackLabel.trim();
+  const raw = (value || '').trim();
+  const plain = raw.replace(/<[^>]*>/g, '').trim() || fallback;
+
+  let html = raw || fallback;
+  if (!/<[a-z][\s\S]*>/i.test(html)) {
+    html = plain;
+  }
+
+  html = html.replace(
+    /color:\s*(#000000|#000|black|rgb\(\s*0\s*,\s*0\s*,\s*0\s*\)|rgba\(\s*0\s*,\s*0\s*,\s*0\s*[^)]*\))/gi,
+    'color:#ffffff'
+  );
+
+  if (!/color\s*:/i.test(html)) {
+    return `<span style="color:#ffffff">${plain}</span>`;
+  }
+
+  return html;
+}
 
 const TECH_STACK_OPTIONS = [
   { name: 'React', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg' },
@@ -59,12 +85,20 @@ const TECH_STACK_OPTIONS = [
   { name: 'Vue.js', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vuejs/vuejs-original.svg' },
   { name: 'Firebase', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-original.svg' },
   { name: 'Kubernetes', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-original.svg' },
-  { name: 'Express', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg' },
+  { name: 'Express', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original-wordmark.svg' },
   { name: 'GraphQL', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/graphql/graphql-plain.svg' }
 ];
 
-function RichTextEditor({ value, onChange, placeholder, minHeight = '100px', className = '' }) {
+function RichTextEditor({
+  value,
+  onChange,
+  placeholder,
+  minHeight = '100px',
+  className = '',
+  singleLine = false,
+}) {
   const editorRef = useRef(null);
+  const selectionRef = useRef(null);
 
   useEffect(() => {
     if (editorRef.current && editorRef.current.innerHTML !== value) {
@@ -78,8 +112,37 @@ function RichTextEditor({ value, onChange, placeholder, minHeight = '100px', cla
     }
   };
 
+  const saveSelection = () => {
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0 || !editorRef.current) return;
+    const range = sel.getRangeAt(0);
+    if (editorRef.current.contains(range.commonAncestorContainer)) {
+      selectionRef.current = range.cloneRange();
+    }
+  };
+
+  const restoreSelection = () => {
+    const range = selectionRef.current;
+    if (!range || !editorRef.current) return;
+    const sel = window.getSelection();
+    if (!sel) return;
+    sel.removeAllRanges();
+    sel.addRange(range);
+  };
+
   const executeCommand = (command, val = null) => {
+    editorRef.current?.focus();
+    restoreSelection();
     document.execCommand(command, false, val);
+    saveSelection();
+    handleInput();
+  };
+
+  const applyTextColor = (color) => {
+    editorRef.current?.focus();
+    restoreSelection();
+    document.execCommand('foreColor', false, color);
+    saveSelection();
     handleInput();
   };
 
@@ -155,12 +218,20 @@ function RichTextEditor({ value, onChange, placeholder, minHeight = '100px', cla
           </svg>
         </button>
         <div className="toolbar-separator" />
-        <div className="color-picker-btn-wrapper">
+        <div
+          className="color-picker-btn-wrapper"
+          title="Select text, then choose color"
+        >
           <input
             type="color"
-            onChange={(e) => executeCommand('foreColor', e.target.value)}
-            title="Text Color"
+            defaultValue="#ffffff"
+            onMouseDown={(e) => {
+              e.preventDefault();
+              saveSelection();
+            }}
+            onChange={(e) => applyTextColor(e.target.value)}
             className="toolbar-color-picker"
+            aria-label="Text color"
           />
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="color-icon">
             <line x1="4" y1="20" x2="20" y2="20" />
@@ -174,8 +245,17 @@ function RichTextEditor({ value, onChange, placeholder, minHeight = '100px', cla
         contentEditable
         className="rich-editor-content"
         onInput={handleInput}
+        onMouseUp={saveSelection}
+        onKeyUp={saveSelection}
+        onKeyDown={(e) => {
+          if (singleLine && e.key === 'Enter') {
+            e.preventDefault();
+          }
+        }}
+        onBlur={saveSelection}
         style={{ minHeight }}
-        placeholder={placeholder}
+        data-placeholder={placeholder}
+        suppressContentEditableWarning
       />
     </div>
   );
@@ -238,6 +318,16 @@ function UploadProject() {
     };
   }, []);
 
+  useEffect(() => {
+    if (step !== 2) return;
+    setFormData((prev) => ({
+      ...prev,
+      sectionTitleOverview: normalizeSectionTitleHtml(prev.sectionTitleOverview, 'Overview'),
+      sectionTitleFeatures: normalizeSectionTitleHtml(prev.sectionTitleFeatures, 'Key Features'),
+      sectionTitleClips: normalizeSectionTitleHtml(prev.sectionTitleClips, 'Clips'),
+    }));
+  }, [step]);
+
   // ─── Step 1 handlers ────────────────────────────────────────────
   const handleSelectExistingProject = (project) => {
     setSelectedProject(project);
@@ -257,7 +347,10 @@ function UploadProject() {
       impact: project.impact || '',
       bannerPosY: project.bannerPosY || '50',
       bannerImage: project.bannerImage || '',
-      bannerHeight: project.bannerHeight || '170'
+      bannerHeight: project.bannerHeight || '170',
+      sectionTitleOverview: normalizeSectionTitleHtml(project.sectionTitleOverview, 'Overview'),
+      sectionTitleFeatures: normalizeSectionTitleHtml(project.sectionTitleFeatures, 'Key Features'),
+      sectionTitleClips: normalizeSectionTitleHtml(project.sectionTitleClips, 'Clips'),
     });
     setGallery(
       Array.isArray(project.gallery)
@@ -350,12 +443,21 @@ function UploadProject() {
     setGallery(prev => prev.map(item => item.id === id ? { ...item, description: value } : item));
   };
 
+  const normalizeDisplayTag = (tag) => {
+    const key = tag.trim().toLowerCase().replace(/\s+/g, '');
+    if (key === 'expressjs' || key === 'express.js') return 'Express';
+    return tag.trim();
+  };
+
   const handleAddTag = (tagToAdd) => {
+    const normalized = normalizeDisplayTag(tagToAdd);
+    if (!normalized) return;
+
     const currentTags = formData.tags
       ? formData.tags.split(',').map(t => t.trim()).filter(t => t.length > 0)
       : [];
-    if (!currentTags.some(t => t.toLowerCase() === tagToAdd.toLowerCase())) {
-      const updatedTags = [...currentTags, tagToAdd].join(', ');
+    if (!currentTags.some(t => t.toLowerCase() === normalized.toLowerCase())) {
+      const updatedTags = [...currentTags, normalized].join(', ');
       setFormData(prev => ({ ...prev, tags: updatedTags }));
     }
   };
@@ -456,7 +558,10 @@ function UploadProject() {
       impact: formData.impact?.trim() || '',
       bannerPosY: formData.bannerPosY || '50',
       bannerImage: formData.bannerImage || '',
-      bannerHeight: formData.bannerHeight || '170'
+      bannerHeight: formData.bannerHeight || '170',
+      sectionTitleOverview: formData.sectionTitleOverview?.trim() || 'Overview',
+      sectionTitleFeatures: formData.sectionTitleFeatures?.trim() || 'Key Features',
+      sectionTitleClips: formData.sectionTitleClips?.trim() || 'Clips',
     };
 
     try {
@@ -797,7 +902,7 @@ function UploadProject() {
                   : (formData.image ? `linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url(${formData.image})` : 'none'),
                 backgroundSize: 'cover',
                 backgroundPosition: `center ${formData.bannerPosY || '50'}%`,
-                minHeight: `${formData.bannerHeight || '170'}px`,
+                minHeight: `${formData.bannerHeight || '45'}vh`,
                 color: formData.textColor || '#ffffff',
                 cursor: (formData.bannerImage || formData.image) ? (isRepositioningBanner ? 'ns-resize' : 'pointer') : 'default',
                 position: 'relative'
@@ -937,13 +1042,13 @@ function UploadProject() {
 
                     <div style={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '4px', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '10px' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center', marginBottom: '4px' }}>
-                        <span>Banner Height: {formData.bannerHeight || '170'}px</span>
+                        <span>Banner Height: {formData.bannerHeight || '45'}vh</span>
                       </div>
                       <input 
                         type="range" 
-                        min="120" 
-                        max="500" 
-                        value={formData.bannerHeight || '170'} 
+                        min="20" 
+                        max="100" 
+                        value={formData.bannerHeight || '45'} 
                         onChange={(e) => setFormData(prev => ({ ...prev, bannerHeight: e.target.value }))}
                         style={{ width: '100%', cursor: 'pointer', accentColor: '#3b82f6' }}
                       />
@@ -993,87 +1098,50 @@ function UploadProject() {
                     className="banner-live-editor"
                   />
                 </div>
-                <div className="ov-tags-row-premium" style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                <div className="ov-tags-row-premium tech-stack-bar">
                   {previewTags.map((tag, idx) => {
                     const logoUrl = getTagLogoUrl(tag);
                     return (
-                      <span key={idx} className="ov-tag-badge-premium" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        {logoUrl && <img src={logoUrl} alt="" className="badge-logo-img" />}
-                        {tag}
+                      <span key={idx} className="ov-tag-badge-premium tech-stack-tag">
+                        {logoUrl && (
+                          <img src={logoUrl} alt="" className="badge-logo-img" />
+                        )}
+                        <span className="tech-stack-tag-label">{tag}</span>
                         <button
                           type="button"
                           onClick={() => handleRemoveTag(tag)}
-                          style={{
-                            background: 'none',
-                            border: 'none',
-                            color: '#ef4444',
-                            cursor: 'pointer',
-                            padding: '0 2px',
-                            fontSize: '11px',
-                            fontWeight: 'bold',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            marginLeft: '2px'
-                          }}
+                          className="tech-stack-tag-remove"
                           title={`Remove ${tag}`}
+                          aria-label={`Remove ${tag}`}
                         >
                           ×
                         </button>
                       </span>
                     );
                   })}
-                  
-                  {/* Add Tag Dropdown/Popover Trigger */}
-                  <div ref={tagDropdownRef} style={{ position: 'relative' }}>
+
+                  <div ref={tagDropdownRef} className="tech-stack-picker">
                     <button
                       type="button"
                       onClick={() => setIsTagDropdownOpen(!isTagDropdownOpen)}
-                      style={{
-                        width: '24px',
-                        height: '24px',
-                        borderRadius: '50%',
-                        border: '1.5px solid rgba(255, 255, 255, 0.4)',
-                        background: 'rgba(255, 255, 255, 0.25)',
-                        color: '#ffffff',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        fontSize: '14px',
-                        fontWeight: 'bold',
-                        transition: 'all 0.2s',
-                        backdropFilter: 'blur(4px)',
-                        padding: 0,
-                        lineHeight: 1
-                      }}
-                      title="Add Tech Stack"
+                      className="tech-stack-add-btn"
+                      title="Add tech stack"
+                      aria-expanded={isTagDropdownOpen}
                     >
                       +
                     </button>
 
                     {isTagDropdownOpen && (
-                      <div className="tech-stack-popover" style={{
-                        position: 'absolute',
-                        top: '32px',
-                        right: '0',
-                        width: '280px',
-                        maxHeight: '320px',
-                        overflowY: 'auto',
-                        background: '#ffffff',
-                        border: '1.5px solid #222222',
-                        borderRadius: '12px',
-                        boxShadow: '0 8px 30px rgba(0, 0, 0, 0.15)',
-                        zIndex: 100,
-                        padding: '10px',
-                        display: 'grid',
-                        gridTemplateColumns: '1fr 1fr',
-                        gap: '6px'
-                      }}>
-                        {/* Custom search or add-custom option */}
-                        <div style={{ gridColumn: '1 / -1', marginBottom: '4px', display: 'flex', gap: '4px' }}>
+                      <div
+                        className="tech-stack-popover"
+                        role="dialog"
+                        aria-label="Add tech stack"
+                        onMouseDown={(e) => e.stopPropagation()}
+                      >
+                        <div className="tech-stack-custom-row">
                           <input
                             type="text"
+                            className="tech-stack-custom-input"
                             placeholder="Custom tag..."
                             value={customTagInput}
                             onChange={(e) => setCustomTagInput(e.target.value)}
@@ -1086,73 +1154,48 @@ function UploadProject() {
                                 }
                               }
                             }}
-                            style={{
-                              flex: 1,
-                              border: '1px solid #d1d5db',
-                              borderRadius: '6px',
-                              padding: '4px 8px',
-                              fontSize: '0.75rem',
-                              color: '#333'
-                            }}
+                            autoComplete="off"
+                            spellCheck={false}
                           />
                           <button
                             type="button"
+                            className="tech-stack-custom-add"
                             onClick={() => {
                               if (customTagInput.trim()) {
-                                  handleAddTag(customTagInput.trim());
-                                  setCustomTagInput('');
+                                handleAddTag(customTagInput.trim());
+                                setCustomTagInput('');
                               }
-                            }}
-                            style={{
-                              background: '#1500b5',
-                              color: '#ffffff',
-                              border: 'none',
-                              borderRadius: '6px',
-                              padding: '4px 10px',
-                              fontSize: '0.75rem',
-                              fontWeight: 'bold',
-                              cursor: 'pointer'
                             }}
                           >
                             Add
                           </button>
                         </div>
-                        
-                        {/* Predefined Options */}
-                        {TECH_STACK_OPTIONS.map(opt => {
-                          const isAlreadySelected = previewTags.some(t => t.toLowerCase() === opt.name.toLowerCase());
-                          return (
-                            <button
-                              key={opt.name}
-                              type="button"
-                              onClick={() => {
-                                if (isAlreadySelected) {
-                                  handleRemoveTag(opt.name);
-                                } else {
-                                  handleAddTag(opt.name);
-                                }
-                              }}
-                              style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px',
-                                background: isAlreadySelected ? 'rgba(21, 0, 181, 0.08)' : '#fafafa',
-                                border: isAlreadySelected ? '1.5px solid #1500b5' : '1.5px solid #e5e7eb',
-                                borderRadius: '8px',
-                                padding: '6px 8px',
-                                cursor: 'pointer',
-                                fontSize: '0.75rem',
-                                color: '#374151',
-                                textAlign: 'left',
-                                transition: 'all 0.2s',
-                                fontWeight: isAlreadySelected ? 'bold' : 'normal'
-                              }}
-                            >
-                              <img src={opt.logo} alt="" style={{ width: '14px', height: '14px', objectFit: 'contain' }} />
-                              <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>{opt.name}</span>
-                            </button>
-                          );
-                        })}
+
+                        <div className="tech-stack-options-grid">
+                          {TECH_STACK_OPTIONS.map((opt) => {
+                            const isAlreadySelected = previewTags.some(
+                              (t) => t.toLowerCase() === opt.name.toLowerCase()
+                            );
+                            const optionLogo = getTagLogoUrl(opt.name) || opt.logo;
+                            return (
+                              <button
+                                key={opt.name}
+                                type="button"
+                                className={`tech-stack-option${isAlreadySelected ? ' is-selected' : ''}`}
+                                onClick={() => {
+                                  if (isAlreadySelected) {
+                                    handleRemoveTag(opt.name);
+                                  } else {
+                                    handleAddTag(opt.name);
+                                  }
+                                }}
+                              >
+                                <img src={optionLogo} alt="" className="tech-stack-option-logo" />
+                                <span className="tech-stack-option-label">{opt.name}</span>
+                              </button>
+                            );
+                          })}
+                        </div>
                       </div>
                     )}
                   </div>
@@ -1164,8 +1207,18 @@ function UploadProject() {
             <div className="ov-columns-grid-premium">
               {/* Column 1: Overview */}
               <div className="ov-column-premium">
-                <h3 className="ov-column-title-premium">Overview</h3>
-                <div className="ov-column-box-premium" style={{ padding: '12px' }}>
+                <div className="section-title-field">
+                  <RichTextEditor
+                    value={formData.sectionTitleOverview}
+                    onChange={(val) => setFormData((prev) => ({ ...prev, sectionTitleOverview: val }))}
+                    placeholder="Overview"
+                    minHeight="48px"
+                    className="section-title-editor"
+                    singleLine
+                  />
+                  <p className="section-title-hint">Drag to select heading text, then use the color icon to change it</p>
+                </div>
+                <div className="ov-column-box-premium ov-column-editor-box">
                   <RichTextEditor
                     value={formData.longDescription}
                     onChange={(val) => setFormData(prev => ({ ...prev, longDescription: val }))}
@@ -1177,8 +1230,18 @@ function UploadProject() {
 
               {/* Column 2: Key Features */}
               <div className="ov-column-premium">
-                <h3 className="ov-column-title-premium">Key Features</h3>
-                <div className="ov-column-box-premium" style={{ padding: '12px' }}>
+                <div className="section-title-field">
+                  <RichTextEditor
+                    value={formData.sectionTitleFeatures}
+                    onChange={(val) => setFormData((prev) => ({ ...prev, sectionTitleFeatures: val }))}
+                    placeholder="Key Features"
+                    minHeight="48px"
+                    className="section-title-editor"
+                    singleLine
+                  />
+                  <p className="section-title-hint">Drag to select heading text, then use the color icon to change it</p>
+                </div>
+                <div className="ov-column-box-premium ov-column-editor-box">
                   <RichTextEditor
                     value={formData.features}
                     onChange={(val) => setFormData(prev => ({ ...prev, features: val }))}
@@ -1190,8 +1253,18 @@ function UploadProject() {
 
               {/* Column 3: Clips */}
               <div className="ov-column-premium">
-                <h3 className="ov-column-title-premium">Clips</h3>
-                <div className="ov-column-box-premium clips-box-premium" style={{ display: 'flex', flexDirection: 'column', gap: '12px', padding: '16px' }}>
+                <div className="section-title-field">
+                  <RichTextEditor
+                    value={formData.sectionTitleClips}
+                    onChange={(val) => setFormData((prev) => ({ ...prev, sectionTitleClips: val }))}
+                    placeholder="Clips"
+                    minHeight="48px"
+                    className="section-title-editor"
+                    singleLine
+                  />
+                  <p className="section-title-hint">Drag to select heading text, then use the color icon to change it</p>
+                </div>
+                <div className="ov-column-box-premium clips-box-premium ov-column-editor-box">
                   {gallery.length > 0 ? (
                     <div className="interactive-clips-manager" style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '12px' }}>
                       {/* Active Clip Preview */}

@@ -72,6 +72,21 @@ const projectSchema = new mongoose.Schema({
     default: '',
     trim: true
   },
+  sectionTitleOverview: {
+    type: String,
+    default: '',
+    trim: true
+  },
+  sectionTitleFeatures: {
+    type: String,
+    default: '',
+    trim: true
+  },
+  sectionTitleClips: {
+    type: String,
+    default: '',
+    trim: true
+  },
   bannerPosY: {
     type: String,
     default: '50'

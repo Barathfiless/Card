@@ -53,7 +53,10 @@ router.post('/', requireAdminAuth, async (req, res) => {
     impact,
     bannerPosY,
     bannerImage,
-    bannerHeight
+    bannerHeight,
+    sectionTitleOverview,
+    sectionTitleFeatures,
+    sectionTitleClips
   } = req.body;
 
   if (!id || !title || !subtitle || !description || !longDescription || !image) {
@@ -78,6 +81,9 @@ router.post('/', requireAdminAuth, async (req, res) => {
         features: features || [],
         liveUrl: liveUrl || '',
         impact: impact || '',
+        sectionTitleOverview: sectionTitleOverview || '',
+        sectionTitleFeatures: sectionTitleFeatures || '',
+        sectionTitleClips: sectionTitleClips || '',
         bannerPosY: bannerPosY || '50',
         bannerImage: bannerImage || '',
         bannerHeight: bannerHeight || '170',
@@ -125,6 +131,20 @@ router.put('/:id/restore', requireAdminAuth, async (req, res) => {
     res.json({ message: 'Project restored successfully', project });
   } catch (err) {
     res.status(500).json({ message: 'Error restoring project', error: err.message });
+  }
+});
+
+// DELETE - Permanently remove a soft-deleted project — admin only
+router.delete('/:id/permanent', requireAdminAuth, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const project = await Project.findOneAndDelete({ id, isDeleted: true });
+    if (!project) {
+      return res.status(404).json({ message: 'Deleted project not found in trash' });
+    }
+    res.json({ message: 'Project permanently deleted', id: project.id });
+  } catch (err) {
+    res.status(500).json({ message: 'Error permanently deleting project', error: err.message });
   }
 });
 

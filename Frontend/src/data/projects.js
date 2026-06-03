@@ -76,6 +76,17 @@ export const restoreProject = async (id) => {
   return await res.json();
 };
 
+// DELETE - Permanently remove a project from trash — admin only
+export const permanentlyDeleteProject = async (id) => {
+  const res = await adminFetch(`/api/projects/${id}/permanent`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) {
+    throw new Error(`Failed to permanently delete project ${id}`);
+  }
+  return await res.json();
+};
+
 // Check if a project is soft-deleted
 export const isProjectDeleted = async (id) => {
   try {

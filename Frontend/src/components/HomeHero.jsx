@@ -108,6 +108,11 @@ function HomeHero() {
   // Repeat the array to ensure smooth seamless scrolling loop
   const repeatedItems = [...tickerItems, ...tickerItems, ...tickerItems];
 
+  const lane1Items = tickerItems.slice(0, 8);
+  const lane2Items = tickerItems.slice(8);
+  const repeatedLane1 = [...lane1Items, ...lane1Items, ...lane1Items];
+  const repeatedLane2 = [...lane2Items, ...lane2Items, ...lane2Items];
+
   return (
     <div className="home-hero-container">
       {/* 1. Dark Gradient Hero Banner */}
@@ -122,54 +127,14 @@ function HomeHero() {
               <p className="msci-hero-subtitle">
                 Software Developer Engineer
               </p>
-              <div className="msci-hero-actions">
-                <a href="#projects" className="msci-read-now-btn">
-                  Get Know Me
-                </a>
-              </div>
-            </div>
-            <div className="msci-hero-right">
-              <div className="msci-starburst-wrapper">
-                {/* Custom SVG Starburst Graphic to replicate the screenshot */}
-                <svg className="msci-starburst-svg" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="200" cy="200" r="4" fill="currentColor" />
-                  {/* Concentric rings */}
-                  <circle cx="200" cy="200" r="60" stroke="currentColor" strokeWidth="0.5" strokeDasharray="3 3" />
-                  <circle cx="200" cy="200" r="120" stroke="currentColor" strokeWidth="0.5" strokeDasharray="4 4" />
-                  <circle cx="200" cy="200" r="180" stroke="currentColor" strokeWidth="0.5" />
-
-                  {/* Starburst rays and network lines */}
-                  {Array.from({ length: 48 }).map((_, i) => {
-                    const angle = (i * 360) / 48;
-                    const rad = (angle * Math.PI) / 180;
-                    const length = 60 + (i % 3 === 0 ? 110 : i % 2 === 0 ? 80 : 50) + (Math.sin(i * 1.5) * 15);
-                    const x1 = 200 + 10 * Math.cos(rad);
-                    const y1 = 200 + 10 * Math.sin(rad);
-                    const x2 = 200 + length * Math.cos(rad);
-                    const y2 = 200 + length * Math.sin(rad);
-                    return (
-                      <g key={i}>
-                        <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="currentColor" strokeWidth={i % 3 === 0 ? 0.8 : 0.4} />
-                        {/* Interactive floating dots on vertices */}
-                        {i % 2 === 0 && (
-                          <circle cx={x2} cy={y2} r={i % 4 === 0 ? 3 : 1.5} fill={i % 4 === 0 ? "#00c0a5" : "currentColor"} />
-                        )}
-                        {/* Connecting lines between some nodes */}
-                        {i < 47 && i % 4 === 0 && (
-                          <line
-                            x1={x2}
-                            y1={y2}
-                            x2={200 + (70 + (Math.sin((i + 1) * 1.5) * 15)) * Math.cos(((i + 2) * 360 / 48) * Math.PI / 180)}
-                            y2={200 + (70 + (Math.sin((i + 1) * 1.5) * 15)) * Math.sin(((i + 2) * 360 / 48) * Math.PI / 180)}
-                            stroke="currentColor"
-                            strokeWidth="0.3"
-                            strokeDasharray="2 2"
-                          />
-                        )}
-                      </g>
-                    );
-                  })}
-                </svg>
+              <div className="msci-hero-profile">
+                <img
+                  src="/hero-profile.png"
+                  alt="Barath M"
+                  className="msci-hero-profile-img"
+                  width={380}
+                  height={475}
+                />
               </div>
             </div>
           </div>
@@ -239,11 +204,28 @@ function HomeHero() {
           <div className="msci-featured-cards-grid">
             <div className="msci-featured-card blue-card">
               <div className="blue-card-graphic">
-                <div className="graphic-circles">
-                  <div className="g-circle g-circle-1"></div>
-                  <div className="g-circle g-circle-2"></div>
-                  <div className="g-circle g-circle-3"></div>
-                  <div className="g-dot"></div>
+                <div className="card-marquee-wrapper">
+                  {/* Lane 1 (Flowing Left) */}
+                  <div className="card-marquee-lane lane-left">
+                    <div className="card-marquee-track">
+                      {repeatedLane1.map((item, idx) => (
+                        <div key={`l1-${idx}`} className="card-marquee-item" title={item.name}>
+                          <img src={item.logo} alt={item.name} className="card-marquee-logo" />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Lane 2 (Flowing Right) */}
+                  <div className="card-marquee-lane lane-right">
+                    <div className="card-marquee-track">
+                      {repeatedLane2.map((item, idx) => (
+                        <div key={`l2-${idx}`} className="card-marquee-item" title={item.name}>
+                          <img src={item.logo} alt={item.name} className="card-marquee-logo" />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
               <div className="blue-card-content">
