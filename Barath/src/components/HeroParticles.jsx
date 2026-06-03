@@ -13,31 +13,49 @@ function getTextDotPositions(w, h) {
   const octx = offscreen.getContext('2d');
 
   const TEXT = 'DEVELOPER';
+  const chars = TEXT.split('');
 
-  // Measure at baseline size to get the width scaling ratio
+  // ── Step 1: measure each character at a large baseline size ───────────────
   const baseSize = 200;
   octx.font = `800 ${baseSize}px Nunito, "Arial Black", sans-serif`;
-  const baseWidth = octx.measureText(TEXT).width;
 
-  // Scale so text fills ~96% of canvas width edge-to-edge
-  const fontSize = Math.floor(baseSize * (w * 0.96) / baseWidth);
+  const charBaseWidths = chars.map(c => octx.measureText(c).width);
+  const totalBaseWidth = charBaseWidths.reduce((a, b) => a + b, 0);
+
+  // Add 20% of average char width as inter-letter gap
+  const avgBase = totalBaseWidth / chars.length;
+  const spacingBase = avgBase * 0.20;
+  const totalBaseWithSpacing = totalBaseWidth + spacingBase * (chars.length - 1);
+
+  // ── Step 2: scale so spaced text fills 88% of canvas width ────────────────
+  const scale = (w * 0.88) / totalBaseWithSpacing;
+  const fontSize = Math.floor(baseSize * scale);
 
   octx.font = `800 ${fontSize}px Nunito, "Arial Black", sans-serif`;
-  octx.textAlign = 'center';
+  octx.textAlign = 'left';
   octx.textBaseline = 'middle';
 
-  // ── Use STROKE (outline) not fill — so dots trace letter edges like ref image
+  // ── Step 3: stroke settings ───────────────────────────────────────────────
   octx.strokeStyle = '#1b5cfc';
-  octx.lineWidth = Math.max(10, fontSize * 0.06); // ~6% of font height
+  octx.lineWidth = Math.max(8, fontSize * 0.05); // ~5% of font height
   octx.lineJoin = 'round';
   octx.lineCap = 'round';
-  octx.strokeText(TEXT, w / 2, h * 0.72);
 
+  // ── Step 4: draw each character individually with spacing ─────────────────
+  const charWidths = chars.map(c => octx.measureText(c).width);
+  const spacing = spacingBase * scale;
+  const totalWidth = charWidths.reduce((a, b) => a + b, 0) + spacing * (chars.length - 1);
+  let curX = (w - totalWidth) / 2;
+
+  for (let i = 0; i < chars.length; i++) {
+    octx.strokeText(chars[i], curX, h * 0.72);
+    curX += charWidths[i] + spacing;
+  }
+
+  // ── Step 5: sample finely along the stroke pixels ─────────────────────────
   const imageData = octx.getImageData(0, 0, w, h);
-
-  // ── Sample finely along the stroke pixels ─────────────────────────────────
   const rawPositions = [];
-  const sampleStep = 3; // fine scan to capture the thin stroke band
+  const sampleStep = 3;
   for (let y = 0; y < h; y += sampleStep) {
     for (let x = 0; x < w; x += sampleStep) {
       const idx = (y * w + x) * 4;
@@ -47,7 +65,7 @@ function getTextDotPositions(w, h) {
     }
   }
 
-  // ── Subsample to targetCount — ensures even distribution across all letters
+  // ── Step 6: subsample to targetCount — even distribution across all letters
   const targetCount = 580;
   const stride = Math.max(1, Math.floor(rawPositions.length / targetCount));
   const positions = rawPositions
@@ -62,6 +80,7 @@ function getTextDotPositions(w, h) {
 
   return positions;
 }
+
 
 
 /** Linearly interpolate between two RGB colours */
@@ -231,11 +250,20 @@ function HeroParticles({ isHovered = false }) {
           ctx.fillStyle = `rgba(27,92,252,${displayOpacity})`;
           ctx.fill();
         } else {
-          // Regular floating dots — interpolate from white to dark navy
-          ctx.shadowBlur = 0;
+          // Regular floating dots — grow bigger and more opaque on hover
+          const floatRadius = p.radius * (1 + hoverProgress * 1.4); // up to 2.4× bigger
+          const floatOpacity = Math.min(p.opacity * (1 + hoverProgress * 1.8), 0.85);
+
+          if (hoverProgress > 0.3) {
+            ctx.shadowBlur = 4 * hoverProgress;
+            ctx.shadowColor = `rgba(0,0,0,${0.25 * hoverProgress})`;
+          } else {
+            ctx.shadowBlur = 0;
+          }
+
           ctx.beginPath();
-          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${pr},${pg},${pb},${p.opacity})`;
+          ctx.arc(p.x, p.y, floatRadius, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${pr},${pg},${pb},${floatOpacity})`;
           ctx.fill();
         }
       }
