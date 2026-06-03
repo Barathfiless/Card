@@ -214,22 +214,20 @@
     color: rgba(255, 255, 255, 0.6);
 }
 
-/* Royal Blue Oval CTA Button */
-.msci-get-in-touch-btn {
-    background: #1b5cfc;
-    color: #ffffff;
-    font-size: 0.825rem;
+/* Get in touch — plain text link (matches nav link style) */
+.msci-get-in-touch-link {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.85rem;
     font-weight: 600;
-    padding: 10px 24px;
-    border-radius: 20px;
+    letter-spacing: 0.02em;
+    padding: 10px 16px;
     text-decoration: none;
-    transition: background 0.2s ease, transform 0.2s ease;
     white-space: nowrap;
+    transition: color 0.2s ease;
 }
 
-.msci-get-in-touch-btn:hover {
-    background: #0f4bdb;
-    transform: translateY(-1px);
+.msci-get-in-touch-link:hover {
+    color: #ffffff;
 }
 
 /* Theme switch overrides */
@@ -303,11 +301,15 @@
 }
 
 @media (max-width: 768px) {
+    .navbar {
+        display: none;
+    }
+
     .nav-container {
         padding: 0 20px;
     }
 
-    .msci-get-in-touch-btn {
+    .msci-get-in-touch-link {
         display: none;
     }
 }
@@ -553,6 +555,14 @@
     opacity: 1;
     visibility: visible;
     transform: translateY(0) scale(1);
+}
+
+/* ── Mobile: hide top bar, keep bottom dock always available ── */
+@media (max-width: 768px) {
+    .msci-bottom-dock {
+        transform: translate(-50%, 0);
+        pointer-events: auto;
+    }
 }
 
 /* ── Mobile View Adjustments for Bottom Floating Glass Dock ── */

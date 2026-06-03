@@ -1,0 +1,133 @@
+/* Matches Skills & System Competencies section layout */
+.msci-github-stats-section {
+    padding: 32px 0 80px;
+    background: #f4f6f9;
+}
+
+[data-theme='dark'] .msci-github-stats-section {
+    background: var(--msci-light-gray);
+}
+
+.msci-github-stats-header {
+    margin-bottom: 50px;
+}
+
+.msci-github-stats-title {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #1b36d1;
+    letter-spacing: -0.03em;
+    margin-bottom: 8px;
+    line-height: 1.1;
+}
+
+.msci-github-stats-subtitle {
+    font-size: 3rem;
+    font-weight: 500;
+    color: #7a8cf4;
+    letter-spacing: -0.03em;
+    margin-bottom: 0;
+    line-height: 1.1;
+}
+
+[data-theme='dark'] .msci-github-stats-title {
+    color: #4da3ff;
+}
+
+[data-theme='dark'] .msci-github-stats-subtitle {
+    color: #8faefc;
+}
+
+.msci-github-stats-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 28px 28px 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme='dark'] .msci-github-stats-card {
+    background: #000000;
+    border-color: rgba(255, 255, 255, 0.14);
+    box-shadow: none;
+}
+
+.msci-github-stats-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+.msci-github-stats-profile-link {
+    font-family: var(--font-main);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1b36d1;
+    text-decoration: none;
+    padding: 10px 18px;
+    border: 1px solid rgba(27, 54, 209, 0.25);
+    border-radius: 999px;
+    white-space: nowrap;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.msci-github-stats-profile-link:hover {
+    background: rgba(27, 54, 209, 0.08);
+    color: #1128a6;
+}
+
+[data-theme='dark'] .msci-github-stats-profile-link {
+    color: #4da3ff;
+    border-color: rgba(77, 163, 255, 0.35);
+}
+
+[data-theme='dark'] .msci-github-stats-profile-link:hover {
+    background: rgba(77, 163, 255, 0.12);
+    color: #7bb8ff;
+}
+
+.msci-github-stats-calendar-wrap {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.msci-github-stats-calendar-wrap .react-activity-calendar {
+    width: max-content;
+    min-width: 100%;
+    margin: 0 auto;
+}
+
+.msci-github-stats-calendar-wrap text {
+    font-family: var(--font-main);
+    fill: #6b7280;
+}
+
+[data-theme='dark'] .msci-github-stats-calendar-wrap text {
+    fill: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+    .msci-github-stats-section {
+        padding: 24px 0 56px;
+    }
+
+    .msci-github-stats-header {
+        margin-bottom: 32px;
+    }
+
+    .msci-github-stats-title,
+    .msci-github-stats-subtitle {
+        font-size: 2.2rem;
+    }
+
+    .msci-github-stats-card {
+        padding: 20px 16px 18px;
+    }
+
+    .msci-github-stats-card-top {
+        margin-bottom: 18px;
+    }
+}

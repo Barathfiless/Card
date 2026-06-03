@@ -158,7 +158,7 @@ function Navbar({ toggleTheme, theme }) {
               )}
             </div>
 
-            <a href="#contact" className="msci-get-in-touch-btn">
+            <a href="#contact" className="msci-get-in-touch-link">
               Get in touch
             </a>
 

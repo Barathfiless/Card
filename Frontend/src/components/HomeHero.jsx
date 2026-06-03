@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import { useForm, ValidationError } from '@formspree/react';
 import { getProjects } from '../data/projects';
 import TypingHeader from './TypingHeader';
+import GitHubStats from './GitHubStats';
 import { getTagLogoUrl } from '../utils/tags';
 import HeroParticles from './HeroParticles';
-import HeroBraceParticles from './HeroBraceParticles';
 import './HomeHero.css';
 
 function HomeHero() {
@@ -120,7 +120,6 @@ function HomeHero() {
       {/* 1. Dark Gradient Hero Banner */}
       <section className="msci-hero-banner">
         <HeroParticles />
-        <HeroBraceParticles />
         <div className="container">
           <div className="msci-hero-grid">
             <div className="msci-hero-left">
@@ -483,6 +482,9 @@ function HomeHero() {
         <div className="container">
           <div className="msci-news-header">
             <TypingHeader text="Skills & System Competencies" className="msci-news-title" />
+            <h3 className="msci-news-subtitle">
+              Technical proficiency across modern development ecosystems
+            </h3>
           </div>
 
           <div className="msci-news-grid">
@@ -593,7 +595,10 @@ function HomeHero() {
         </div>
       </section>
 
-      {/* 7. Subscribe / Contact Section */}
+      {/* 7. GitHub Stats */}
+      <GitHubStats />
+
+      {/* 8. Subscribe / Contact Section */}
       <section id="contact" className="msci-subscribe-section">
         <div className="container">
           <div className="msci-subscribe-grid">

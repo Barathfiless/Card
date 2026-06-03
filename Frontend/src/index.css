@@ -43,17 +43,17 @@
     color-scheme: dark;
     /* White (#fff) surfaces → black */
     --surface-white: #000000;
-    /* Light gray sections → dark gray (not black) */
-    --bg-color: #121212;
-    --card-bg: #0a0a0a;
+    /* Light gray sections → pure black in night mode */
+    --bg-color: #000000;
+    --card-bg: #000000;
     --card-border: rgba(255, 255, 255, 0.12);
     --card-hover-border: var(--msci-gold);
     --text-primary: #f0f0f0;
     --text-secondary: #a3a3a3;
     --nav-bg: #061124;
     --accent-color: var(--msci-gold);
-    --msci-off-white: #121212;
-    --msci-light-gray: #1a1a1a;
+    --msci-off-white: #000000;
+    --msci-light-gray: #000000;
     --msci-mid-gray: rgba(255, 255, 255, 0.08);
     --msci-border: rgba(255, 255, 255, 0.12);
     --msci-text-primary: #f0f0f0;
