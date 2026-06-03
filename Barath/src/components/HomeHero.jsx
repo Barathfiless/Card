@@ -380,10 +380,7 @@ function HomeHero() {
 
               {projectChunks.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '80px 20px', background: 'var(--msci-light-gray)', borderRadius: '16px', border: '1px dashed var(--msci-border)' }}>
-                  <p style={{ fontSize: '1.2rem', color: 'var(--text-muted)', marginBottom: '20px' }}>No engineering projects published yet.</p>
-                  <Link to="/login" className="msci-projects-explore-btn" style={{ textDecoration: 'none' }}>
-                    Access Admin Panel
-                  </Link>
+                  <p style={{ fontSize: '1.2rem', color: 'var(--text-muted)', margin: '0' }}>No engineering projects published yet.</p>
                 </div>
               ) : (
                 <div className="msci-projects-slider-viewport">

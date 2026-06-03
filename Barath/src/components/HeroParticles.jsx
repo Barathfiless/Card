@@ -123,7 +123,7 @@ function HeroParticles({ isHovered = false }) {
 
     const createParticles = () => {
       const area = width * height;
-      const count = Math.min(Math.max(Math.floor(area / 2200), 160), 680);
+      const count = Math.min(Math.max(Math.floor(area / 2200), 200), 820);
       const textPositions = getTextDotPositions(width, height);
 
       particles = Array.from({ length: count }, (_, i) => {
@@ -250,17 +250,11 @@ function HeroParticles({ isHovered = false }) {
           ctx.fillStyle = `rgba(27,92,252,${displayOpacity})`;
           ctx.fill();
         } else {
-          // Regular floating dots — grow bigger and more opaque on hover
-          const floatRadius = p.radius * (1 + hoverProgress * 1.4); // up to 2.4× bigger
-          const floatOpacity = Math.min(p.opacity * (1 + hoverProgress * 1.8), 0.85);
+          // Regular floating dots — small & crisp black dots on white hover bg
+          const floatRadius = p.radius * 0.85; // keep them deliberately small
+          const floatOpacity = Math.min(p.opacity * (1 + hoverProgress * 2.5), 0.82);
 
-          if (hoverProgress > 0.3) {
-            ctx.shadowBlur = 4 * hoverProgress;
-            ctx.shadowColor = `rgba(0,0,0,${0.25 * hoverProgress})`;
-          } else {
-            ctx.shadowBlur = 0;
-          }
-
+          ctx.shadowBlur = 0;
           ctx.beginPath();
           ctx.arc(p.x, p.y, floatRadius, 0, Math.PI * 2);
           ctx.fillStyle = `rgba(${pr},${pg},${pb},${floatOpacity})`;
