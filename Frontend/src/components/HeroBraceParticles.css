@@ -1,0 +1,45 @@
+.msci-hero-brace-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: auto;
+}
+
+.msci-hero-brace-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.msci-hero-brace-zone {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 42%;
+    pointer-events: none;
+    transition: background 0.35s ease;
+}
+
+.msci-hero-brace-zone--left {
+    left: 0;
+}
+
+.msci-hero-brace-zone--right {
+    right: 0;
+}
+
+.msci-hero-brace-zone.is-active {
+    background: radial-gradient(
+        ellipse at center,
+        rgba(77, 163, 255, 0.06) 0%,
+        transparent 70%
+    );
+}
+
+@media (max-width: 768px) {
+    .msci-hero-brace-layer {
+        display: none;
+    }
+}

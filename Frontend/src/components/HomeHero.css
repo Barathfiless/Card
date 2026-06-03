@@ -9,6 +9,7 @@
 /* Dark blue/black gradient hero section */
 .msci-hero-banner {
     position: relative;
+    isolation: isolate;
     background: linear-gradient(135deg, #051329 0%, #030812 100%);
     color: #ffffff;
     padding: 108px 0 28px;
@@ -31,6 +32,13 @@
 .msci-hero-banner .container {
     display: flex;
     justify-content: center;
+    position: relative;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.msci-hero-banner .container * {
+    pointer-events: auto;
 }
 
 .msci-hero-grid {
@@ -80,7 +88,7 @@
 }
 
 .msci-hero-profile-img {
-    width: min(380px, 88vw);
+    width: min(420px, 90vw);
     height: auto;
     object-fit: contain;
     display: block;
@@ -1455,7 +1463,7 @@
     }
 
     .msci-hero-profile-img {
-        width: min(300px, 90vw);
+        width: min(330px, 92vw);
     }
 
     .msci-ticker-bar {

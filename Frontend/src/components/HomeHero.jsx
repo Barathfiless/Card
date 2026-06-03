@@ -4,6 +4,8 @@ import { useForm, ValidationError } from '@formspree/react';
 import { getProjects } from '../data/projects';
 import TypingHeader from './TypingHeader';
 import { getTagLogoUrl } from '../utils/tags';
+import HeroParticles from './HeroParticles';
+import HeroBraceParticles from './HeroBraceParticles';
 import './HomeHero.css';
 
 function HomeHero() {
@@ -117,6 +119,8 @@ function HomeHero() {
     <div className="home-hero-container">
       {/* 1. Dark Gradient Hero Banner */}
       <section className="msci-hero-banner">
+        <HeroParticles />
+        <HeroBraceParticles />
         <div className="container">
           <div className="msci-hero-grid">
             <div className="msci-hero-left">
@@ -132,8 +136,8 @@ function HomeHero() {
                   src="/hero-profile.png"
                   alt="Barath M"
                   className="msci-hero-profile-img"
-                  width={380}
-                  height={475}
+                  width={420}
+                  height={525}
                 />
               </div>
             </div>
