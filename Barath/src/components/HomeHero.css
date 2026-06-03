@@ -84,8 +84,16 @@
     margin-bottom: 0;
 }
 
+.msci-hero-profile-wrapper {
+    position: relative;
+    display: inline-block;
+    width: min(585px, 90vw);
+    height: auto;
+    aspect-ratio: 848/682;
+}
+
 .msci-hero-profile-img {
-    width: min(420px, 90vw);
+    width: 100%;
     height: auto;
     object-fit: contain;
     display: block;
@@ -1479,8 +1487,24 @@
         margin-bottom: 10px;
     }
 
+    .msci-hero-profile {
+        justify-content: center;
+        width: 100%;
+        display: flex;
+    }
+
+    .msci-hero-profile-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: min(420px, 96vw);
+        margin: 0 auto;
+    }
+
     .msci-hero-profile-img {
-        width: min(330px, 92vw);
+        width: 100%;
+        margin: 0 auto;
+        display: block;
     }
 
     .msci-ticker-bar {

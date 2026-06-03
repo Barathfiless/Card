@@ -131,13 +131,15 @@ function HomeHero() {
                 Software Developer Engineer
               </p>
               <div className="msci-hero-profile">
-                <img
-                  src="/hero-profile.png"
-                  alt="Barath M"
-                  className="msci-hero-profile-img"
-                  width={420}
-                  height={525}
-                />
+                <div className="msci-hero-profile-wrapper">
+                  <img
+                    src="/hero-profile.png"
+                    alt="Barath M"
+                    className="msci-hero-profile-img"
+                    width={420}
+                    height={525}
+                  />
+                </div>
               </div>
             </div>
           </div>
