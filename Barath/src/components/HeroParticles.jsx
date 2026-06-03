@@ -17,31 +17,31 @@ function getTextDotPositions(w, h) {
 
   // ── Step 1: measure each character at a large baseline size ───────────────
   const baseSize = 200;
-  octx.font = `800 ${baseSize}px Nunito, "Arial Black", sans-serif`;
+  // Use a rounded font stack for smooth, rounded letter paths
+  octx.font = `800 ${baseSize}px "Comfortaa", "Quicksand", "Nunito", "Arial Rounded MT Bold", sans-serif`;
 
   const charBaseWidths = chars.map(c => octx.measureText(c).width);
   const totalBaseWidth = charBaseWidths.reduce((a, b) => a + b, 0);
 
-  // Add 20% of average char width as inter-letter gap
+  // Add 45% of average char width as inter-letter gap to keep them distinct
   const avgBase = totalBaseWidth / chars.length;
-  const spacingBase = avgBase * 0.20;
+  const spacingBase = avgBase * 0.45;
   const totalBaseWithSpacing = totalBaseWidth + spacingBase * (chars.length - 1);
 
-  // ── Step 2: scale so spaced text fills 88% of canvas width ────────────────
-  const scale = (w * 0.88) / totalBaseWithSpacing;
+  // ── Step 2: scale so spaced text fills 86% of canvas width ────────────────
+  const scale = (w * 0.86) / totalBaseWithSpacing;
   const fontSize = Math.floor(baseSize * scale);
 
-  octx.font = `800 ${fontSize}px Nunito, "Arial Black", sans-serif`;
+  octx.font = `800 ${fontSize}px "Comfortaa", "Quicksand", "Nunito", "Arial Rounded MT Bold", sans-serif`;
   octx.textAlign = 'left';
   octx.textBaseline = 'middle';
 
-  // ── Step 3: stroke settings ───────────────────────────────────────────────
+  // ── Step 3: stroke settings for clean contour outline ─────────────────────
   octx.strokeStyle = '#1b5cfc';
-  octx.lineWidth = Math.max(8, fontSize * 0.05); // ~5% of font height
+  octx.lineWidth = Math.max(3, fontSize * 0.02); // Thin stroke to sample a single line of dots
   octx.lineJoin = 'round';
   octx.lineCap = 'round';
 
-  // ── Step 4: draw each character individually with spacing ─────────────────
   const charWidths = chars.map(c => octx.measureText(c).width);
   const spacing = spacingBase * scale;
   const totalWidth = charWidths.reduce((a, b) => a + b, 0) + spacing * (chars.length - 1);
@@ -52,21 +52,21 @@ function getTextDotPositions(w, h) {
     curX += charWidths[i] + spacing;
   }
 
-  // ── Step 5: sample finely along the stroke pixels ─────────────────────────
+  // ── Step 4: sample finely along the stroke outline ────────────────────────
   const imageData = octx.getImageData(0, 0, w, h);
   const rawPositions = [];
-  const sampleStep = 3;
+  const sampleStep = 2; // fine step to capture smooth rounded paths
   for (let y = 0; y < h; y += sampleStep) {
     for (let x = 0; x < w; x += sampleStep) {
       const idx = (y * w + x) * 4;
-      if (imageData.data[idx + 3] > 120) {
+      if (imageData.data[idx + 3] > 80) { // capture all stroke pixels
         rawPositions.push({ x, y });
       }
     }
   }
 
-  // ── Step 6: subsample to targetCount — even distribution across all letters
-  const targetCount = 580;
+  // ── Step 5: limit/subsample to targetCount — even distribution
+  const targetCount = 680;
   const stride = Math.max(1, Math.floor(rawPositions.length / targetCount));
   const positions = rawPositions
     .filter((_, i) => i % stride === 0)
@@ -122,9 +122,9 @@ function HeroParticles({ isHovered = false }) {
     ).matches;
 
     const createParticles = () => {
-      const area = width * height;
-      const count = Math.min(Math.max(Math.floor(area / 2200), 200), 820);
       const textPositions = getTextDotPositions(width, height);
+      // Ensure we have exactly enough particles to cover all target positions + 200 floating dots
+      const count = textPositions.length + 200;
 
       particles = Array.from({ length: count }, (_, i) => {
         const x = Math.random() * width;
@@ -139,7 +139,7 @@ function HeroParticles({ isHovered = false }) {
           targetX: textPos ? textPos.x : x,
           targetY: textPos ? textPos.y : y,
           hasTarget: !!textPos,
-          radius: randomBetween(0.7, 1.6),
+          radius: randomBetween(0.7, 1.4),
           opacity: 0,
           targetOpacity: randomBetween(0.12, 0.55),
           vx: randomBetween(-0.12, 0.12),
@@ -229,20 +229,15 @@ function HeroParticles({ isHovered = false }) {
         const nearTarget = distToTarget < 6;
 
         if (isTextDot) {
-          // DEVELOPER text dots: light blue → white as hoverProgress increases
-          // (white on white bg would vanish, so keep them light blue always)
+          // DEVELOPER text dots: stays vivid blue
           const displayOpacity = Math.min(
-            p.opacity * (nearTarget ? 3.5 : 2.2) * hoverProgress,
+            p.opacity * (nearTarget ? 2.5 : 1.5) * hoverProgress,
             0.98
           );
-          const displayRadius = p.radius * (nearTarget ? 2.8 : 2.0);
+          const displayRadius = p.radius * (nearTarget ? 1.25 : 0.95);
 
-          if (nearTarget) {
-            ctx.shadowBlur = 12;
-            ctx.shadowColor = 'rgba(27,92,252,0.7)';
-          } else {
-            ctx.shadowBlur = 0;
-          }
+          // No shadow blur for maximum crispness, just like the reference image
+          ctx.shadowBlur = 0;
 
           ctx.beginPath();
           ctx.arc(p.x, p.y, displayRadius, 0, Math.PI * 2);
