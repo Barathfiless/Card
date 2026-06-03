@@ -550,32 +550,32 @@
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    color: #4a5568;
-    background: rgba(255, 255, 255, 0.25);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #1b5cfc; /* Brand blue color by default */
+    background: rgba(27, 92, 252, 0.05); /* Subtle brand blue background */
+    border: 1px solid rgba(27, 92, 252, 0.25);
     transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1.25);
     cursor: pointer;
 }
 
 [data-theme='dark'] .dock-item {
-    color: rgba(255, 255, 255, 0.85);
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.08);
+    color: #4da3ff; /* Brighter blue for dark mode visibility */
+    background: rgba(77, 163, 255, 0.05);
+    border-color: rgba(77, 163, 255, 0.2);
 }
 
 .dock-item:hover {
     transform: translateY(-12px) scale(1.22);
-    color: #1b36d1;
-    background: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 12px 30px rgba(27, 54, 209, 0.3);
-    border-color: rgba(27, 54, 209, 0.2);
+    color: #ffffff;
+    background: #1b5cfc;
+    box-shadow: 0 12px 30px rgba(27, 92, 252, 0.4);
+    border-color: #1b5cfc;
 }
 
 [data-theme='dark'] .dock-item:hover {
-    color: #4da3ff;
-    background: rgba(22, 27, 34, 0.95);
-    box-shadow: 0 12px 30px rgba(77, 163, 255, 0.35);
-    border-color: rgba(77, 163, 255, 0.25);
+    color: #0b1a30;
+    background: #4da3ff;
+    box-shadow: 0 12px 30px rgba(77, 163, 255, 0.4);
+    border-color: #4da3ff;
 }
 
 .dock-icon {
@@ -619,6 +619,160 @@
     transform: translateY(0) scale(1);
 }
 
+/* Social Dock Wrapper (collapses completely when not at footer) */
+.social-dock-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 0;
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+    margin-left: -12px; /* cancels the flex gap of parent dock-container */
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.social-dock-wrapper.social-visible {
+    width: 181px; /* 3 items (3*48) + divider (1) + gaps (3*12 = 36) = 181px (exact fit) */
+    opacity: 1;
+    margin-left: 0;
+    pointer-events: auto;
+    overflow: visible; /* Prevents icons from being clipped/cut off on hover translation */
+}
+
+/* Social Divider (themed blue to match core buttons) */
+.dock-divider {
+    width: 1px;
+    height: 24px;
+    background: rgba(27, 92, 252, 0.2);
+    flex-shrink: 0;
+}
+
+[data-theme='dark'] .dock-divider {
+    background: rgba(77, 163, 255, 0.2);
+}
+
+/* Ensure social dock items render at fixed size inside wrapper */
+.social-dock-item {
+    flex-shrink: 0;
+}
+
+/* ── Social Dock Items - Brand Colors (LinkedIn, GitHub, Instagram) ── */
+.social-dock-item {
+    color: var(--social-color);
+    background: var(--social-bg);
+    border-color: var(--social-border);
+}
+
+/* LinkedIn brand settings */
+.social-dock-item[aria-label="LinkedIn"] {
+    --social-color: #0a66c2;
+    --social-bg: rgba(10, 102, 194, 0.05);
+    --social-border: rgba(10, 102, 194, 0.25);
+}
+.social-dock-item[aria-label="LinkedIn"]:hover {
+    color: #ffffff !important;
+    background: #0a66c2 !important;
+    box-shadow: 0 12px 30px rgba(10, 102, 194, 0.4);
+    border-color: #0a66c2 !important;
+}
+
+/* GitHub brand settings */
+.social-dock-item[aria-label="GitHub"] {
+    --social-color: #181717;
+    --social-bg: rgba(24, 23, 23, 0.05);
+    --social-border: rgba(24, 23, 23, 0.25);
+}
+[data-theme='dark'] .social-dock-item[aria-label="GitHub"] {
+    --social-color: #ffffff;
+    --social-bg: rgba(255, 255, 255, 0.05);
+    --social-border: rgba(255, 255, 255, 0.15);
+}
+.social-dock-item[aria-label="GitHub"]:hover {
+    color: #ffffff !important;
+    background: #181717 !important;
+    box-shadow: 0 12px 30px rgba(24, 23, 23, 0.4);
+    border-color: #181717 !important;
+}
+[data-theme='dark'] .social-dock-item[aria-label="GitHub"]:hover {
+    color: #181717 !important;
+    background: #ffffff !important;
+    box-shadow: 0 12px 30px rgba(255, 255, 255, 0.4);
+    border-color: #ffffff !important;
+}
+
+/* Instagram brand settings */
+.social-dock-item[aria-label="Instagram"] {
+    --social-color: #e1306c;
+    --social-bg: rgba(225, 48, 108, 0.05);
+    --social-border: rgba(225, 48, 108, 0.25);
+}
+.social-dock-item[aria-label="Instagram"]:hover {
+    color: #ffffff !important;
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%) !important;
+    box-shadow: 0 12px 30px rgba(225, 48, 108, 0.4);
+    border-color: #e1306c !important;
+}
+
+/* ── Solid Brand Colors when Reaching Footer ── */
+.footer-reached .dock-item {
+    color: #ffffff !important;
+    background: #1b5cfc !important;
+    border-color: #1b5cfc !important;
+}
+
+[data-theme='dark'] .footer-reached .dock-item {
+    color: #0b1a30 !important;
+    background: #4da3ff !important;
+    border-color: #4da3ff !important;
+}
+
+.footer-reached .dock-item:hover {
+    box-shadow: 0 12px 30px rgba(27, 92, 252, 0.45) !important;
+}
+
+[data-theme='dark'] .footer-reached .dock-item:hover {
+    box-shadow: 0 12px 30px rgba(77, 163, 255, 0.45) !important;
+}
+
+/* LinkedIn Footer Reached */
+.footer-reached .social-dock-item[aria-label="LinkedIn"] {
+    color: #ffffff !important;
+    background: #0a66c2 !important;
+    border-color: #0a66c2 !important;
+}
+.footer-reached .social-dock-item[aria-label="LinkedIn"]:hover {
+    box-shadow: 0 12px 30px rgba(10, 102, 194, 0.45) !important;
+}
+
+/* GitHub Footer Reached */
+.footer-reached .social-dock-item[aria-label="GitHub"] {
+    color: #ffffff !important;
+    background: #181717 !important;
+    border-color: #181717 !important;
+}
+[data-theme='dark'] .footer-reached .social-dock-item[aria-label="GitHub"] {
+    color: #181717 !important;
+    background: #ffffff !important;
+    border-color: #ffffff !important;
+}
+.footer-reached .social-dock-item[aria-label="GitHub"]:hover {
+    box-shadow: 0 12px 30px rgba(24, 23, 23, 0.45) !important;
+}
+[data-theme='dark'] .footer-reached .social-dock-item[aria-label="GitHub"]:hover {
+    box-shadow: 0 12px 30px rgba(255, 255, 255, 0.45) !important;
+}
+
+/* Instagram Footer Reached */
+.footer-reached .social-dock-item[aria-label="Instagram"] {
+    color: #ffffff !important;
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%) !important;
+    border-color: #e1306c !important;
+}
+.footer-reached .social-dock-item[aria-label="Instagram"]:hover {
+    box-shadow: 0 12px 30px rgba(225, 48, 108, 0.45) !important;
+}
+
 /* ── Mobile: hide top bar, keep bottom dock always available ── */
 @media (max-width: 768px) {
     .msci-bottom-dock {
@@ -643,6 +797,16 @@
     .dock-item {
         width: 40px;
         height: 40px;
+    }
+
+    .social-dock-wrapper {
+        gap: 6px;
+        margin-left: -6px;
+    }
+    
+    .social-dock-wrapper.social-visible {
+        width: 139px; /* 3 items (3*40) + divider (1) + gaps (3*6 = 18) = 139px (exact fit) */
+        margin-left: 0;
     }
     
     .dock-icon svg {

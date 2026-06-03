@@ -23,13 +23,13 @@ function getTextDotPositions(w, h) {
   const charBaseWidths = chars.map(c => octx.measureText(c).width);
   const totalBaseWidth = charBaseWidths.reduce((a, b) => a + b, 0);
 
-  // Add 45% of average char width as inter-letter gap to keep them distinct
+  // Add 22% of average char width as inter-letter gap to keep them distinct but closer together
   const avgBase = totalBaseWidth / chars.length;
-  const spacingBase = avgBase * 0.45;
+  const spacingBase = avgBase * 0.22;
   const totalBaseWithSpacing = totalBaseWidth + spacingBase * (chars.length - 1);
 
-  // ── Step 2: scale so spaced text fills 86% of canvas width ────────────────
-  const scale = (w * 0.86) / totalBaseWithSpacing;
+  // ── Step 2: scale so spaced text fills 94% of canvas width ────────────────
+  const scale = (w * 0.94) / totalBaseWithSpacing;
   const fontSize = Math.floor(baseSize * scale);
 
   octx.font = `800 ${fontSize}px "Comfortaa", "Quicksand", "Nunito", "Arial Rounded MT Bold", sans-serif`;
@@ -38,7 +38,7 @@ function getTextDotPositions(w, h) {
 
   // ── Step 3: stroke settings for clean contour outline ─────────────────────
   octx.strokeStyle = '#1b5cfc';
-  octx.lineWidth = Math.max(3, fontSize * 0.02); // Thin stroke to sample a single line of dots
+  octx.lineWidth = Math.max(6, fontSize * 0.045); // Increased thickness of the outline stroke
   octx.lineJoin = 'round';
   octx.lineCap = 'round';
 
@@ -66,7 +66,7 @@ function getTextDotPositions(w, h) {
   }
 
   // ── Step 5: limit/subsample to targetCount — even distribution
-  const targetCount = 680;
+  const targetCount = 850;
   const stride = Math.max(1, Math.floor(rawPositions.length / targetCount));
   const positions = rawPositions
     .filter((_, i) => i % stride === 0)
