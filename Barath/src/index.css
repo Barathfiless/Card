@@ -132,12 +132,15 @@ img {
 }
 
 html {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
 }
 
 /* ── Global Viewport Protection against Horizontal Overflow ── */
-html, body {
+html,
+body {
     overflow-x: hidden;
     max-width: 100%;
 }
@@ -149,11 +152,11 @@ html, body {
 }
 
 /* Global Text Justification */
-p, 
-li, 
-.msci-about-text, 
-.msci-about-highlight-item span, 
-.msci-edu-desc, 
+p,
+li,
+.msci-about-text,
+.msci-about-highlight-item span,
+.msci-edu-desc,
 .msci-timeline-desc,
 .pd-overview-text {
     text-align: justify;
