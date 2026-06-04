@@ -9,6 +9,7 @@ const GITHUB_PROFILE_URL = `https://github.com/${GITHUB_USERNAME}`;
 
 function GitHubStats() {
   const [colorScheme, setColorScheme] = useState('light');
+  const [selectedYear, setSelectedYear] = useState('last');
 
   useEffect(() => {
     const root = document.documentElement;
@@ -24,6 +25,13 @@ function GitHubStats() {
     return () => observer.disconnect();
   }, []);
 
+  const currentYear = new Date().getFullYear();
+  const startYear = 2023;
+  const years = ['last'];
+  for (let y = currentYear; y >= startYear; y--) {
+    years.push(y);
+  }
+
   return (
     <section id="github-stats" className="msci-github-stats-section">
       <div className="container">
@@ -36,6 +44,18 @@ function GitHubStats() {
 
         <div className="msci-github-stats-card">
           <div className="msci-github-stats-card-top">
+            <div className="msci-github-stats-years">
+              {years.map((year) => (
+                <button
+                  key={year}
+                  onClick={() => setSelectedYear(year)}
+                  className={`msci-github-stats-year-btn ${selectedYear === year ? 'active' : ''}`}
+                >
+                  {year === 'last' ? 'Last Year' : year}
+                </button>
+              ))}
+            </div>
+
             <a
               href={GITHUB_PROFILE_URL}
               target="_blank"
@@ -55,6 +75,7 @@ function GitHubStats() {
               blockMargin={4}
               showTotalCount
               showWeekdayLabels
+              year={selectedYear}
             />
           </div>
         </div>

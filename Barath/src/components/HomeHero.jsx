@@ -298,7 +298,17 @@ function HomeHero() {
                 <div className="msci-timeline-dot"></div>
                 <div className="msci-timeline-date">Nov 2022 — Apr 2026</div>
                 <h3 className="msci-timeline-title">UG - Bachelor of Technology in Computer Science and Business Systems</h3>
-                <div className="msci-timeline-inst">Bannari Amman Institute of Technology - Sathy</div>
+                <div className="msci-timeline-inst">
+                  Bannari Amman Institute of Technology
+                  <span className="msci-timeline-loc">
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                    </svg>
+                    <a href="https://maps.google.com/?q=Bannari+Amman+Institute+of+Technology+Sathyamangalam" target="_blank" rel="noopener noreferrer">
+                      Sathyamangalam, Tamil Nadu
+                    </a>
+                  </span>
+                </div>
                 <p className="msci-timeline-desc">
                   Engaged in deep coursework covering full-stack software development, data structures, and business operations. Executed technical projects and developed multiple production-ready web applications.
                 </p>
@@ -620,51 +630,63 @@ function HomeHero() {
               <h2 className="msci-subscribe-title">
                 <TypingHeader text="Let's connect" className="msci-subscribe-light" tag="span" />
                 <br />
-                <TypingHeader text="Reach out to discuss projects, collaborations, or opportunities." className="msci-subscribe-bold" tag="span" delay={25} />
+                <TypingHeader text="Reach out to discuss projects, collaborations." className="msci-subscribe-bold" tag="span" delay={25} />
               </h2>
+            </div>
 
+            <div className="msci-subscribe-form-container">
               {state.succeeded ? (
                 <div className="subscribe-success-message">
                   <p>Thank you! I'll get in touch with you shortly.</p>
                 </div>
               ) : (
                 <form className="msci-subscribe-form" onSubmit={handleSubmit}>
-                  <div className="msci-subscribe-input-wrapper">
-                    <input
-                      id="email"
-                      type="email"
-                      name="email"
-                      placeholder="Enter your email address"
-                      required
-                      className="msci-subscribe-input"
-                    />
-                    <button type="submit" className="msci-subscribe-btn" disabled={state.submitting}>
-                      Let's talk
-                    </button>
-                  </div>
+                  <input
+                    id="email"
+                    type="email"
+                    name="email"
+                    placeholder="Enter your email address"
+                    required
+                    className="msci-subscribe-input"
+                  />
                   <ValidationError prefix="Email" field="email" errors={state.errors} />
+
+                  <textarea
+                    id="message"
+                    name="message"
+                    placeholder="Enter your queries / message"
+                    required
+                    className="msci-subscribe-textarea"
+                    rows="4"
+                  />
+                  <ValidationError prefix="Message" field="message" errors={state.errors} />
+
+                  <button type="submit" className="msci-subscribe-btn" disabled={state.submitting}>
+                    Let's talk
+                  </button>
                 </form>
               )}
             </div>
+          </div>
+        </div>
 
-            <div className="msci-subscribe-graphic">
-              <div className="graphic-container">
-                <svg viewBox="0 0 400 400" className="subscribe-svg" xmlns="http://www.w3.org/2000/svg">
-                  {/* Top Circle */}
-                  <circle cx="200" cy="50" r="150" fill="none" stroke="#00c0a5" strokeWidth="1" opacity="0.6" />
-                  {/* Bottom Circle */}
-                  <circle cx="200" cy="350" r="150" fill="none" stroke="#00c0a5" strokeWidth="1" opacity="0.6" />
-                  {/* Left Circle */}
-                  <circle cx="50" cy="200" r="150" fill="none" stroke="#00c0a5" strokeWidth="1" opacity="0.6" />
-                  {/* Right Circle */}
-                  <circle cx="350" cy="200" r="150" fill="none" stroke="#00c0a5" strokeWidth="1" opacity="0.6" />
+        {/* Graphic placed absolutely behind the layout */}
+        <div className="msci-subscribe-graphic">
+          <div className="graphic-container">
+            <svg viewBox="0 0 400 400" className="subscribe-svg" xmlns="http://www.w3.org/2000/svg">
+              {/* Top Circle */}
+              <circle cx="200" cy="50" r="150" fill="none" stroke="#00c0a5" strokeWidth="1" opacity="0.6" />
+              {/* Bottom Circle */}
+              <circle cx="200" cy="350" r="150" fill="none" stroke="#00c0a5" strokeWidth="1" opacity="0.6" />
+              {/* Left Circle */}
+              <circle cx="50" cy="200" r="150" fill="none" stroke="#00c0a5" strokeWidth="1" opacity="0.6" />
+              {/* Right Circle */}
+              <circle cx="350" cy="200" r="150" fill="none" stroke="#00c0a5" strokeWidth="1" opacity="0.6" />
 
-                  {/* Intersection Dots */}
-                  <circle cx="88" cy="200" r="6" fill="#00c0a5" />
-                  <circle cx="312" cy="200" r="6" fill="#00c0a5" />
-                </svg>
-              </div>
-            </div>
+              {/* Intersection Dots */}
+              <circle cx="88" cy="200" r="6" fill="#00c0a5" />
+              <circle cx="312" cy="200" r="6" fill="#00c0a5" />
+            </svg>
           </div>
         </div>
       </section>

@@ -887,16 +887,7 @@
 .milestone-card-green .msci-timeline-inst,
 .milestone-card-blue .msci-timeline-inst,
 .milestone-card-black .msci-timeline-inst {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.25);
     color: #ffffff;
-}
-
-.milestone-card-green:hover .msci-timeline-inst,
-.milestone-card-blue:hover .msci-timeline-inst,
-.milestone-card-black:hover .msci-timeline-inst {
-    background: rgba(255, 255, 255, 0.25);
-    border-color: rgba(255, 255, 255, 0.35);
 }
 
 /* Description colors inside cards */
@@ -928,12 +919,15 @@
 .milestone-card-green .msci-timeline-dot {
     border-color: #00c0a5;
 }
+
 .milestone-card-blue .msci-timeline-dot {
     border-color: #1b5cfc;
 }
+
 .milestone-card-black .msci-timeline-dot {
     border-color: #0d121c;
 }
+
 [data-theme='dark'] .milestone-card-black .msci-timeline-dot {
     border-color: #ffffff;
 }
@@ -945,18 +939,21 @@
     transform: scale(1.25);
     box-shadow: 0 0 10px rgba(0, 192, 165, 0.4);
 }
+
 .milestone-card-blue:hover .msci-timeline-dot {
     background: #1b5cfc;
     border-color: #1b5cfc;
     transform: scale(1.25);
     box-shadow: 0 0 10px rgba(27, 92, 252, 0.4);
 }
+
 .milestone-card-black:hover .msci-timeline-dot {
     background: #0d121c;
     border-color: #0d121c;
     transform: scale(1.25);
     box-shadow: 0 0 10px rgba(13, 18, 28, 0.4);
 }
+
 [data-theme='dark'] .milestone-card-black:hover .msci-timeline-dot {
     background: #ffffff;
     border-color: #ffffff;
@@ -987,32 +984,43 @@
 }
 
 .msci-timeline-inst {
-    font-size: 0.85rem;
-    font-weight: 600;
+    font-size: 0.9rem;
+    font-weight: 700;
     color: #1b36d1;
-    margin-bottom: 16px;
-    display: inline-block;
-    padding: 6px 14px;
-    background: rgba(27, 54, 209, 0.06);
-    border-radius: 20px;
-    border: 1px solid rgba(27, 54, 209, 0.15);
+    margin-bottom: 12px;
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
     transition: all 0.2s ease;
 }
 
 [data-theme='dark'] .msci-timeline-inst {
-    background: rgba(77, 163, 255, 0.08);
     color: #4da3ff;
-    border-color: rgba(77, 163, 255, 0.2);
 }
 
-.msci-timeline-item:hover .msci-timeline-inst {
-    background: rgba(27, 54, 209, 0.1);
-    border-color: rgba(27, 54, 209, 0.25);
+.msci-timeline-loc {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    opacity: 0.85;
+    font-weight: 500;
+    font-size: 0.8rem;
 }
 
-[data-theme='dark'] .msci-timeline-item:hover .msci-timeline-inst {
-    background: rgba(77, 163, 255, 0.15);
-    border-color: rgba(77, 163, 255, 0.3);
+.msci-timeline-loc svg {
+    flex-shrink: 0;
+}
+
+.msci-timeline-loc a {
+    color: inherit;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+}
+
+.msci-timeline-loc a:hover {
+    text-decoration: underline;
+    opacity: 1;
 }
 
 .msci-timeline-desc {
@@ -1437,7 +1445,7 @@
 /* Subscribe / Contact Section */
 .msci-subscribe-section {
     background: #173fd0;
-    padding: 100px 0;
+    padding: 100px 0 140px;
     overflow: hidden;
     position: relative;
 }
@@ -1448,10 +1456,11 @@
 
 .msci-subscribe-grid {
     display: grid;
-    grid-template-columns: 1.2fr 0.8fr;
+    grid-template-columns: 0.95fr 1.05fr;
     align-items: center;
     gap: 60px;
     position: relative;
+    z-index: 2;
 }
 
 .msci-subscribe-content {
@@ -1462,7 +1471,7 @@
 .msci-subscribe-title {
     font-size: 3.5rem;
     line-height: 1.1;
-    margin-bottom: 50px;
+    margin-bottom: 0;
     letter-spacing: -0.03em;
 }
 
@@ -1476,31 +1485,57 @@
     color: #ffffff;
 }
 
-.msci-subscribe-form {
-    max-width: 600px;
+.msci-subscribe-form-container {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    z-index: 2;
+    position: relative;
 }
 
-.msci-subscribe-input-wrapper {
+.msci-subscribe-form {
+    width: 100%;
+    max-width: 580px;
     display: flex;
-    background: #ffffff;
-    border-radius: 50px;
-    padding: 6px;
-    align-items: center;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    flex-direction: column;
+    gap: 16px;
 }
 
 .msci-subscribe-input {
-    flex: 1;
+    width: 100%;
     border: none;
-    background: transparent;
+    background: #ffffff;
+    border-radius: 50px;
     padding: 16px 24px;
     font-size: 1.05rem;
     color: #333333;
     outline: none;
     font-family: var(--font-main);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
 }
 
 .msci-subscribe-input::placeholder {
+    color: #888888;
+}
+
+.msci-subscribe-textarea {
+    width: 100%;
+    border: none;
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 16px 24px;
+    font-size: 1.05rem;
+    color: #333333;
+    outline: none;
+    font-family: var(--font-main);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    min-height: 180px;
+    resize: vertical;
+    box-sizing: border-box;
+}
+
+.msci-subscribe-textarea::placeholder {
     color: #888888;
 }
 
@@ -1508,18 +1543,21 @@
     background: #00c0a5;
     color: #05221d;
     font-weight: 700;
-    font-size: 1rem;
+    font-size: 1.05rem;
     padding: 16px 36px;
     border-radius: 40px;
     border: none;
     cursor: pointer;
     transition: all 0.2s ease;
     font-family: var(--font-main);
+    box-shadow: 0 10px 20px rgba(0, 192, 165, 0.25);
+    align-self: flex-end;
 }
 
 .msci-subscribe-btn:hover {
     background: #00d9bb;
     transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(0, 192, 165, 0.3);
 }
 
 .msci-subscribe-btn:disabled {
@@ -1533,22 +1571,16 @@
     font-size: 1.2rem;
     font-weight: 600;
     background: rgba(255, 255, 255, 0.1);
-    padding: 20px;
-    border-radius: 8px;
+    padding: 20px 30px;
+    border-radius: 50px;
     display: inline-block;
+    text-align: center;
+    margin-left: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .msci-subscribe-graphic {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 400px;
-}
-
-.graphic-container {
     position: absolute;
     right: -100px;
     top: 50%;
@@ -1556,6 +1588,12 @@
     width: 500px;
     height: 500px;
     pointer-events: none;
+    z-index: 1;
+}
+
+.graphic-container {
+    width: 100%;
+    height: 100%;
 }
 
 .subscribe-svg {
@@ -1576,6 +1614,14 @@
     .msci-subscribe-grid {
         grid-template-columns: 1fr;
         gap: 48px;
+    }
+
+    .msci-subscribe-form-container {
+        justify-content: center;
+    }
+
+    .subscribe-success-message {
+        margin: 0 auto;
     }
 
     .msci-news-grid {
