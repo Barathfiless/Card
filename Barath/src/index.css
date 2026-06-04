@@ -147,3 +147,16 @@ html, body {
         padding: 0 20px !important;
     }
 }
+
+/* Global Text Justification */
+p, 
+li, 
+.msci-about-text, 
+.msci-about-highlight-item span, 
+.msci-edu-desc, 
+.msci-timeline-desc,
+.pd-overview-text {
+    text-align: justify;
+    text-justify: inter-word;
+    hyphens: auto;
+}
