@@ -294,7 +294,7 @@ function HomeHero() {
             </div>
 
             <div className="msci-timeline">
-              <div className="msci-timeline-item">
+              <div className="msci-timeline-item milestone-card-green">
                 <div className="msci-timeline-dot"></div>
                 <div className="msci-timeline-date">Nov 2022 — Apr 2026</div>
                 <h3 className="msci-timeline-title">UG - Bachelor of Technology in Computer Science and Business Systems</h3>
@@ -304,7 +304,7 @@ function HomeHero() {
                 </p>
               </div>
 
-              <div className="msci-timeline-item">
+              <div className="msci-timeline-item milestone-card-blue">
                 <div className="msci-timeline-dot"></div>
                 <div className="msci-timeline-date">Jun 2021 — Mar 2022</div>
                 <h3 className="msci-timeline-title">Higher Secondary Education</h3>
@@ -314,7 +314,7 @@ function HomeHero() {
                 </p>
               </div>
 
-              <div className="msci-timeline-item">
+              <div className="msci-timeline-item milestone-card-black">
                 <div className="msci-timeline-dot"></div>
                 <div className="msci-timeline-date">Jul 2019 — Mar 2020</div>
                 <h3 className="msci-timeline-title">Secondary Education</h3>
