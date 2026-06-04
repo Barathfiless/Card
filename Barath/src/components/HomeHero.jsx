@@ -202,7 +202,7 @@ function HomeHero() {
       <section id="about" className="msci-featured-section">
         <div className="container">
           <div className="msci-featured-header">
-            <TypingHeader text="About Barath" className="msci-featured-title" />
+            <TypingHeader text="About Me" className="msci-featured-title" />
             <h3 className="msci-featured-subtitle">Forward-thinking Software Development Engineer</h3>
           </div>
 
