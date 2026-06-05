@@ -94,8 +94,12 @@ function ProjectDetail() {
     height: '45vh',
   };
 
+  const pageStyle = {
+    '--project-color': project.color || '#1b36d1',
+  };
+
   return (
-    <div className="pd-page">
+    <div className="pd-page" style={pageStyle}>
 
       {/* ── Header Banner ── */}
       <div className="pd-header" style={headerStyle}>
@@ -162,48 +166,58 @@ function ProjectDetail() {
         <div className="pd-content">
 
         {/* Col 1 — Overview */}
-        <div className="pd-col pd-col-overview pd-card">
-          <h2
-            className="pd-section-title pd-section-title-custom"
-            dangerouslySetInnerHTML={{ __html: project.sectionTitleOverview || 'Overview' }}
-          />
-          <p className="pd-overview-text" dangerouslySetInnerHTML={{ __html: project.longDescription || project.description }} />
+        <div className="pd-col pd-col-overview pd-card-redesign">
+          <div className="pd-header-box">
+            <h2
+              className="pd-header-title"
+              dangerouslySetInnerHTML={{ __html: project.sectionTitleOverview || 'Overview' }}
+            />
+          </div>
+          <div className="pd-content-box">
+            <p className="pd-overview-text" dangerouslySetInnerHTML={{ __html: project.longDescription || project.description }} />
+          </div>
         </div>
 
         {/* Col 2 — Key Features */}
-        <div className="pd-col pd-col-features pd-card">
-          <h2
-            className="pd-section-title pd-section-title-custom"
-            dangerouslySetInnerHTML={{ __html: project.sectionTitleFeatures || 'Key Features' }}
-          />
-          {Array.isArray(features) ? (
-            <ul className="pd-features-list">
-              {features.map((feat, idx) => (
-                <li key={idx} className="pd-feature-item">
-                  <span className="pd-bullet">•</span>
-                  {feat}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <div className="pd-features-rich" dangerouslySetInnerHTML={{ __html: features }} />
-          )}
+        <div className="pd-col pd-col-features pd-card-redesign">
+          <div className="pd-header-box">
+            <h2
+              className="pd-header-title"
+              dangerouslySetInnerHTML={{ __html: project.sectionTitleFeatures || 'Key Features' }}
+            />
+          </div>
+          <div className="pd-content-box">
+            {Array.isArray(features) ? (
+              <ul className="pd-features-list">
+                {features.map((feat, idx) => (
+                  <li key={idx} className="pd-feature-item">
+                    <span className="pd-bullet">•</span>
+                    {feat}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="pd-features-rich" dangerouslySetInnerHTML={{ __html: features }} />
+            )}
+          </div>
         </div>
 
         {/* Col 3 — Clips */}
-        <div className="pd-col pd-col-clips pd-card">
-          <h2
-            className="pd-section-title pd-section-title-custom"
-            dangerouslySetInnerHTML={{ __html: project.sectionTitleClips || 'Clips' }}
-          />
-          <div className="pd-clips-viewer">
+        <div className="pd-col pd-col-clips pd-card-redesign">
+          <div className="pd-header-box">
+            <h2
+              className="pd-header-title"
+              dangerouslySetInnerHTML={{ __html: project.sectionTitleClips || 'Clips' }}
+            />
+          </div>
+          <div className="pd-clips-viewer-redesign">
             {clips.length > 0 ? (
               <>
                 {/* Main image box */}
-                <div className="pd-clip-main">
-                  {!imageLoaded && !imageError && <div className="pd-clip-skeleton" />}
+                <div className="pd-clip-main-redesign">
+                  {!imageLoaded && !imageError && <div className="pd-clip-skeleton-redesign" />}
                   {imageError ? (
-                    <div className="pd-clip-error">
+                    <div className="pd-clip-error-redesign">
                       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                         <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
                         <circle cx="8.5" cy="8.5" r="1.5" />
@@ -215,7 +229,7 @@ function ProjectDetail() {
                     <img
                       src={clips[activeClip]?.url}
                       alt={clips[activeClip]?.description || project.title}
-                      className="pd-clip-img"
+                      className="pd-clip-img-redesign"
                       style={{ opacity: imageLoaded ? 1 : 0 }}
                       onLoad={() => setImageLoaded(true)}
                       onError={() => setImageError(true)}
@@ -223,13 +237,18 @@ function ProjectDetail() {
                   )}
                 </div>
 
+                {/* Description of active clip */}
+                <div className="pd-clip-desc-box">
+                  <span>{clips[activeClip]?.description || 'Dashboard Page'}</span>
+                </div>
+
                 {/* Thumbnail strip — only if multiple clips */}
                 {clips.length > 1 && (
-                  <div className="pd-clip-thumbs">
+                  <div className="pd-clip-thumbs-redesign">
                     {clips.map((clip, idx) => (
                       <button
                         key={idx}
-                        className={`pd-clip-thumb ${idx === activeClip ? 'active' : ''}`}
+                        className={`pd-clip-thumb-redesign ${idx === activeClip ? 'active' : ''}`}
                         onClick={() => {
                           setActiveClip(idx);
                           setImageLoaded(false);
@@ -244,37 +263,20 @@ function ProjectDetail() {
                 )}
               </>
             ) : (
-              <div className="pd-clip-placeholder">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2">
-                  <rect x="3" y="3" width="18" height="18" rx="2" />
-                  <circle cx="8.5" cy="8.5" r="1.5" />
-                  <polyline points="21 15 16 10 5 21" />
-                </svg>
-                <span>No Preview</span>
-              </div>
+              <>
+                <div className="pd-clip-placeholder-redesign">
+                  <span>Images</span>
+                </div>
+                <div className="pd-clip-desc-box">
+                  <span>Dashboard Page</span>
+                </div>
+              </>
             )}
           </div>
         </div>
 
         </div>
       </div>
-
-      {impactText && (
-        <footer className="pd-impact-footer">
-          <div className="pd-impact-footer-inner">
-            {impactText.startsWith('<') ? (
-              <div className="pd-impact-text-rich pd-impact-line" dangerouslySetInnerHTML={{ __html: impactText }} />
-            ) : (
-              <p className="pd-impact-text pd-impact-line">
-                {!/^impact\s*-/i.test(impactText.trim()) && (
-                  <span className="pd-impact-label">Impact -</span>
-                )}{' '}
-                {impactText}
-              </p>
-            )}
-          </div>
-        </footer>
-      )}
 
     </div>
   );

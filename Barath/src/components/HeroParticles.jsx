@@ -122,6 +122,7 @@ function HeroParticles({ isHovered = false }) {
     ).matches;
 
     const createParticles = () => {
+      if (!width || !height) return; // guard: canvas not yet sized
       const textPositions = getTextDotPositions(width, height);
       // Ensure we have exactly enough particles to cover all target positions + 200 floating dots
       const count = textPositions.length + 200;

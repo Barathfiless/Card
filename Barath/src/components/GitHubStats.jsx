@@ -67,20 +67,66 @@ function GitHubStats() {
           </div>
 
           <div className="msci-github-stats-calendar-wrap">
-            <GitHubCalendar
+            <CalendarWithErrorBoundary
               username={GITHUB_USERNAME}
               colorScheme={colorScheme}
-              fontSize={13}
-              blockSize={12}
-              blockMargin={4}
-              showTotalCount
-              showWeekdayLabels
               year={selectedYear}
             />
           </div>
         </div>
       </div>
     </section>
+  );
+}
+
+/** Error boundary so an empty/unavailable GitHub calendar never crashes the app */
+class CalendarErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error) {
+    console.warn('GitHubCalendar render error (suppressed):', error.message);
+  }
+
+  componentDidUpdate(prevProps) {
+    // Reset the error flag when the year tab changes so it retries
+    if (prevProps.resetKey !== this.props.resetKey) {
+      this.setState({ hasError: false });
+    }
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="msci-github-calendar-fallback">
+          <p>No contribution data available for this period.</p>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+function CalendarWithErrorBoundary({ username, colorScheme, year }) {
+  return (
+    <CalendarErrorBoundary resetKey={year}>
+      <GitHubCalendar
+        username={username}
+        colorScheme={colorScheme}
+        fontSize={13}
+        blockSize={12}
+        blockMargin={4}
+        showTotalCount
+        showWeekdayLabels
+        year={year}
+      />
+    </CalendarErrorBoundary>
   );
 }
 

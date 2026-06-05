@@ -195,3 +195,19 @@
         text-align: center;
     }
 }
+
+/* Fallback shown when GitHub calendar has no activity data */
+.msci-github-calendar-fallback {
+    padding: 40px 20px;
+    text-align: center;
+    color: #6b7280;
+    font-family: var(--font-main);
+    font-size: 0.95rem;
+    border: 1px dashed #d1d5db;
+    border-radius: 12px;
+}
+
+[data-theme='dark'] .msci-github-calendar-fallback {
+    color: #94a3b8;
+    border-color: rgba(255, 255, 255, 0.12);
+}
