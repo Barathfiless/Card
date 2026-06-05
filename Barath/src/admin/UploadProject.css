@@ -2268,4 +2268,248 @@
   transform: scale(1.08);
 }
 
+/* ══════════════════════════════════════════════
+   REDESIGNED ADMIN COLUMNS (OVERVIEW TAB)
+   ══════════════════════════════════════════════ */
+.ov-column-premium-redesign {
+  background: var(--project-color, #0093ad);
+  border-radius: 20px;
+  padding: 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  min-height: 480px;
+  height: 100%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* White header pill container in Admin */
+.ov-header-box-admin {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* White content box under header in Admin */
+.ov-content-box-admin {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  min-height: 240px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+}
+
+/* Title Rich Text Editor inside white pill */
+.section-title-editor-redesign.premium-rich-editor {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  width: 100%;
+}
+
+.section-title-editor-redesign .rich-editor-toolbar {
+  background: #f1f5f9 !important;
+  border-bottom: 1px solid #cbd5e1 !important;
+  border-radius: 6px;
+  padding: 4px !important;
+  margin-bottom: 6px;
+  justify-content: center;
+}
+
+.section-title-editor-redesign .toolbar-btn,
+.section-title-editor-redesign .color-picker-btn-wrapper {
+  color: #475569 !important;
+}
+
+.section-title-editor-redesign .toolbar-btn:hover,
+.section-title-editor-redesign .color-picker-btn-wrapper:hover {
+  background: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+.section-title-editor-redesign .rich-editor-content {
+  color: #000000 !important;
+  text-align: center;
+  font-size: 1.45rem;
+  font-weight: 700;
+  min-height: auto !important;
+  padding: 4px 10px !important;
+  line-height: 1.2;
+  caret-color: #000000;
+  -webkit-text-fill-color: #000000 !important;
+}
+
+.section-title-editor-redesign .rich-editor-content *,
+.section-title-editor-redesign .rich-editor-content font {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  font-style: normal;
+}
+
+/* Content Rich Text Editor inside white content card */
+.ov-content-editor-redesign.premium-rich-editor {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.ov-content-editor-redesign .rich-editor-toolbar {
+  background: #f1f5f9 !important;
+  border-bottom: 1px solid #cbd5e1 !important;
+  border-radius: 6px;
+  padding: 4px !important;
+  margin-bottom: 8px;
+  justify-content: center;
+}
+
+.ov-content-editor-redesign .toolbar-btn,
+.ov-content-editor-redesign .color-picker-btn-wrapper {
+  color: #475569 !important;
+}
+
+.ov-content-editor-redesign .toolbar-btn:hover,
+.ov-content-editor-redesign .color-picker-btn-wrapper:hover {
+  background: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+.ov-content-editor-redesign .rich-editor-content {
+  color: #000000 !important;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  caret-color: #000000;
+  -webkit-text-fill-color: #000000 !important;
+  text-align: center;
+  padding: 8px !important;
+  flex: 1;
+}
+
+.ov-content-editor-redesign .rich-editor-content * {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+
+/* Clips Viewer inside dynamic card in Admin */
+.ov-clips-viewer-redesign-admin {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 0;
+}
+
+/* Empty clips upload area inside grey box (Admin) */
+.clips-empty-upload-dropzone-admin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 2px dashed #666666;
+  border-radius: 12px;
+  padding: 40px 20px;
+  cursor: pointer;
+  background: #d9d9d9;
+  width: 100%;
+  min-height: 220px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+/* Description white pill for clips (Admin) */
+.ov-clip-desc-box-admin {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 10px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+}
+
+.gallery-item-desc-input-admin {
+  width: 100%;
+  border: none !important;
+  background: transparent !important;
+  color: #000000 !important;
+  text-align: center;
+  font-size: 1.15rem;
+  font-weight: 700;
+  padding: 4px !important;
+  outline: none;
+  font-family: inherit;
+}
+
+/* Clips thumbnails styles in Admin */
+.ov-clip-thumb-admin {
+  width: 44px;
+  height: 44px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  overflow: hidden;
+  padding: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  background: #fff;
+  transition: border-color 0.2s, transform 0.2s;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.ov-clip-thumb-admin.active {
+  border-color: #000000;
+  border-width: 2px;
+  transform: scale(1.08);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.ov-clip-thumb-admin img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.add-clip-thumbnail-btn-admin {
+  width: 44px;
+  height: 44px;
+  border-radius: 6px;
+  border: 1.5px dashed #666666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #333333;
+  flex-shrink: 0;
+  background: #d9d9d9;
+  transition: all 0.2s;
+}
+
+.add-clip-thumbnail-btn-admin:hover {
+  background: #ccc;
+  border-color: #333;
+}
+
+.section-title-hint {
+  color: rgba(255, 255, 255, 0.8) !important;
+  font-size: 0.72rem;
+  margin: 2px 0 6px 0;
+}
+
+
 

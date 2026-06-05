@@ -1206,72 +1206,77 @@ function UploadProject() {
             {/* 2. Three-Column Layout */}
             <div className="ov-columns-grid-premium">
               {/* Column 1: Overview */}
-              <div className="ov-column-premium">
-                <div className="section-title-field">
+              <div className="ov-column-premium-redesign" style={{ '--project-color': formData.color || '#0093ad', backgroundColor: formData.color || '#0093ad' }}>
+                <div className="ov-header-box-admin">
                   <RichTextEditor
                     value={formData.sectionTitleOverview}
                     onChange={(val) => setFormData((prev) => ({ ...prev, sectionTitleOverview: val }))}
                     placeholder="Overview"
-                    minHeight="48px"
-                    className="section-title-editor"
+                    minHeight="40px"
+                    className="section-title-editor-redesign"
                     singleLine
                   />
-                  <p className="section-title-hint">Drag to select heading text, then use the color icon to change it</p>
                 </div>
-                <div className="ov-column-box-premium ov-column-editor-box">
+                <p className="section-title-hint">Drag to select heading text, then use the color icon to change it</p>
+                
+                <div className="ov-content-box-admin">
                   <RichTextEditor
                     value={formData.longDescription}
                     onChange={(val) => setFormData(prev => ({ ...prev, longDescription: val }))}
                     placeholder="No overview description added yet."
                     minHeight="200px"
+                    className="ov-content-editor-redesign"
                   />
                 </div>
               </div>
 
               {/* Column 2: Key Features */}
-              <div className="ov-column-premium">
-                <div className="section-title-field">
+              <div className="ov-column-premium-redesign" style={{ '--project-color': formData.color || '#0093ad', backgroundColor: formData.color || '#0093ad' }}>
+                <div className="ov-header-box-admin">
                   <RichTextEditor
                     value={formData.sectionTitleFeatures}
                     onChange={(val) => setFormData((prev) => ({ ...prev, sectionTitleFeatures: val }))}
                     placeholder="Key Features"
-                    minHeight="48px"
-                    className="section-title-editor"
+                    minHeight="40px"
+                    className="section-title-editor-redesign"
                     singleLine
                   />
-                  <p className="section-title-hint">Drag to select heading text, then use the color icon to change it</p>
                 </div>
-                <div className="ov-column-box-premium ov-column-editor-box">
+                <p className="section-title-hint">Drag to select heading text, then use the color icon to change it</p>
+                
+                <div className="ov-content-box-admin">
                   <RichTextEditor
                     value={formData.features}
                     onChange={(val) => setFormData(prev => ({ ...prev, features: val }))}
                     placeholder="No key features added yet."
                     minHeight="200px"
+                    className="ov-content-editor-redesign"
                   />
                 </div>
               </div>
 
               {/* Column 3: Clips */}
-              <div className="ov-column-premium">
-                <div className="section-title-field">
+              <div className="ov-column-premium-redesign" style={{ '--project-color': formData.color || '#0093ad', backgroundColor: formData.color || '#0093ad' }}>
+                <div className="ov-header-box-admin">
                   <RichTextEditor
                     value={formData.sectionTitleClips}
                     onChange={(val) => setFormData((prev) => ({ ...prev, sectionTitleClips: val }))}
                     placeholder="Clips"
-                    minHeight="48px"
-                    className="section-title-editor"
+                    minHeight="40px"
+                    className="section-title-editor-redesign"
                     singleLine
                   />
-                  <p className="section-title-hint">Drag to select heading text, then use the color icon to change it</p>
                 </div>
-                <div className="ov-column-box-premium clips-box-premium ov-column-editor-box">
+                <p className="section-title-hint">Drag to select heading text, then use the color icon to change it</p>
+                
+                <div className="ov-clips-viewer-redesign-admin">
                   {gallery.length > 0 ? (
-                    <div className="interactive-clips-manager" style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '15px' }}>
                       {/* Active Clip Preview */}
-                      <div className="active-clip-preview-container" style={{ position: 'relative', width: '100%', height: '180px', borderRadius: '8px', border: '1px solid #e5e7eb', overflow: 'hidden', background: '#f9fafb' }}>
+                      <div className="pd-clip-main-redesign" style={{ minHeight: '220px', position: 'relative' }}>
                         {gallery[activeClipIndex]?.url ? (
                           <>
-                            <img src={gallery[activeClipIndex].url} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                            <img src={gallery[activeClipIndex].url} alt="" className="pd-clip-img-redesign" />
                             <button
                               type="button"
                               className="remove-clip-btn"
@@ -1295,7 +1300,8 @@ function UploadProject() {
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 cursor: 'pointer',
-                                transition: 'all 0.2s'
+                                transition: 'all 0.2s',
+                                zIndex: 10
                               }}
                               title="Delete Clip"
                             >
@@ -1306,7 +1312,7 @@ function UploadProject() {
                             </button>
                           </>
                         ) : (
-                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#9ca3af', fontStyle: 'normal', fontSize: '0.8rem' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#333333', fontStyle: 'normal', fontSize: '0.9rem', fontWeight: 500 }}>
                             {gallery[activeClipIndex]?.isUploading ? 'Uploading screenshot...' : 'No image uploaded'}
                           </div>
                         )}
@@ -1314,40 +1320,25 @@ function UploadProject() {
 
                       {/* Active Clip Description */}
                       {gallery[activeClipIndex] && (
-                        <input
-                          type="text"
-                          placeholder="Add a screenshot description..."
-                          value={gallery[activeClipIndex].description}
-                          onChange={(e) => handleGalleryDescriptionChange(gallery[activeClipIndex].id, e.target.value)}
-                          className="gallery-item-desc-input"
-                          style={{
-                            width: '100%',
-                            border: '1.5px solid #222222',
-                            borderRadius: '8px',
-                            padding: '8px 12px',
-                            fontSize: '0.85rem'
-                          }}
-                        />
+                        <div className="ov-clip-desc-box-admin">
+                          <input
+                            type="text"
+                            placeholder="Add a screenshot description..."
+                            value={gallery[activeClipIndex].description}
+                            onChange={(e) => handleGalleryDescriptionChange(gallery[activeClipIndex].id, e.target.value)}
+                            className="gallery-item-desc-input-admin"
+                          />
+                        </div>
                       )}
 
                       {/* Thumbnails + Add New Button Strip */}
-                      <div className="clips-thumbnail-strip" style={{ display: 'flex', gap: '8px', overflowX: 'auto', padding: '4px 0', alignItems: 'center' }}>
+                      <div className="clips-thumbnail-strip-admin" style={{ display: 'flex', gap: '8px', overflowX: 'auto', padding: '4px 0', alignItems: 'center', justifyContent: 'center' }}>
                         {gallery.map((item, idx) => (
                           <button
                             key={item.id}
                             type="button"
                             onClick={() => setActiveClipIndex(idx)}
-                            style={{
-                              width: '44px',
-                              height: '44px',
-                              borderRadius: '6px',
-                              border: idx === activeClipIndex ? '2px solid #1500b5' : '1px solid #d1d5db',
-                              overflow: 'hidden',
-                              padding: 0,
-                              cursor: 'pointer',
-                              flexShrink: 0,
-                              background: '#fff'
-                            }}
+                            className={`ov-clip-thumb-admin ${idx === activeClipIndex ? 'active' : ''}`}
                           >
                             {item.url ? (
                               <img src={item.url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -1361,21 +1352,7 @@ function UploadProject() {
 
                         {/* Add Clip Button */}
                         <label
-                          className="add-clip-thumbnail-btn"
-                          style={{
-                            width: '44px',
-                            height: '44px',
-                            borderRadius: '6px',
-                            border: '1.5px dashed #9ca3af',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            cursor: 'pointer',
-                            color: '#4b5563',
-                            flexShrink: 0,
-                            background: '#fafafa',
-                            transition: 'all 0.2s'
-                          }}
+                          className="add-clip-thumbnail-btn-admin"
                           title="Add Screenshot"
                         >
                           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -1409,59 +1386,55 @@ function UploadProject() {
                     </div>
                   ) : (
                     /* Empty Clips State - Direct Upload */
-                    <label
-                      className="clips-empty-upload-dropzone"
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '10px',
-                        border: '2px dashed #9ca3af',
-                        borderRadius: '12px',
-                        padding: '40px 20px',
-                        cursor: 'pointer',
-                        background: '#fafafa',
-                        width: '100%',
-                        height: '100%',
-                        textAlign: 'center'
-                      }}
-                    >
-                      <div style={{ color: '#6b7280' }}>
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                          <circle cx="8.5" cy="8.5" r="1.5" />
-                          <polyline points="21 15 16 10 5 21" />
-                        </svg>
+                    <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                      <label
+                        className="clips-empty-upload-dropzone-admin"
+                      >
+                        <div style={{ color: '#333333' }}>
+                          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                            <circle cx="8.5" cy="8.5" r="1.5" />
+                            <polyline points="21 15 16 10 5 21" />
+                          </svg>
+                        </div>
+                        <span style={{ fontSize: '0.9rem', fontWeight: 700, color: '#333333' }}>
+                          Add Project Clips / Screenshots
+                        </span>
+                        <span style={{ fontSize: '0.75rem', color: '#666666' }}>
+                          Clips are Screenshots of the projects
+                        </span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            const newId = Math.random().toString(36).substr(2, 9);
+                            setGallery([
+                              { id: newId, url: '', description: '', isUploading: true, error: '' }
+                            ]);
+                            setActiveClipIndex(0);
+                            try {
+                              const compressed = await compressImage(file);
+                              setGallery([{ id: newId, url: compressed, description: '', isUploading: false, error: '' }]);
+                            } catch (err) {
+                              e.preventDefault();
+                              setGallery([]);
+                            }
+                          }}
+                          style={{ display: 'none' }}
+                        />
+                      </label>
+                      
+                      <div className="ov-clip-desc-box-admin">
+                        <input
+                          type="text"
+                          placeholder="Dashboard Page"
+                          disabled
+                          className="gallery-item-desc-input-admin"
+                        />
                       </div>
-                      <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#374151' }}>
-                        Add Project Clips / Screenshots
-                      </span>
-                      <span style={{ fontSize: '0.72rem', color: '#9ca3af' }}>
-                        Clips are Screenshots of the projects
-                      </span>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={async (e) => {
-                          const file = e.target.files?.[0];
-                          if (!file) return;
-                          const newId = Math.random().toString(36).substr(2, 9);
-                          setGallery([
-                            { id: newId, url: '', description: '', isUploading: true, error: '' }
-                          ]);
-                          setActiveClipIndex(0);
-                          try {
-                            const compressed = await compressImage(file);
-                            setGallery([{ id: newId, url: compressed, description: '', isUploading: false, error: '' }]);
-                          } catch (err) {
-                            console.error(err);
-                            setGallery([]);
-                          }
-                        }}
-                        style={{ display: 'none' }}
-                      />
-                    </label>
+                    </div>
                   )}
                 </div>
               </div>
