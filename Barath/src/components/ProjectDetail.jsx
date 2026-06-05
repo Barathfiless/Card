@@ -12,6 +12,7 @@ function ProjectDetail() {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [activeClip, setActiveClip] = useState(0);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -191,7 +192,11 @@ function ProjectDetail() {
               <ul className="pd-features-list">
                 {features.map((feat, idx) => (
                   <li key={idx} className="pd-feature-item">
-                    <span className="pd-bullet">•</span>
+                    <span className="pd-bullet pd-tick-icon">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    </span>
                     {feat}
                   </li>
                 ))}
@@ -213,8 +218,13 @@ function ProjectDetail() {
           <div className="pd-clips-viewer-redesign">
             {clips.length > 0 ? (
               <>
-                {/* Main image box */}
-                <div className="pd-clip-main-redesign">
+                {/* Main image box (Clickable to view full screen) */}
+                <div
+                  className="pd-clip-main-redesign pd-clip-clickable"
+                  onClick={() => setIsLightboxOpen(true)}
+                  title="Click to view full screen"
+                  style={{ cursor: 'pointer' }}
+                >
                   {!imageLoaded && !imageError && <div className="pd-clip-skeleton-redesign" />}
                   {imageError ? (
                     <div className="pd-clip-error-redesign">
@@ -241,26 +251,6 @@ function ProjectDetail() {
                 <div className="pd-clip-desc-box">
                   <span>{clips[activeClip]?.description || 'Dashboard Page'}</span>
                 </div>
-
-                {/* Thumbnail strip — only if multiple clips */}
-                {clips.length > 1 && (
-                  <div className="pd-clip-thumbs-redesign">
-                    {clips.map((clip, idx) => (
-                      <button
-                        key={idx}
-                        className={`pd-clip-thumb-redesign ${idx === activeClip ? 'active' : ''}`}
-                        onClick={() => {
-                          setActiveClip(idx);
-                          setImageLoaded(false);
-                          setImageError(false);
-                        }}
-                        aria-label={`View clip ${idx + 1}`}
-                      >
-                        <img src={clip.url} alt={`Clip ${idx + 1}`} />
-                      </button>
-                    ))}
-                  </div>
-                )}
               </>
             ) : (
               <>
@@ -277,6 +267,56 @@ function ProjectDetail() {
 
         </div>
       </div>
+
+      {/* Lightbox Modal */}
+      {isLightboxOpen && clips.length > 0 && (
+        <div className="pd-lightbox-overlay" onClick={() => setIsLightboxOpen(false)}>
+          <div className="pd-lightbox-content" onClick={(e) => e.stopPropagation()}>
+            <button className="pd-lightbox-close" onClick={() => setIsLightboxOpen(false)} aria-label="Close lightbox">
+              &times;
+            </button>
+            
+            {clips.length > 1 && (
+              <button
+                className="pd-lightbox-arrow pd-lightbox-arrow-left"
+                onClick={() => {
+                  setActiveClip((prev) => (prev - 1 + clips.length) % clips.length);
+                  setImageLoaded(false);
+                  setImageError(false);
+                }}
+                aria-label="Previous image"
+              >
+                &#10094;
+              </button>
+            )}
+
+            <div className="pd-lightbox-image-wrapper">
+              <img
+                src={clips[activeClip]?.url}
+                alt={clips[activeClip]?.description || project.title}
+                className="pd-lightbox-img"
+              />
+              <div className="pd-lightbox-caption">
+                <span>{clips[activeClip]?.description || 'Dashboard Page'}</span>
+              </div>
+            </div>
+
+            {clips.length > 1 && (
+              <button
+                className="pd-lightbox-arrow pd-lightbox-arrow-right"
+                onClick={() => {
+                  setActiveClip((prev) => (prev + 1) % clips.length);
+                  setImageLoaded(false);
+                  setImageError(false);
+                }}
+                aria-label="Next image"
+              >
+                &#10095;
+              </button>
+            )}
+          </div>
+        </div>
+      )}
 
     </div>
   );
