@@ -245,6 +245,50 @@ function ProjectDetail() {
                       onError={() => setImageError(true)}
                     />
                   )}
+
+                  {clips.length > 1 && (
+                    <>
+                      <button
+                        className="pd-card-arrow pd-card-arrow-left"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActiveClip((prev) => (prev - 1 + clips.length) % clips.length);
+                          setImageLoaded(false);
+                          setImageError(false);
+                        }}
+                        aria-label="Previous clip"
+                      >
+                        &#10094;
+                      </button>
+                      <button
+                        className="pd-card-arrow pd-card-arrow-right"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActiveClip((prev) => (prev + 1) % clips.length);
+                          setImageLoaded(false);
+                          setImageError(false);
+                        }}
+                        aria-label="Next clip"
+                      >
+                        &#10095;
+                      </button>
+
+                      <div className="pd-clip-dots" onClick={(e) => e.stopPropagation()}>
+                        {clips.map((_, idx) => (
+                          <span
+                            key={idx}
+                            className={`pd-clip-dot ${idx === activeClip ? 'active' : ''}`}
+                            onClick={() => {
+                              setActiveClip(idx);
+                              setImageLoaded(false);
+                              setImageError(false);
+                            }}
+                            title={`Go to image ${idx + 1}`}
+                          />
+                        ))}
+                      </div>
+                    </>
+                  )}
                 </div>
 
                 {/* Description of active clip */}

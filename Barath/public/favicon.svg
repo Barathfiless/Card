@@ -1,3 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="#ff5722">
-  <path d="M6 3h6a5 5 0 0 1 2 9.576A5.001 5.001 0 0 1 12 21H6V3zm2 2v6h4a3 3 0 1 0 0-6H8zm0 8v6h4a3 3 0 1 0 0-6H8z"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <linearGradient id="grad-1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00f2fe" />
+      <stop offset="100%" stop-color="#4facfe" />
+    </linearGradient>
+    <linearGradient id="grad-2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#8b5cf6" />
+    </linearGradient>
+  </defs>
+  <!-- Rounded slate background card -->
+  <rect width="32" height="32" rx="9" fill="#0f172a" />
+  <!-- Upper loop of 'B' with cyan-blue gradient -->
+  <path d="M10 8h7.5a4.5 4.5 0 0 1 4.5 4.5v0a4.5 4.5 0 0 1-4.5 4.5H10V8z" fill="url(#grad-1)" />
+  <!-- Lower loop of 'B' with blue-purple gradient -->
+  <path d="M10 15h8.5a4.5 4.5 0 0 1 4.5 4.5v0a4.5 4.5 0 0 1-4.5 4.5H10V15z" fill="url(#grad-2)" />
+  <!-- Vertical white spine to create beautiful contrast -->
+  <rect x="7.25" y="6" width="4.5" height="20" rx="2.25" fill="#ffffff" />
+  <!-- Subtle border around the card for crisp definition -->
+  <rect x="0.5" y="0.5" width="31" height="31" rx="8.5" fill="none" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1" />
 </svg>
