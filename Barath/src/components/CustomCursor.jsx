@@ -1,27 +1,62 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import './CustomCursor.css';
 
 const CustomCursor = () => {
-  const [position, setPosition] = useState({ x: -100, y: -100 });
-  const [isPointer, setIsPointer] = useState(false);
+  const cursorRef = useRef(null);
 
   useEffect(() => {
-    const updatePosition = (e) => {
-      setPosition({ x: e.clientX, y: e.clientY });
+    const cursor = cursorRef.current;
+    if (!cursor) return undefined;
+
+    let mouseX = -100;
+    let mouseY = -100;
+    let currentX = -100;
+    let currentY = -100;
+
+    const onMouseMove = (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
       
       const target = e.target;
-      setIsPointer(window.getComputedStyle(target).cursor === 'pointer');
+      if (target && cursor) {
+        // Direct DOM class toggle to avoid React state re-renders
+        const isClickable = window.getComputedStyle(target).cursor === 'pointer';
+        if (isClickable) {
+          cursor.classList.add('cursor-pointer');
+        } else {
+          cursor.classList.remove('cursor-pointer');
+        }
+      }
     };
 
-    window.addEventListener('mousemove', updatePosition);
-    return () => window.removeEventListener('mousemove', updatePosition);
+    let animationFrameId;
+    const updateCursor = () => {
+      // Smooth lerped motion (linear interpolation)
+      currentX += (mouseX - currentX) * 0.15;
+      currentY += (mouseY - currentY) * 0.15;
+
+      if (cursor) {
+        cursor.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
+      }
+
+      animationFrameId = requestAnimationFrame(updateCursor);
+    };
+
+    window.addEventListener('mousemove', onMouseMove, { passive: true });
+    animationFrameId = requestAnimationFrame(updateCursor);
+
+    return () => {
+      window.removeEventListener('mousemove', onMouseMove);
+      cancelAnimationFrame(animationFrameId);
+    };
   }, []);
 
   return (
     <div 
-      className={`custom-cursor ${isPointer ? 'cursor-pointer' : ''}`}
+      ref={cursorRef}
+      className="custom-cursor"
       style={{ 
-        transform: `translate(${position.x}px, ${position.y}px)` 
+        transform: 'translate3d(-100px, -100px, 0)' 
       }}
     >
       <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">

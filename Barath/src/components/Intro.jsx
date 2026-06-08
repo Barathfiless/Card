@@ -26,9 +26,9 @@ const Intro = ({ onFinish }) => {
       <div className="intro-content">
         <h1 className="intro-text">
           {letters.map((char, index) => (
-            <span 
-              key={index} 
-              className="intro-letter" 
+            <span
+              key={index}
+              className="intro-letter"
               style={{ animationDelay: `${index * 0.1 + 0.4}s` }}
             >
               {char}

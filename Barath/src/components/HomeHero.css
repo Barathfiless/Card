@@ -1726,7 +1726,7 @@
 
     .msci-featured-col p {
         text-align: justify;
-        hyphens: auto;
+        hyphens: none;
     }
 
     /* Reflow the 2 featured cards into vertical single column */
@@ -1756,7 +1756,7 @@
 
     .blue-card-content p {
         text-align: justify;
-        hyphens: auto;
+        hyphens: none;
     }
 
     .light-card {
@@ -1770,7 +1770,7 @@
     .light-card-content p {
         margin-bottom: 24px;
         text-align: justify;
-        hyphens: auto;
+        hyphens: none;
     }
 
     .light-card-image {
@@ -1781,23 +1781,23 @@
     /* Justify about section text on mobile */
     .msci-about-text {
         text-align: justify;
-        hyphens: auto;
+        hyphens: none;
     }
 
     .msci-about-highlight-item span {
         text-align: justify;
-        hyphens: auto;
+        hyphens: none;
     }
 
     /* Justify education section text on mobile */
     .msci-edu-desc {
         text-align: justify;
-        hyphens: auto;
+        hyphens: none;
     }
 
     .msci-timeline-desc {
         text-align: justify;
-        hyphens: auto;
+        hyphens: none;
     }
 
     /* Adjust milestone card padding and margins on mobile */
@@ -2037,5 +2037,10 @@
     .graphic-overlay-svg {
         width: 240px;
         height: 240px;
+    }
+
+    .msci-project-large-desc,
+    .horizontal-desc {
+        text-align: justify;
     }
 }

@@ -182,6 +182,10 @@ function HeroParticles({ isHovered = false }) {
       // Idle particle colour: white (255,255,255) → black (0,0,0) on hover
       const [pr, pg, pb] = lerpColor(255, 255, 255, 0, 0, 0, hoverProgress);
 
+      // Grouping buckets for optimized rendering
+      const textBuckets = Array.from({ length: 11 }, () => []);
+      const floatBuckets = Array.from({ length: 11 }, () => []);
+
       for (const p of particles) {
         // ── Fade-in on load ──
         if (p.opacity < p.targetOpacity) {
@@ -222,43 +226,56 @@ function HeroParticles({ isHovered = false }) {
 
         if (p.opacity <= 0) continue;
 
-        // ── Visual rendering ──
+        // ── Visual categorization ──
         const isTextDot = p.hasTarget && hoverProgress > 0.05;
-        const distToTarget = isTextDot
-          ? Math.hypot(p.x - p.targetX, p.y - p.targetY)
-          : Infinity;
-        const nearTarget = distToTarget < 6;
-
         if (isTextDot) {
-          // DEVELOPER text dots: stays vivid blue
+          const distToTarget = Math.hypot(p.x - p.targetX, p.y - p.targetY);
+          const nearTarget = distToTarget < 6;
           const displayOpacity = Math.min(
             p.opacity * (nearTarget ? 2.5 : 1.5) * hoverProgress,
             0.98
           );
           const displayRadius = p.radius * (nearTarget ? 1.25 : 0.95);
 
-          // No shadow blur for maximum crispness, just like the reference image
-          ctx.shadowBlur = 0;
-
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, displayRadius, 0, Math.PI * 2);
-          // Brand blue #1b5cfc — stays vivid on both dark and white backgrounds
-          ctx.fillStyle = `rgba(27,92,252,${displayOpacity})`;
-          ctx.fill();
+          const opacityIdx = Math.max(0, Math.min(10, Math.round(displayOpacity * 10)));
+          textBuckets[opacityIdx].push({ x: p.x, y: p.y, r: displayRadius });
         } else {
-          // Regular floating dots — small & crisp black dots on white hover bg
-          const floatRadius = p.radius * 0.85; // keep them deliberately small
+          const floatRadius = p.radius * 0.85;
           const floatOpacity = Math.min(p.opacity * (1 + hoverProgress * 2.5), 0.82);
 
-          ctx.shadowBlur = 0;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, floatRadius, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${pr},${pg},${pb},${floatOpacity})`;
-          ctx.fill();
+          const opacityIdx = Math.max(0, Math.min(10, Math.round(floatOpacity * 10)));
+          floatBuckets[opacityIdx].push({ x: p.x, y: p.y, r: floatRadius });
         }
       }
 
-      ctx.shadowBlur = 0;
+      // Draw text dots in batches
+      for (let i = 1; i <= 10; i++) {
+        const bucket = textBuckets[i];
+        if (bucket.length === 0) continue;
+
+        ctx.fillStyle = `rgba(27,92,252,${i / 10})`;
+        ctx.beginPath();
+        for (const pt of bucket) {
+          ctx.moveTo(pt.x + pt.r, pt.y);
+          ctx.arc(pt.x, pt.y, pt.r, 0, Math.PI * 2);
+        }
+        ctx.fill();
+      }
+
+      // Draw floating dots in batches
+      for (let i = 1; i <= 10; i++) {
+        const bucket = floatBuckets[i];
+        if (bucket.length === 0) continue;
+
+        ctx.fillStyle = `rgba(${pr},${pg},${pb},${i / 10})`;
+        ctx.beginPath();
+        for (const pt of bucket) {
+          ctx.moveTo(pt.x + pt.r, pt.y);
+          ctx.arc(pt.x, pt.y, pt.r, 0, Math.PI * 2);
+        }
+        ctx.fill();
+      }
+
       animationId = requestAnimationFrame(draw);
     };
 
