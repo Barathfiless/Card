@@ -129,7 +129,33 @@
     object-fit: contain;
     display: block;
     border-radius: 12px;
+    transition: opacity 0.45s ease;
 }
+
+.msci-hero-profile-img.hidden {
+    opacity: 0;
+}
+
+/* Hover image — Spider-Man crossfade */
+.msci-hero-profile-hover-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    border-radius: 12px;
+    opacity: 0;
+    transition: opacity 0.45s ease;
+    pointer-events: none;
+}
+
+.msci-hero-profile-hover-img.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+
 
 /* Floating Index Ticker Bar */
 .msci-ticker-wrapper {

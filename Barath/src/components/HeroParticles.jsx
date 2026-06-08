@@ -173,11 +173,11 @@ function HeroParticles({ isHovered = false }) {
 
       const elapsed = now - startTime;
       const hovered = hoverRef.current;
-      const inSpeed = 0.065;
-      const outSpeed = 0.038;
+      const inSpeed = 0.28;
+      const outSpeed = 0.16;
 
       // Smoothly track hover state (0 = idle, 1 = fully hovered)
-      hoverProgress = lerp(hoverProgress, hovered ? 1 : 0, 0.045);
+      hoverProgress = lerp(hoverProgress, hovered ? 1 : 0, 0.22);
 
       // Idle particle colour: white (255,255,255) → black (0,0,0) on hover
       const [pr, pg, pb] = lerpColor(255, 255, 255, 0, 0, 0, hoverProgress);
