@@ -114,6 +114,7 @@ function HeroParticles({ isHovered = false }) {
     let width = 0;
     let height = 0;
     let startTime = performance.now();
+    let lastTime = performance.now();
     // Smooth 0→1 value that follows isHovered with easing
     let hoverProgress = 0;
 
@@ -163,6 +164,7 @@ function HeroParticles({ isHovered = false }) {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
       startTime = performance.now();
+      lastTime = performance.now();
       createParticles();
     };
 
@@ -172,12 +174,16 @@ function HeroParticles({ isHovered = false }) {
       ctx.clearRect(0, 0, width, height);
 
       const elapsed = now - startTime;
+      const deltaTime = Math.min((now - lastTime) / 16.67, 4);
+      lastTime = now;
+
       const hovered = hoverRef.current;
       const inSpeed = 0.28;
       const outSpeed = 0.16;
 
-      // Smoothly track hover state (0 = idle, 1 = fully hovered)
-      hoverProgress = lerp(hoverProgress, hovered ? 1 : 0, 0.22);
+      // Smoothly track hover state (0 = idle, 1 = fully hovered) using framerate-independent lerp
+      const hoverLerpFactor = 1 - Math.pow(1 - 0.22, deltaTime);
+      hoverProgress = lerp(hoverProgress, hovered ? 1 : 0, hoverLerpFactor);
 
       // Idle particle colour: white (255,255,255) → black (0,0,0) on hover
       const [pr, pg, pb] = lerpColor(255, 255, 255, 0, 0, 0, hoverProgress);
@@ -199,22 +205,24 @@ function HeroParticles({ isHovered = false }) {
         // ── Position update ──
         if (!prefersReducedMotion) {
           if (hovered && p.hasTarget) {
-            p.x = lerp(p.x, p.targetX, inSpeed);
-            p.y = lerp(p.y, p.targetY, inSpeed);
-            p.idleX += p.vx;
-            p.idleY += p.vy;
+            const currentInLerp = 1 - Math.pow(1 - inSpeed, deltaTime);
+            p.x = lerp(p.x, p.targetX, currentInLerp);
+            p.y = lerp(p.y, p.targetY, currentInLerp);
+            p.idleX += p.vx * deltaTime;
+            p.idleY += p.vy * deltaTime;
           } else if (!hovered && p.hasTarget) {
-            p.x = lerp(p.x, p.idleX, outSpeed);
-            p.y = lerp(p.y, p.idleY, outSpeed);
-            p.idleX += p.vx;
-            p.idleY += p.vy;
+            const currentOutLerp = 1 - Math.pow(1 - outSpeed, deltaTime);
+            p.x = lerp(p.x, p.idleX, currentOutLerp);
+            p.y = lerp(p.y, p.idleY, currentOutLerp);
+            p.idleX += p.vx * deltaTime;
+            p.idleY += p.vy * deltaTime;
             if (p.idleX < -4) p.idleX = width + 4;
             if (p.idleX > width + 4) p.idleX = -4;
             if (p.idleY < -4) p.idleY = height + 4;
             if (p.idleY > height + 4) p.idleY = -4;
           } else {
-            p.x += p.vx;
-            p.y += p.vy;
+            p.x += p.vx * deltaTime;
+            p.y += p.vy * deltaTime;
             p.idleX = p.x;
             p.idleY = p.y;
             if (p.x < -4) { p.x = width + 4; p.idleX = p.x; }

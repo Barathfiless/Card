@@ -30,10 +30,17 @@ const CustomCursor = () => {
     };
 
     let animationFrameId;
-    const updateCursor = () => {
-      // Smooth lerped motion (linear interpolation)
-      currentX += (mouseX - currentX) * 0.15;
-      currentY += (mouseY - currentY) * 0.15;
+    let lastTime = performance.now();
+
+    const updateCursor = (now) => {
+      // Delta time normalized to 60fps (16.67ms per frame)
+      const deltaTime = Math.min((now - lastTime) / 16.67, 4);
+      lastTime = now;
+
+      // Framerate-independent lerp
+      const lerpFactor = 1 - Math.pow(1 - 0.15, deltaTime);
+      currentX += (mouseX - currentX) * lerpFactor;
+      currentY += (mouseY - currentY) * lerpFactor;
 
       if (cursor) {
         cursor.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
