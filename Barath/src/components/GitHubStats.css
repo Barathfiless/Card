@@ -167,11 +167,7 @@
 
     .msci-github-stats-header {
         margin-bottom: 32px;
-    }
-
-    .msci-github-stats-title,
-    .msci-github-stats-subtitle {
-        font-size: 2.2rem;
+        text-align: center;
     }
 
     .msci-github-stats-card {
@@ -181,7 +177,7 @@
     .msci-github-stats-card-top {
         margin-bottom: 18px;
         flex-direction: column;
-        align-items: stretch;
+        align-items: center;
         gap: 12px;
     }
 

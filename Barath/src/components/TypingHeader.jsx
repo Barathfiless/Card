@@ -11,7 +11,9 @@ function TypingHeader({ text, className, tag: Tag = 'h2', delay = 50 }) {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setHasStarted(true);
-            observer.unobserve(entry.target);
+          } else {
+            setHasStarted(false);
+            setDisplayedText('');
           }
         });
       },

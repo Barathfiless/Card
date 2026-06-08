@@ -18,7 +18,13 @@ import './App.css';
 
 function App() {
   const [showIntro, setShowIntro] = useState(true);
-  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+  const [theme, setTheme] = useState(() => {
+    try {
+      return localStorage.getItem('theme') || 'light';
+    } catch (e) {
+      return 'light';
+    }
+  });
   const location = useLocation();
   const { logout } = useAdminAuth();
 
@@ -35,7 +41,11 @@ function App() {
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
+    try {
+      localStorage.setItem('theme', theme);
+    } catch (e) {
+      // ignore
+    }
   }, [theme]);
 
   const toggleTheme = () => {

@@ -1155,6 +1155,7 @@
     line-height: 1.6;
     margin-bottom: 40px;
     max-width: 90%;
+    text-align: left;
 }
 
 .msci-outline-btn-black {
@@ -1227,6 +1228,7 @@
     margin-bottom: 30px;
     opacity: 0.9;
     color: inherit;
+    text-align: left;
 }
 
 .msci-outline-btn-white {
@@ -1810,6 +1812,24 @@
     .msci-timeline-item.milestone-card-black .msci-timeline-dot {
         top: 22px;
     }
+
+    /* Mobile overrides for News Cards in Skills Section */
+    .news-card-content {
+        padding: 30px 20px;
+        max-width: 75%;
+    }
+
+    .news-card-heading {
+        white-space: nowrap;
+        font-size: 1.25rem;
+    }
+
+    .news-card-graphic {
+        width: 150px;
+        height: 150px;
+        right: -10px;
+        transform: translateY(-50%);
+    }
 }
 
 /* ===== MSCI Projects Slider Carousel ===== */
@@ -1978,5 +1998,44 @@
 
     50% {
         background-color: currentColor
+    }
+}
+
+@media (max-width: 768px) {
+    .msci-featured-header,
+    .msci-edu-info,
+    .msci-news-header {
+        text-align: center;
+    }
+
+    .msci-projects-header {
+        text-align: center;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    .msci-projects-header-left {
+        width: 100%;
+    }
+
+    /* Project Cards Mobile Overrides */
+    .msci-project-card-large {
+        padding: 24px;
+    }
+
+    .msci-project-large-graphic {
+        height: 220px;
+        margin-bottom: 20px;
+    }
+
+    .graphic-circle-img {
+        width: 200px;
+        height: 200px;
+        margin-right: 0;
+    }
+
+    .graphic-overlay-svg {
+        width: 240px;
+        height: 240px;
     }
 }

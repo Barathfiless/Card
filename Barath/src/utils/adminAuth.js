@@ -18,8 +18,16 @@ const ALLOWED_EMAIL = (
 
 export function clearAdminAuth() {
   AUTH_KEYS.forEach((key) => {
-    sessionStorage.removeItem(key);
-    localStorage.removeItem(key);
+    try {
+      sessionStorage.removeItem(key);
+    } catch (e) {
+      // ignore
+    }
+    try {
+      localStorage.removeItem(key);
+    } catch (e) {
+      // ignore
+    }
   });
 }
 
