@@ -7,7 +7,10 @@
     z-index: 1000;
     background: transparent;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    transition: background 0.3s ease, border-color 0.3s ease;
+    transition: background 0.3s ease, border-color 0.3s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
+    backface-visibility: hidden;
+    transform: translateZ(0);
 }
 
 /* ── Hero image hover: flip navbar to light theme ── */
@@ -503,40 +506,55 @@
     position: fixed;
     bottom: 24px;
     left: 50%;
-    transform: translate(-50%, 120px); /* start offscreen */
+    transform: translate3d(-50%, 120px, 0);
     z-index: 1000;
-    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
     pointer-events: none;
     width: auto;
+    will-change: transform;
+    backface-visibility: hidden;
 }
 
 .msci-bottom-dock.dock-visible {
-    transform: translate(-50%, 0);
+    transform: translate3d(-50%, 0, 0);
     pointer-events: auto;
 }
 
 .dock-container {
-    background: rgba(255, 255, 255, 0.3);
-    backdrop-filter: blur(20px) saturate(190%);
-    -webkit-backdrop-filter: blur(20px) saturate(190%);
+    background: rgba(255, 255, 255, 0.72);
     border: 1px solid rgba(255, 255, 255, 0.45);
     border-radius: 40px;
     padding: 10px 20px;
     display: flex;
     align-items: center;
     gap: 12px;
-    box-shadow: 
-        0 10px 40px rgba(0, 0, 0, 0.08), 
+    box-shadow:
+        0 10px 40px rgba(0, 0, 0, 0.08),
         inset 0 1px 0 rgba(255, 255, 255, 0.4),
         0 0 0 1px rgba(0, 0, 0, 0.03);
-    transition: all 0.3s ease;
+    transition: background 0.3s ease, border-color 0.3s ease;
+    contain: layout paint;
+    transform: translateZ(0);
+}
+
+@supports (backdrop-filter: blur(12px)) {
+    .dock-container {
+        background: rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(12px) saturate(160%);
+        -webkit-backdrop-filter: blur(12px) saturate(160%);
+    }
+
+    [data-theme='dark'] .dock-container {
+        background: rgba(15, 22, 36, 0.35);
+        backdrop-filter: blur(12px) saturate(160%);
+        -webkit-backdrop-filter: blur(12px) saturate(160%);
+    }
 }
 
 [data-theme='dark'] .dock-container {
-    background: rgba(15, 22, 36, 0.35);
     border-color: rgba(255, 255, 255, 0.12);
-    box-shadow: 
-        0 10px 40px rgba(0, 0, 0, 0.4), 
+    box-shadow:
+        0 10px 40px rgba(0, 0, 0, 0.4),
         inset 0 1px 0 rgba(255, 255, 255, 0.1),
         0 0 0 1px rgba(0, 0, 0, 0.2);
 }
@@ -776,7 +794,7 @@
 /* ── Mobile: hide top bar, keep bottom dock always available ── */
 @media (max-width: 768px) {
     .msci-bottom-dock {
-        transform: translate(-50%, 0);
+        transform: translate3d(-50%, 0, 0);
         pointer-events: auto;
     }
 }

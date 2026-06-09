@@ -6,6 +6,8 @@
     overflow: hidden;
     pointer-events: none;
     z-index: 2;
+    contain: strict;
+    transform: translateZ(0);
 }
 
 .msci-hero-particles-canvas {
@@ -13,6 +15,8 @@
     width: 100%;
     height: 100%;
     animation: msciHeroParticlesReveal 1.2s ease-out forwards;
+    will-change: contents;
+    image-rendering: optimizeSpeed;
 }
 
 @keyframes msciHeroParticlesReveal {

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { getFrameDelta, expDecay, lerp as frameLerp } from '../utils/frame';
 import './HeroParticles.css';
 
 function randomBetween(min, max) {
@@ -15,81 +16,85 @@ function getTextDotPositions(w, h) {
   const TEXT = 'DEVELOPER';
   const chars = TEXT.split('');
 
-  // ── Step 1: measure each character at a large baseline size ───────────────
   const baseSize = 200;
-  // Use a rounded font stack for smooth, rounded letter paths
-  octx.font = `800 ${baseSize}px "Comfortaa", "Quicksand", "Nunito", "Arial Rounded MT Bold", sans-serif`;
+  octx.font = `900 ${baseSize}px "DM Sans", sans-serif`;
 
   const charBaseWidths = chars.map(c => octx.measureText(c).width);
   const totalBaseWidth = charBaseWidths.reduce((a, b) => a + b, 0);
 
-  // Add 22% of average char width as inter-letter gap to keep them distinct but closer together
   const avgBase = totalBaseWidth / chars.length;
-  const spacingBase = avgBase * 0.22;
+  const spacingBase = avgBase * 0.12;
   const totalBaseWithSpacing = totalBaseWidth + spacingBase * (chars.length - 1);
 
-  // ── Step 2: scale so spaced text fills 94% of canvas width ────────────────
-  const scale = (w * 0.94) / totalBaseWithSpacing;
+  const scale = (w * 0.98) / totalBaseWithSpacing;
   const fontSize = Math.floor(baseSize * scale);
 
-  octx.font = `800 ${fontSize}px "Comfortaa", "Quicksand", "Nunito", "Arial Rounded MT Bold", sans-serif`;
+  octx.font = `900 ${fontSize}px "DM Sans", sans-serif`;
   octx.textAlign = 'left';
   octx.textBaseline = 'middle';
-
-  // ── Step 3: stroke settings for clean contour outline ─────────────────────
-  octx.strokeStyle = '#1b5cfc';
-  octx.lineWidth = Math.max(6, fontSize * 0.045); // Increased thickness of the outline stroke
-  octx.lineJoin = 'round';
-  octx.lineCap = 'round';
 
   const charWidths = chars.map(c => octx.measureText(c).width);
   const spacing = spacingBase * scale;
   const totalWidth = charWidths.reduce((a, b) => a + b, 0) + spacing * (chars.length - 1);
   let curX = (w - totalWidth) / 2;
 
+  // 1. First pass: Draw filled text with low opacity (inside area of the letters)
+  octx.fillStyle = 'rgba(27, 92, 252, 0.15)';
   for (let i = 0; i < chars.length; i++) {
-    octx.strokeText(chars[i], curX, h * 0.72);
+    if (chars[i] !== 'L') {
+      octx.fillText(chars[i], curX, h * 0.72);
+    }
     curX += charWidths[i] + spacing;
   }
 
-  // ── Step 4: sample finely along the stroke outline ────────────────────────
+  // Reset curX for the outline stroke pass
+  curX = (w - totalWidth) / 2;
+
+  // 2. Second pass: Draw stroke text with solid opacity (crisp outline of the letters)
+  octx.strokeStyle = 'rgba(27, 92, 252, 1.0)';
+  octx.lineWidth = Math.max(3, fontSize * 0.012); // clean, thin outline definition
+  octx.lineJoin = 'round';
+  octx.lineCap = 'round';
+  for (let i = 0; i < chars.length; i++) {
+    if (chars[i] !== 'L') {
+      octx.strokeText(chars[i], curX, h * 0.72);
+    }
+    curX += charWidths[i] + spacing;
+  }
+
   const imageData = octx.getImageData(0, 0, w, h);
   const rawPositions = [];
-  const sampleStep = 2; // fine step to capture smooth rounded paths
+  const sampleStep = 1; // Sample every pixel for ultra-fine precision
+
   for (let y = 0; y < h; y += sampleStep) {
     for (let x = 0; x < w; x += sampleStep) {
       const idx = (y * w + x) * 4;
-      if (imageData.data[idx + 3] > 80) { // capture all stroke pixels
-        rawPositions.push({ x, y });
+      const alpha = imageData.data[idx + 3];
+
+      if (alpha > 180) {
+        // Outline pixel: keep with 95% probability
+        if (Math.random() < 0.95) {
+          rawPositions.push({ x, y });
+        }
+      } else if (alpha > 15) {
+        // Inside/fill pixel: keep with 8% probability (sparse interior)
+        if (Math.random() < 0.08) {
+          rawPositions.push({ x, y });
+        }
       }
     }
   }
 
-  // ── Step 5: limit/subsample to targetCount — even distribution
-  const targetCount = 850;
-  const stride = Math.max(1, Math.floor(rawPositions.length / targetCount));
-  const positions = rawPositions
-    .filter((_, i) => i % stride === 0)
-    .slice(0, targetCount);
-
-  // Shuffle so particles fan out from random directions when converging
-  for (let i = positions.length - 1; i > 0; i--) {
+  // Shuffle the entire rawPositions array to prevent any periodic diagonal/horizontal patterns
+  for (let i = rawPositions.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [positions[i], positions[j]] = [positions[j], positions[i]];
+    [rawPositions[i], rawPositions[j]] = [rawPositions[j], rawPositions[i]];
   }
 
+  const targetCount = 4500;
+  const positions = rawPositions.slice(0, targetCount);
+
   return positions;
-}
-
-
-
-/** Linearly interpolate between two RGB colours */
-function lerpColor(r1, g1, b1, r2, g2, b2, t) {
-  return [
-    Math.round(r1 + (r2 - r1) * t),
-    Math.round(g1 + (g2 - g1) * t),
-    Math.round(b1 + (b2 - b1) * t),
-  ];
 }
 
 function HeroParticles({ isHovered = false }) {
@@ -106,7 +111,11 @@ function HeroParticles({ isHovered = false }) {
     const canvas = canvasRef.current;
     if (!container || !canvas) return undefined;
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', {
+      alpha: true,
+      desynchronized: true,
+      willReadFrequently: false,
+    });
     if (!ctx) return undefined;
 
     let animationId = 0;
@@ -115,17 +124,30 @@ function HeroParticles({ isHovered = false }) {
     let height = 0;
     let startTime = performance.now();
     let lastTime = performance.now();
-    // Smooth 0→1 value that follows isHovered with easing
     let hoverProgress = 0;
+    let isVisible = true;
+    let isInView = true;
+
+    const textBuckets = Array.from({ length: 11 }, () => []);
+    const floatBuckets = Array.from({ length: 11 }, () => []);
+    const textFillStyles = Array.from({ length: 11 }, (_, i) =>
+      `rgba(27,80,220,${Math.min(1, (i / 10) * 1.4)})`
+    );
 
     const prefersReducedMotion = window.matchMedia(
       '(prefers-reduced-motion: reduce)'
     ).matches;
 
+    const clearBuckets = () => {
+      for (let i = 0; i < 11; i++) {
+        textBuckets[i].length = 0;
+        floatBuckets[i].length = 0;
+      }
+    };
+
     const createParticles = () => {
-      if (!width || !height) return; // guard: canvas not yet sized
+      if (!width || !height) return;
       const textPositions = getTextDotPositions(width, height);
-      // Ensure we have exactly enough particles to cover all target positions + 200 floating dots
       const count = textPositions.length + 200;
 
       particles = Array.from({ length: count }, (_, i) => {
@@ -141,7 +163,7 @@ function HeroParticles({ isHovered = false }) {
           targetX: textPos ? textPos.x : x,
           targetY: textPos ? textPos.y : y,
           hasTarget: !!textPos,
-          radius: randomBetween(0.7, 1.4),
+          radius: randomBetween(0.5, 1.1),
           opacity: 0,
           targetOpacity: randomBetween(0.12, 0.55),
           vx: randomBetween(-0.12, 0.12),
@@ -168,32 +190,52 @@ function HeroParticles({ isHovered = false }) {
       createParticles();
     };
 
-    const lerp = (a, b, t) => a + (b - a) * t;
+    const drawBuckets = (buckets, r, g, b, alphaMultiplier = 1) => {
+      for (let i = 1; i <= 10; i++) {
+        const bucket = buckets[i];
+        if (bucket.length === 0) continue;
+
+        ctx.fillStyle = `rgba(${r},${g},${b},${Math.min(1, (i / 10) * alphaMultiplier)})`;
+
+        for (let j = 0; j < bucket.length; j++) {
+          const pt = bucket[j];
+          ctx.beginPath();
+          ctx.arc(pt.x, pt.y, pt.r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    };
 
     const draw = (now) => {
+      animationId = requestAnimationFrame(draw);
+
+      if (!isVisible || !isInView) {
+        lastTime = now;
+        return;
+      }
+
+      const deltaTime = getFrameDelta(now, lastTime);
+      lastTime = now;
+
       ctx.clearRect(0, 0, width, height);
 
       const elapsed = now - startTime;
-      const deltaTime = Math.min((now - lastTime) / 16.67, 4);
-      lastTime = now;
-
       const hovered = hoverRef.current;
       const inSpeed = 0.28;
       const outSpeed = 0.16;
 
-      // Smoothly track hover state (0 = idle, 1 = fully hovered) using framerate-independent lerp
-      const hoverLerpFactor = 1 - Math.pow(1 - 0.22, deltaTime);
-      hoverProgress = lerp(hoverProgress, hovered ? 1 : 0, hoverLerpFactor);
+      const hoverLerpFactor = expDecay(0.22, deltaTime);
+      hoverProgress = frameLerp(hoverProgress, hovered ? 1 : 0, hoverLerpFactor);
 
-      // Idle particle colour: white (255,255,255) → black (0,0,0) on hover
-      const [pr, pg, pb] = lerpColor(255, 255, 255, 0, 0, 0, hoverProgress);
+      const pr = Math.round(frameLerp(255, 0, hoverProgress));
+      const pg = Math.round(frameLerp(255, 0, hoverProgress));
+      const pb = Math.round(frameLerp(255, 0, hoverProgress));
 
-      // Grouping buckets for optimized rendering
-      const textBuckets = Array.from({ length: 11 }, () => []);
-      const floatBuckets = Array.from({ length: 11 }, () => []);
+      clearBuckets();
 
-      for (const p of particles) {
-        // ── Fade-in on load ──
+      for (let pi = 0; pi < particles.length; pi++) {
+        const p = particles[pi];
+
         if (p.opacity < p.targetOpacity) {
           const appearElapsed = elapsed - p.appearDelay;
           if (appearElapsed > 0) {
@@ -202,18 +244,24 @@ function HeroParticles({ isHovered = false }) {
           }
         }
 
-        // ── Position update ──
         if (!prefersReducedMotion) {
           if (hovered && p.hasTarget) {
-            const currentInLerp = 1 - Math.pow(1 - inSpeed, deltaTime);
-            p.x = lerp(p.x, p.targetX, currentInLerp);
-            p.y = lerp(p.y, p.targetY, currentInLerp);
+            const normalX = p.targetX / width;
+            const staggerDelay = 0.35 * normalX;
+            if (hoverProgress > staggerDelay) {
+              const currentInLerp = expDecay(inSpeed, deltaTime);
+              p.x = frameLerp(p.x, p.targetX, currentInLerp);
+              p.y = frameLerp(p.y, p.targetY, currentInLerp);
+            } else {
+              p.x += p.vx * deltaTime;
+              p.y += p.vy * deltaTime;
+            }
             p.idleX += p.vx * deltaTime;
             p.idleY += p.vy * deltaTime;
           } else if (!hovered && p.hasTarget) {
-            const currentOutLerp = 1 - Math.pow(1 - outSpeed, deltaTime);
-            p.x = lerp(p.x, p.idleX, currentOutLerp);
-            p.y = lerp(p.y, p.idleY, currentOutLerp);
+            const currentOutLerp = expDecay(outSpeed, deltaTime);
+            p.x = frameLerp(p.x, p.idleX, currentOutLerp);
+            p.y = frameLerp(p.y, p.idleY, currentOutLerp);
             p.idleX += p.vx * deltaTime;
             p.idleY += p.vy * deltaTime;
             if (p.idleX < -4) p.idleX = width + 4;
@@ -234,67 +282,70 @@ function HeroParticles({ isHovered = false }) {
 
         if (p.opacity <= 0) continue;
 
-        // ── Visual categorization ──
-        const isTextDot = p.hasTarget && hoverProgress > 0.05;
+        const normalX = p.hasTarget ? p.targetX / width : 0.5;
+        const staggerDelay = p.hasTarget ? 0.35 * normalX : 0;
+        const individualProgress = Math.max(0, Math.min(1, (hoverProgress - staggerDelay) / (1 - staggerDelay)));
+
+        const isTextDot = p.hasTarget && individualProgress > 0.01;
         if (isTextDot) {
-          const distToTarget = Math.hypot(p.x - p.targetX, p.y - p.targetY);
+          const dx = p.x - p.targetX;
+          const dy = p.y - p.targetY;
+          const distToTarget = Math.hypot(dx, dy);
           const nearTarget = distToTarget < 6;
-          const displayOpacity = Math.min(
-            p.opacity * (nearTarget ? 2.5 : 1.5) * hoverProgress,
-            0.98
-          );
-          const displayRadius = p.radius * (nearTarget ? 1.25 : 0.95);
+
+          const startRadius = p.radius * 0.85;
+          const endRadius = p.radius * (nearTarget ? 1.25 : 0.95);
+          const displayRadius = startRadius + (endRadius - startRadius) * individualProgress;
+
+          const startOpacity = p.opacity;
+          const endOpacity = Math.min(p.opacity * (nearTarget ? 2.5 : 1.5), 0.98);
+          const displayOpacity = startOpacity + (endOpacity - startOpacity) * individualProgress;
 
           const opacityIdx = Math.max(0, Math.min(10, Math.round(displayOpacity * 10)));
           textBuckets[opacityIdx].push({ x: p.x, y: p.y, r: displayRadius });
         } else {
           const floatRadius = p.radius * 0.85;
           const floatOpacity = Math.min(p.opacity * (1 + hoverProgress * 2.5), 0.82);
-
           const opacityIdx = Math.max(0, Math.min(10, Math.round(floatOpacity * 10)));
           floatBuckets[opacityIdx].push({ x: p.x, y: p.y, r: floatRadius });
         }
       }
 
-      // Draw text dots in batches
-      for (let i = 1; i <= 10; i++) {
-        const bucket = textBuckets[i];
-        if (bucket.length === 0) continue;
+      // Calculate text dot color for this frame
+      const tr = Math.round(pr + (27 - pr) * hoverProgress);
+      const tg = Math.round(pg + (80 - pg) * hoverProgress);
+      const tb = Math.round(pb + (220 - pb) * hoverProgress);
 
-        ctx.fillStyle = `rgba(27,92,252,${i / 10})`;
-        ctx.beginPath();
-        for (const pt of bucket) {
-          ctx.moveTo(pt.x + pt.r, pt.y);
-          ctx.arc(pt.x, pt.y, pt.r, 0, Math.PI * 2);
-        }
-        ctx.fill();
-      }
+      drawBuckets(textBuckets, tr, tg, tb, 1.4);
+      drawBuckets(floatBuckets, pr, pg, pb, 1.0);
+    };
 
-      // Draw floating dots in batches
-      for (let i = 1; i <= 10; i++) {
-        const bucket = floatBuckets[i];
-        if (bucket.length === 0) continue;
-
-        ctx.fillStyle = `rgba(${pr},${pg},${pb},${i / 10})`;
-        ctx.beginPath();
-        for (const pt of bucket) {
-          ctx.moveTo(pt.x + pt.r, pt.y);
-          ctx.arc(pt.x, pt.y, pt.r, 0, Math.PI * 2);
-        }
-        ctx.fill();
-      }
-
-      animationId = requestAnimationFrame(draw);
+    const onVisibilityChange = () => {
+      isVisible = document.visibilityState === 'visible';
+      if (isVisible) lastTime = performance.now();
     };
 
     resize();
     const resizeObserver = new ResizeObserver(resize);
     resizeObserver.observe(container);
+
+    const intersectionObserver = new IntersectionObserver(
+      ([entry]) => {
+        isInView = entry.isIntersecting;
+        if (isInView) lastTime = performance.now();
+      },
+      { root: null, threshold: 0 }
+    );
+    intersectionObserver.observe(container);
+
+    document.addEventListener('visibilitychange', onVisibilityChange);
     animationId = requestAnimationFrame(draw);
 
     return () => {
       cancelAnimationFrame(animationId);
       resizeObserver.disconnect();
+      intersectionObserver.disconnect();
+      document.removeEventListener('visibilitychange', onVisibilityChange);
     };
   }, []);
 

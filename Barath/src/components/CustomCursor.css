@@ -7,8 +7,10 @@
     z-index: 10000;
     pointer-events: none;
     user-select: none;
-    transition: scale 0.2s ease;
+    transition: scale 0.15s ease;
     will-change: transform;
+    contain: strict;
+    transform: translate3d(-100px, -100px, 0);
 }
 
 .custom-cursor svg {

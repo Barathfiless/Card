@@ -75,6 +75,21 @@ html {
     scroll-behavior: smooth;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+    body {
+        text-rendering: optimizeSpeed;
+    }
+
+    .msci-featured-section,
+    .msci-edu-section,
+    .msci-projects-section,
+    .msci-news-section,
+    .msci-subscribe-section {
+        content-visibility: auto;
+        contain-intrinsic-size: auto 900px;
+    }
+}
+
 body {
     background-color: var(--bg-color);
     color: var(--text-primary);

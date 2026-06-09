@@ -8,19 +8,39 @@ function Navbar({ toggleTheme, theme }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [reachedFooter, setReachedFooter] = useState(false);
   const searchRef = useRef(null);
+  const navRef = useRef(null);
+  const dockRef = useRef(null);
+  const scrollRafRef = useRef(0);
   const location = useLocation();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
+    const updateScrollState = () => {
+      scrollRafRef.current = 0;
+      const hasScrolled = window.scrollY > 50;
+      const threshold = 60;
+      const isAtBottom =
+        window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - threshold;
 
-      // Check if user has scrolled to the bottom of the page (reached the footer)
-      const threshold = 60; // pixels from the bottom
-      const isAtBottom = (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - threshold);
-      setReachedFooter(isAtBottom);
+      navRef.current?.classList.toggle('navbar-hidden', hasScrolled);
+      dockRef.current?.classList.toggle('dock-visible', hasScrolled);
+      dockRef.current?.classList.toggle('footer-reached', isAtBottom);
+
+      setScrolled((prev) => (prev !== hasScrolled ? hasScrolled : prev));
+      setReachedFooter((prev) => (prev !== isAtBottom ? isAtBottom : prev));
     };
+
+    const handleScroll = () => {
+      if (scrollRafRef.current) return;
+      scrollRafRef.current = requestAnimationFrame(updateScrollState);
+    };
+
+    updateScrollState();
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (scrollRafRef.current) cancelAnimationFrame(scrollRafRef.current);
+    };
   }, []);
 
   const menuItems = [
@@ -78,7 +98,7 @@ function Navbar({ toggleTheme, theme }) {
 
   return (
     <>
-      <nav className={`navbar ${scrolled ? 'navbar-hidden' : ''}`}>
+      <nav ref={navRef} className={`navbar ${scrolled ? 'navbar-hidden' : ''}`}>
         <div className="nav-container">
           {/* Brand Logo - MSCI Style */}
           <div className="logo-section">
@@ -221,7 +241,10 @@ function Navbar({ toggleTheme, theme }) {
       </nav>
 
       {/* Bottom Floating Glass Dock */}
-      <div className={`msci-bottom-dock ${scrolled ? 'dock-visible' : ''} ${reachedFooter ? 'footer-reached' : ''}`}>
+      <div
+        ref={dockRef}
+        className={`msci-bottom-dock ${scrolled ? 'dock-visible' : ''} ${reachedFooter ? 'footer-reached' : ''}`}
+      >
         <div className="dock-container">
           {menuItems.map((item, index) => {
             let icon;
