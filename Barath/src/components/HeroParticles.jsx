@@ -17,7 +17,7 @@ function getTextDotPositions(w, h) {
   const chars = TEXT.split('');
 
   const baseSize = 200;
-  octx.font = `900 ${baseSize}px "DM Sans", sans-serif`;
+  octx.font = `800 ${baseSize}px "Nunito", "Varela Round", sans-serif`;
 
   const charBaseWidths = chars.map(c => octx.measureText(c).width);
   const totalBaseWidth = charBaseWidths.reduce((a, b) => a + b, 0);
@@ -29,7 +29,7 @@ function getTextDotPositions(w, h) {
   const scale = (w * 0.98) / totalBaseWithSpacing;
   const fontSize = Math.floor(baseSize * scale);
 
-  octx.font = `900 ${fontSize}px "DM Sans", sans-serif`;
+  octx.font = `800 ${fontSize}px "Nunito", "Varela Round", sans-serif`;
   octx.textAlign = 'left';
   octx.textBaseline = 'middle';
 
