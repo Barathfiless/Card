@@ -224,8 +224,12 @@ function HeroParticles({ isHovered = false }) {
       const inSpeed = 0.28;
       const outSpeed = 0.16;
 
-      const hoverLerpFactor = expDecay(0.22, deltaTime);
-      hoverProgress = frameLerp(hoverProgress, hovered ? 1 : 0, hoverLerpFactor);
+      // Linear time-based hoverProgress accumulator (exactly 1.5 seconds/180 frames to fully assemble)
+      if (hovered) {
+        hoverProgress = Math.min(1, hoverProgress + deltaTime / 180);
+      } else {
+        hoverProgress = Math.max(0, hoverProgress - deltaTime / 60); // dissolves back in 0.5 seconds
+      }
 
       const pr = Math.round(frameLerp(255, 0, hoverProgress));
       const pg = Math.round(frameLerp(255, 0, hoverProgress));
@@ -244,14 +248,23 @@ function HeroParticles({ isHovered = false }) {
           }
         }
 
+        const normalX = p.hasTarget ? p.targetX / width : 0.5;
+        const staggerDelay = p.hasTarget ? 0.35 * normalX : 0;
+        const individualProgress = Math.max(0, Math.min(1, (hoverProgress - staggerDelay) / (1 - staggerDelay)));
+
         if (!prefersReducedMotion) {
           if (hovered && p.hasTarget) {
-            const normalX = p.targetX / width;
-            const staggerDelay = 0.35 * normalX;
-            if (hoverProgress > staggerDelay) {
+            if (individualProgress > 0) {
+              const easedIndividual = 1 - (1 - individualProgress) ** 3;
+              
+              // Zoom in/expand from behind Spider-Man: start scaled down at 0.05x and expand to 1.0x
+              const currentScale = 0.05 + 0.95 * easedIndividual;
+              const dynamicTargetX = width / 2 + (p.targetX - width / 2) * currentScale;
+              const dynamicTargetY = height * 0.72 + (p.targetY - height * 0.72) * currentScale;
+
               const currentInLerp = expDecay(inSpeed, deltaTime);
-              p.x = frameLerp(p.x, p.targetX, currentInLerp);
-              p.y = frameLerp(p.y, p.targetY, currentInLerp);
+              p.x = frameLerp(p.x, dynamicTargetX, currentInLerp);
+              p.y = frameLerp(p.y, dynamicTargetY, currentInLerp);
             } else {
               p.x += p.vx * deltaTime;
               p.y += p.vy * deltaTime;
@@ -282,12 +295,10 @@ function HeroParticles({ isHovered = false }) {
 
         if (p.opacity <= 0) continue;
 
-        const normalX = p.hasTarget ? p.targetX / width : 0.5;
-        const staggerDelay = p.hasTarget ? 0.35 * normalX : 0;
-        const individualProgress = Math.max(0, Math.min(1, (hoverProgress - staggerDelay) / (1 - staggerDelay)));
-
         const isTextDot = p.hasTarget && individualProgress > 0.01;
         if (isTextDot) {
+          const easedIndividual = 1 - (1 - individualProgress) ** 3;
+          
           const dx = p.x - p.targetX;
           const dy = p.y - p.targetY;
           const distToTarget = Math.hypot(dx, dy);
@@ -295,11 +306,11 @@ function HeroParticles({ isHovered = false }) {
 
           const startRadius = p.radius * 0.85;
           const endRadius = p.radius * (nearTarget ? 1.25 : 0.95);
-          const displayRadius = startRadius + (endRadius - startRadius) * individualProgress;
+          const displayRadius = startRadius + (endRadius - startRadius) * easedIndividual;
 
           const startOpacity = p.opacity;
           const endOpacity = Math.min(p.opacity * (nearTarget ? 2.5 : 1.5), 0.98);
-          const displayOpacity = startOpacity + (endOpacity - startOpacity) * individualProgress;
+          const displayOpacity = startOpacity + (endOpacity - startOpacity) * easedIndividual;
 
           const opacityIdx = Math.max(0, Math.min(10, Math.round(displayOpacity * 10)));
           textBuckets[opacityIdx].push({ x: p.x, y: p.y, r: displayRadius });
