@@ -13,37 +13,43 @@
     transform: translateZ(0);
 }
 
-/* ── Unscrolled navbar: light theme styles (since hero is light gradient) ── */
+/* ── Unscrolled navbar: light/dark theme styles (since hero background is white) ── */
 .navbar:not(.navbar-scrolled) {
     border-bottom-color: rgba(0, 0, 0, 0.08);
 }
 
 .navbar:not(.navbar-scrolled) .logo-section .logo {
-    color: #0b1a30;
+    color: #000000;
     transition: color 0.5s ease;
 }
 
 .navbar:not(.navbar-scrolled) .msci-globe-icon {
-    color: rgba(11, 26, 48, 0.75);
+    color: rgba(0, 0, 0, 0.85);
     transition: color 0.5s ease;
 }
 
 .navbar:not(.navbar-scrolled) .nav-links a {
-    color: rgba(11, 26, 48, 0.8);
+    color: rgba(0, 0, 0, 0.85);
     transition: color 0.5s ease;
 }
 
 .navbar:not(.navbar-scrolled) .nav-links a:hover {
-    color: #0b1a30;
+    color: #000000;
 }
 
+.navbar:not(.navbar-scrolled) .mobile-menu-btn span {
+    background: #000000;
+    transition: background 0.5s ease;
+}
+
+/* ── Unscrolled navbar: light theme overrides for right-hand action items to be black ── */
 .navbar:not(.navbar-scrolled) .msci-get-in-touch-link {
-    color: rgba(11, 26, 48, 0.8);
+    color: rgba(0, 0, 0, 0.85);
     transition: color 0.5s ease;
 }
 
 .navbar:not(.navbar-scrolled) .msci-get-in-touch-link:hover {
-    color: #0b1a30;
+    color: #000000;
 }
 
 .navbar:not(.navbar-scrolled) .msci-search-bar {
@@ -52,27 +58,56 @@
 }
 
 .navbar:not(.navbar-scrolled) .msci-search-bar svg {
-    color: rgba(11, 26, 48, 0.6);
+    color: rgba(0, 0, 0, 0.65);
     transition: color 0.5s ease;
 }
 
 .navbar:not(.navbar-scrolled) .msci-search-bar input {
-    color: #0b1a30;
+    color: #000000;
     transition: color 0.5s ease;
 }
 
 .navbar:not(.navbar-scrolled) .msci-search-bar input::placeholder {
-    color: rgba(11, 26, 48, 0.45);
+    color: rgba(0, 0, 0, 0.55);
 }
 
 .navbar:not(.navbar-scrolled) .nav-actions .theme-btn {
-    color: rgba(11, 26, 48, 0.7);
+    color: rgba(0, 0, 0, 0.85);
     transition: color 0.5s ease;
 }
 
-.navbar:not(.navbar-scrolled) .mobile-menu-btn span {
-    background: #0b1a30;
+/* ── Unscrolled navbar: dark theme specific overrides for right-hand action items ── */
+[data-theme='dark'] .navbar:not(.navbar-scrolled) .msci-get-in-touch-link {
+    color: rgba(0, 0, 0, 0.85);
+    transition: color 0.5s ease;
+}
+
+[data-theme='dark'] .navbar:not(.navbar-scrolled) .msci-get-in-touch-link:hover {
+    color: #000000;
+}
+
+[data-theme='dark'] .navbar:not(.navbar-scrolled) .msci-search-bar {
+    background: rgba(0, 0, 0, 0.08);
     transition: background 0.5s ease;
+}
+
+[data-theme='dark'] .navbar:not(.navbar-scrolled) .msci-search-bar svg {
+    color: rgba(0, 0, 0, 0.65);
+    transition: color 0.5s ease;
+}
+
+[data-theme='dark'] .navbar:not(.navbar-scrolled) .msci-search-bar input {
+    color: #000000;
+    transition: color 0.5s ease;
+}
+
+[data-theme='dark'] .navbar:not(.navbar-scrolled) .msci-search-bar input::placeholder {
+    color: rgba(0, 0, 0, 0.65);
+}
+
+[data-theme='dark'] .navbar:not(.navbar-scrolled) .nav-actions .theme-btn {
+    color: rgba(0, 0, 0, 0.85);
+    transition: color 0.5s ease;
 }
 
 .navbar-scrolled {

@@ -64,7 +64,7 @@ function getTextDotPositions(w, h) {
 
   const imageData = octx.getImageData(0, 0, w, h);
   const rawPositions = [];
-  const sampleStep = 1; // Sample every pixel for ultra-fine precision
+  const sampleStep = 2; // Sample every 2nd pixel for high performance and fast loadtimes
 
   for (let y = 0; y < h; y += sampleStep) {
     for (let x = 0; x < w; x += sampleStep) {
@@ -91,7 +91,7 @@ function getTextDotPositions(w, h) {
     [rawPositions[i], rawPositions[j]] = [rawPositions[j], rawPositions[i]];
   }
 
-  const targetCount = 4500;
+  const targetCount = 2000; // Reduced from 4500 to keep high density but minimize render cost
   const positions = rawPositions.slice(0, targetCount);
 
   return positions;
@@ -151,7 +151,7 @@ function HeroParticles({ isHovered = false }) {
       const textPositions = getTextDotPositions(width, height);
 
       // Independent background particles arranged in a linear grid pattern
-      const bgSpacing = 24;
+      const bgSpacing = 30; // Increased spacing slightly to optimize background dot counts
       const cols = Math.ceil(width / bgSpacing);
       const rows = Math.ceil(height / bgSpacing);
       bgParticles = [];
@@ -164,13 +164,13 @@ function HeroParticles({ isHovered = false }) {
             y,
             anchorX: x,
             anchorY: y,
-            radius: randomBetween(0.55, 1.0),
+            radius: randomBetween(0.65, 0.95),
             opacity: 0,
-            targetOpacity: randomBetween(0.12, 0.42),
+            targetOpacity: randomBetween(0.4, 0.75),
             phaseX: Math.random() * Math.PI * 2,
             phaseY: Math.random() * Math.PI * 2,
             speed: randomBetween(0.0006, 0.0016),
-            amp: randomBetween(2, 4),
+            amp: randomBetween(0.8, 1.5),
             appearDelay: randomBetween(0, 1000),
             appearDuration: randomBetween(600, 1200),
           });
@@ -224,13 +224,13 @@ function HeroParticles({ isHovered = false }) {
         if (bucket.length === 0) continue;
 
         ctx.fillStyle = `rgba(${r},${g},${b},${Math.min(1, (i / 10) * alphaMultiplier)})`;
-
+        ctx.beginPath();
         for (let j = 0; j < bucket.length; j++) {
           const pt = bucket[j];
-          ctx.beginPath();
+          ctx.moveTo(pt.x + pt.r, pt.y);
           ctx.arc(pt.x, pt.y, pt.r, 0, Math.PI * 2);
-          ctx.fill();
         }
+        ctx.fill();
       }
     };
 
@@ -262,10 +262,11 @@ function HeroParticles({ isHovered = false }) {
       // Slowly float the whole word up and down in unison on the same place
       const wordYOffset = Math.sin(elapsed * 0.0006) * 8 * hoverProgress;
 
-      // Background dots color: always white in the hero banner
-      const pr = 255;
-      const pg = 255;
-      const pb = 255;
+      // Background dots color: white on blue background (light theme), black on white background (dark theme)
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const pr = isDark ? 0 : 255;
+      const pg = isDark ? 0 : 255;
+      const pb = isDark ? 0 : 255;
 
       clearBuckets();
 
@@ -288,8 +289,22 @@ function HeroParticles({ isHovered = false }) {
 
         if (p.opacity <= 0) continue;
 
-        const floatRadius = p.radius * 0.85;
-        const floatOpacity = Math.min(p.opacity * (1 + hoverProgress * 2.5), 0.82);
+        // Shine wave animation from left to right (8s cycle)
+        const wavePeriod = 8000;
+        const waveCycle = (elapsed % wavePeriod) / wavePeriod;
+        const waveCenterX = waveCycle * width * 1.6 - width * 0.3;
+        const waveWidth = width * 0.3;
+        
+        const distToWave = Math.abs(p.anchorX - waveCenterX);
+        let shineBoost = 0;
+        if (distToWave < waveWidth) {
+          const normDist = distToWave / waveWidth;
+          shineBoost = Math.cos(normDist * Math.PI / 2) * 0.45;
+        }
+
+        const floatRadius = p.radius * (1 + shineBoost * 0.35);
+        const baseOpacity = Math.min(p.opacity * (1.2 + hoverProgress * 1.8), 0.95);
+        const floatOpacity = Math.min(baseOpacity + shineBoost, 0.98);
         const opacityIdx = Math.max(0, Math.min(10, Math.round(floatOpacity * 10)));
         floatBuckets[opacityIdx].push({ x: p.x, y: p.y, r: floatRadius });
       }
@@ -334,8 +349,8 @@ function HeroParticles({ isHovered = false }) {
             
             const dx = p.x - p.targetX;
             const dy = p.y - (p.targetY + wordYOffset);
-            const distToTarget = Math.hypot(dx, dy);
-            const nearTarget = distToTarget < 6;
+            const distSq = dx * dx + dy * dy;
+            const nearTarget = distSq < 36; // Fast distance check without Math.hypot (6 * 6 = 36)
 
             const displayRadius = p.radius * (0.85 + (nearTarget ? 0.4 : 0.1) * easedIndividual);
 
@@ -350,7 +365,6 @@ function HeroParticles({ isHovered = false }) {
       }
 
       // Text particles color: gold in dark theme, blue in light theme
-      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
       const tr = isDark ? 200 : 27;
       const tg = isDark ? 169 : 80;
       const tb = isDark ? 110 : 220;
