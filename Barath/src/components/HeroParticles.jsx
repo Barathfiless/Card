@@ -249,6 +249,9 @@ function HeroParticles({ isHovered = false }) {
         hoverProgress = Math.max(0, hoverProgress - deltaTime / 60); // dissolves back in 0.5 seconds
       }
 
+      // Slowly float the whole word up and down in unison on the same place
+      const wordYOffset = Math.sin(elapsed * 0.0006) * 8 * hoverProgress;
+
       const pr = Math.round(frameLerp(255, 0, hoverProgress));
       const pg = Math.round(frameLerp(255, 0, hoverProgress));
       const pb = Math.round(frameLerp(255, 0, hoverProgress));
@@ -295,16 +298,9 @@ function HeroParticles({ isHovered = false }) {
           if (!prefersReducedMotion) {
             if (hovered) {
               if (individualProgress > 0) {
-                const easedIndividual = 1 - (1 - individualProgress) ** 3;
-                
-                // Zoom-in transition: start scaled down at 0.05x and expand to 1.0x from center
-                const currentScale = 0.05 + 0.95 * easedIndividual;
-                const dynamicTargetX = width / 2 + (p.targetX - width / 2) * currentScale;
-                const dynamicTargetY = height * 0.72 + (p.targetY - height * 0.72) * currentScale;
-
                 const currentInLerp = expDecay(inSpeed, deltaTime);
-                p.x = frameLerp(p.x, dynamicTargetX, currentInLerp);
-                p.y = frameLerp(p.y, dynamicTargetY, currentInLerp);
+                p.x = frameLerp(p.x, p.targetX, currentInLerp);
+                p.y = frameLerp(p.y, p.targetY + wordYOffset, currentInLerp);
               } else {
                 p.x += p.vx * deltaTime;
                 p.y += p.vy * deltaTime;
@@ -329,7 +325,7 @@ function HeroParticles({ isHovered = false }) {
             const easedIndividual = 1 - (1 - individualProgress) ** 3;
             
             const dx = p.x - p.targetX;
-            const dy = p.y - p.targetY;
+            const dy = p.y - (p.targetY + wordYOffset);
             const distToTarget = Math.hypot(dx, dy);
             const nearTarget = distToTarget < 6;
 
