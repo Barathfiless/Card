@@ -289,22 +289,66 @@ function HeroParticles({ isHovered = false }) {
 
         if (p.opacity <= 0) continue;
 
-        // Shine wave animation from left to right (8s cycle)
-        const wavePeriod = 8000;
+        // Bubble-like wave animation floating left to right (6.5s cycle for extra elegant, smooth glide)
+        const wavePeriod = 6500;
         const waveCycle = (elapsed % wavePeriod) / wavePeriod;
-        const waveCenterX = waveCycle * width * 1.6 - width * 0.3;
-        const waveWidth = width * 0.3;
         
-        const distToWave = Math.abs(p.anchorX - waveCenterX);
+        // Define bubble base radius (55% of canvas height)
+        const bubbleRadius = height * 0.55;
+        const waveThickness = 160; // Thicker transition thickness for the softest, smoothest glow
+        
+        // Sweep center from completely left offscreen to completely right offscreen
+        // (Includes radius + waveThickness to ensure seamless wrap-around with zero pop)
+        const startX = -(bubbleRadius + waveThickness + 20);
+        const endX = width + bubbleRadius + waveThickness + 20;
+        const bubbleX = startX + waveCycle * (endX - startX);
+        
+        // Travel along a gorgeous, organic wave path across the screen (Y depends on X and time)
+        const bubbleY = height * 0.5 
+          + Math.sin(bubbleX * 0.003 + elapsed * 0.0008) * (height * 0.16)
+          + Math.cos(bubbleX * 0.0015 - elapsed * 0.0004) * (height * 0.06);
+        
+        // Calculate vector from bubble center to particle
+        const dx = p.anchorX - bubbleX;
+        const dy = p.anchorY - bubbleY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        
+        // Calculate angle to add organic, liquid-like deformation to the bubble boundary
+        const angle = Math.atan2(dy, dx);
+        const dynamicRadius = bubbleRadius * (1 + 
+          Math.sin(angle * 3 + elapsed * 0.0025) * 0.07 + 
+          Math.cos(angle * 5 - elapsed * 0.0018) * 0.04
+        );
+        
+        // Outer ring highlight of the organic bubble
+        const distToEdge = Math.abs(dist - dynamicRadius);
         let shineBoost = 0;
-        if (distToWave < waveWidth) {
-          const normDist = distToWave / waveWidth;
-          shineBoost = Math.cos(normDist * Math.PI / 2) * 0.45;
+        if (distToEdge < waveThickness) {
+          const normDist = distToEdge / waveThickness;
+          // Cosine interpolation for the smoothest brightness fade
+          shineBoost = Math.cos(normDist * Math.PI / 2) * 0.82; // Shiniest peak glow
         }
+        
+        // Specular reflection highlight on the top-left of the bubble (makes it look glossy & shiny)
+        const specX = bubbleX - dynamicRadius * 0.32;
+        const specY = bubbleY - dynamicRadius * 0.32;
+        const specDx = p.anchorX - specX;
+        const specDy = p.anchorY - specY;
+        const specDist = Math.sqrt(specDx * specDx + specDy * specDy);
+        const specRadius = dynamicRadius * 0.35;
+        
+        let specBoost = 0;
+        if (specDist < specRadius) {
+          const normSpec = specDist / specRadius;
+          specBoost = Math.cos(normSpec * Math.PI / 2) * 0.90; // Bright specular shine
+        }
+        
+        // Combine ring glow and specular reflection
+        const totalShine = Math.max(shineBoost, specBoost);
 
-        const floatRadius = p.radius * (1 + shineBoost * 0.35);
+        const floatRadius = p.radius * (1 + totalShine * 1.05); // Thicker dots inside the wave/specular regions
         const baseOpacity = Math.min(p.opacity * (1.2 + hoverProgress * 1.8), 0.95);
-        const floatOpacity = Math.min(baseOpacity + shineBoost, 0.98);
+        const floatOpacity = Math.min(baseOpacity + totalShine * 1.4, 0.99);
         const opacityIdx = Math.max(0, Math.min(10, Math.round(floatOpacity * 10)));
         floatBuckets[opacityIdx].push({ x: p.x, y: p.y, r: floatRadius });
       }
