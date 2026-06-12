@@ -150,14 +150,9 @@ function HomeHero() {
                   <img
                     src="/hero-profile.png"
                     alt="Barath M"
-                    className={`msci-hero-profile-img${profileHovered ? ' hidden' : ''}`}
+                    className="msci-hero-profile-img"
                     width={420}
                     height={525}
-                  />
-                  <img
-                    src="/spiderman-hover.png"
-                    alt="Spider-Man"
-                    className={`msci-hero-profile-hover-img${profileHovered ? ' visible' : ''}`}
                   />
                 </div>
               </div>

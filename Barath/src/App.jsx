@@ -6,6 +6,7 @@ import ProjectDetail from './components/ProjectDetail';
 import Footer from './components/Footer';
 import Intro from './components/Intro';
 import CustomCursor from './components/CustomCursor';
+import VoiceAssistant from './components/VoiceAssistant';
 import Login from './components/Login';
 import ProtectedRoute from './admin/ProtectedRoute';
 import AdminLayout from './admin/AdminLayout';
@@ -147,6 +148,7 @@ function App() {
       
       {!hideHeaderFooter && <Footer />}
       {!isAdminPage && <CustomCursor />}
+      {!isAdminPage && <VoiceAssistant />}
     </>
   );
 }

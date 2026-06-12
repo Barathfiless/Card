@@ -1,0 +1,372 @@
+/* Voice Assistant Floating Container */
+.voice-assistant-container {
+  position: fixed;
+  bottom: 28px; /* Parallel to the bottom dock (which is at bottom: 24px + padding) */
+  right: 30px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  pointer-events: none; /* Let clicks pass through except for the orb itself */
+  font-family: 'Outfit', 'Inter', -apple-system, sans-serif;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Status Indicator Tooltip */
+.voice-assistant-tooltip {
+  margin-bottom: 12px;
+  padding: 8px 14px;
+  background: rgba(15, 15, 20, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 500;
+  max-width: 240px;
+  text-align: center;
+  pointer-events: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3),
+              0 0 15px rgba(138, 43, 226, 0.1);
+  opacity: 0;
+  transform: translateY(10px) scale(0.95);
+  animation: va-fade-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.voice-assistant-tooltip.listening {
+  border-color: rgba(255, 107, 107, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4),
+              0 0 20px rgba(255, 107, 107, 0.2);
+}
+
+.voice-assistant-tooltip.success {
+  border-color: rgba(46, 204, 113, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4),
+              0 0 20px rgba(46, 204, 113, 0.2);
+}
+
+.voice-assistant-tooltip .transcript-preview {
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.75rem;
+}
+
+.voice-assistant-tooltip .keyboard-hint {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}
+
+/* Glass Orb Button */
+.voice-assistant-orb {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  cursor: pointer;
+  pointer-events: auto;
+  outline: none;
+  border: none;
+  background: #000;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.5),
+    inset 0 0 12px rgba(255, 255, 255, 0.1),
+    0 0 15px rgba(147, 51, 234, 0.2);
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.voice-assistant-orb::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* Outer Ripple Waves (when listening) */
+.voice-assistant-ripple-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.voice-assistant-ripple {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(138, 43, 226, 0.4);
+  opacity: 0;
+  animation: va-ripple 2s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+}
+
+.voice-assistant-ripple:nth-child(2) {
+  animation-delay: 0.6s;
+  border-color: rgba(255, 107, 107, 0.4);
+}
+
+.voice-assistant-ripple:nth-child(3) {
+  animation-delay: 1.2s;
+  border-color: rgba(52, 152, 219, 0.4);
+}
+
+/* Swirling Core Gradients mimicking the Glass Orb */
+.orb-glow-layer-1, 
+.orb-glow-layer-2, 
+.orb-glow-layer-3 {
+  position: absolute;
+  border-radius: 50%;
+  mix-blend-mode: screen;
+  filter: blur(4px);
+  opacity: 0.75;
+  transition: all 0.8s ease;
+}
+
+/* Layer 1: Orange/Gold Swirl */
+.orb-glow-layer-1 {
+  top: -5%;
+  left: -5%;
+  width: 110%;
+  height: 110%;
+  background: radial-gradient(circle at 70% 30%, #ff7e40 0%, transparent 60%);
+  animation: va-swirl-cw 12s linear infinite;
+}
+
+/* Layer 2: Purple/Indigo Swirl */
+.orb-glow-layer-2 {
+  top: -10%;
+  left: -10%;
+  width: 120%;
+  height: 120%;
+  background: radial-gradient(circle at 20% 70%, #9333ea 0%, transparent 60%);
+  animation: va-swirl-ccw 16s linear infinite;
+}
+
+/* Layer 3: Cyan/Blue Swirl */
+.orb-glow-layer-3 {
+  top: -15%;
+  left: -15%;
+  width: 130%;
+  height: 130%;
+  background: radial-gradient(circle at 40% 20%, #06b6d4 0%, transparent 60%);
+  animation: va-swirl-cw 10s linear infinite;
+}
+
+/* Hot Pink Highlight Core */
+.orb-core-pink {
+  position: absolute;
+  width: 80%;
+  height: 80%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, #ec4899 0%, transparent 70%);
+  mix-blend-mode: color-dodge;
+  filter: blur(2px);
+  opacity: 0.6;
+  animation: va-pulse-subtle 4s ease-in-out infinite alternate;
+}
+
+/* Glass Reflection Highlight Arc */
+.orb-glass-highlight {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: calc(100% - 12px);
+  height: calc(100% - 12px);
+  border-radius: 50%;
+  background: radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0) 55%);
+  z-index: 5;
+  pointer-events: none;
+}
+
+.orb-glass-highlight-rim {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: calc(100% - 6px);
+  height: calc(100% - 6px);
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.05) 100%);
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* Swirling Core Gradients mimicking the Glass Orb */
+.voice-assistant-container.listening .voice-assistant-orb {
+  transform: scale(1.1);
+  box-shadow: 
+    0 15px 40px rgba(0, 0, 0, 0.6),
+    inset 0 0 15px rgba(255, 255, 255, 0.2),
+    0 0 25px rgba(255, 107, 107, 0.5),
+    0 0 50px rgba(147, 51, 234, 0.3);
+}
+
+.voice-assistant-container.listening .orb-glow-layer-1 {
+  background: radial-gradient(circle at 60% 40%, #ff5252 0%, transparent 70%);
+  animation-duration: 4s;
+  opacity: 0.9;
+}
+
+.voice-assistant-container.listening .orb-glow-layer-2 {
+  background: radial-gradient(circle at 30% 60%, #e040fb 0%, transparent 70%);
+  animation-duration: 5s;
+  opacity: 0.9;
+}
+
+.voice-assistant-container.listening .orb-glow-layer-3 {
+  background: radial-gradient(circle at 50% 10%, #00e5ff 0%, transparent 70%);
+  animation-duration: 3s;
+  opacity: 0.9;
+}
+
+.voice-assistant-container.listening .orb-core-pink {
+  background: radial-gradient(circle at 50% 50%, #ff4081 0%, transparent 80%);
+  animation: va-pulse-fast 1s ease-in-out infinite alternate;
+  opacity: 0.8;
+}
+
+/* SUCCESS / NAVIGATION SUCCESS STATE */
+.voice-assistant-container.success .voice-assistant-orb {
+  transform: scale(1.15);
+  box-shadow: 
+    0 15px 40px rgba(0, 0, 0, 0.6),
+    inset 0 0 15px rgba(255, 255, 255, 0.2),
+    0 0 35px rgba(46, 204, 113, 0.8);
+}
+
+.voice-assistant-container.success .orb-glow-layer-1,
+.voice-assistant-container.success .orb-glow-layer-2,
+.voice-assistant-container.success .orb-glow-layer-3 {
+  background: radial-gradient(circle at 50% 50%, #2ecc71 0%, transparent 60%);
+  opacity: 0.95;
+}
+
+.voice-assistant-container.success .orb-core-pink {
+  background: radial-gradient(circle at 50% 50%, #2ecc71 0%, transparent 80%);
+  opacity: 0.9;
+}
+
+/* ERROR STATE */
+.voice-assistant-container.error-state .voice-assistant-orb {
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.5),
+    inset 0 0 12px rgba(255, 255, 255, 0.1),
+    0 0 25px rgba(231, 76, 60, 0.6);
+}
+
+.voice-assistant-container.error-state .orb-glow-layer-1,
+.voice-assistant-container.error-state .orb-glow-layer-2,
+.voice-assistant-container.error-state .orb-glow-layer-3 {
+  background: radial-gradient(circle at 50% 50%, #e74c3c 0%, transparent 65%);
+  opacity: 0.8;
+}
+
+.voice-assistant-container.error-state .orb-core-pink {
+  background: radial-gradient(circle at 50% 50%, #c0392b 0%, transparent 80%);
+  opacity: 0.7;
+}
+
+/* Keyframe Animations */
+@keyframes va-fade-in {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes va-ripple {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+@keyframes va-swirl-cw {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes va-swirl-ccw {
+  0% {
+    transform: rotate(360deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes va-pulse-subtle {
+  0% {
+    transform: scale(0.9) rotate(0deg);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1.1) rotate(45deg);
+    opacity: 0.7;
+  }
+}
+
+@keyframes va-pulse-fast {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.2);
+    opacity: 0.95;
+  }
+}
+
+/* Hover Zoom effect */
+.voice-assistant-orb:hover {
+  transform: scale(1.05);
+}
+
+.voice-assistant-container.listening .voice-assistant-orb:hover {
+  transform: scale(1.15);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .voice-assistant-container {
+    bottom: 20px; /* Parallel to the mobile dock (which is at bottom: 16px) */
+    right: 20px;
+  }
+  .voice-assistant-orb {
+    width: 52px;
+    height: 52px;
+  }
+  .voice-assistant-tooltip {
+    max-width: 200px;
+    font-size: 0.75rem;
+  }
+}
