@@ -150,22 +150,32 @@ function HeroParticles({ isHovered = false }) {
       if (!width || !height) return;
       const textPositions = getTextDotPositions(width, height);
 
-      // Independent background particles (medium density, 800 dots)
-      bgParticles = Array.from({ length: 800 }, () => {
-        const x = Math.random() * width;
-        const y = Math.random() * height;
-        return {
-          x,
-          y,
-          radius: randomBetween(0.5, 1.1),
-          opacity: 0,
-          targetOpacity: randomBetween(0.12, 0.55),
-          vx: randomBetween(-0.12, 0.12),
-          vy: randomBetween(-0.12, 0.12),
-          appearDelay: randomBetween(0, 1500),
-          appearDuration: randomBetween(800, 2000),
-        };
-      });
+      // Independent background particles arranged in a linear grid pattern
+      const bgSpacing = 24;
+      const cols = Math.ceil(width / bgSpacing);
+      const rows = Math.ceil(height / bgSpacing);
+      bgParticles = [];
+      for (let r = 0; r <= rows; r++) {
+        for (let c = 0; c <= cols; c++) {
+          const x = c * bgSpacing;
+          const y = r * bgSpacing;
+          bgParticles.push({
+            x,
+            y,
+            anchorX: x,
+            anchorY: y,
+            radius: randomBetween(0.55, 1.0),
+            opacity: 0,
+            targetOpacity: randomBetween(0.12, 0.42),
+            phaseX: Math.random() * Math.PI * 2,
+            phaseY: Math.random() * Math.PI * 2,
+            speed: randomBetween(0.0006, 0.0016),
+            amp: randomBetween(2, 4),
+            appearDelay: randomBetween(0, 1000),
+            appearDuration: randomBetween(600, 1200),
+          });
+        }
+      }
 
       // Independent text outline particles
       textParticles = textPositions.map((pos) => {
@@ -270,13 +280,10 @@ function HeroParticles({ isHovered = false }) {
           }
         }
 
-        p.x += p.vx * deltaTime;
-        p.y += p.vy * deltaTime;
-        
-        if (p.x < -4) p.x = width + 4;
-        if (p.x > width + 4) p.x = -4;
-        if (p.y < -4) p.y = height + 4;
-        if (p.y > height + 4) p.y = -4;
+        // Float slowly in place around its linear grid anchor position
+        const floatTime = elapsed * p.speed;
+        p.x = p.anchorX + Math.sin(floatTime + p.phaseX) * p.amp;
+        p.y = p.anchorY + Math.cos(floatTime + p.phaseY) * p.amp;
 
         if (p.opacity <= 0) continue;
 
