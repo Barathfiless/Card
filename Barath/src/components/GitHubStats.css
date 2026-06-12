@@ -31,11 +31,11 @@
 }
 
 [data-theme='dark'] .msci-github-stats-title {
-    color: #4da3ff;
+    color: var(--msci-gold-high);
 }
 
 [data-theme='dark'] .msci-github-stats-subtitle {
-    color: #8faefc;
+    color: var(--msci-gold-light);
 }
 
 .msci-github-stats-card {
@@ -106,7 +106,7 @@
 
 [data-theme='dark'] .msci-github-stats-year-btn.active {
     background: #0f172a;
-    color: #4da3ff;
+    color: var(--msci-gold);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
@@ -129,13 +129,13 @@
 }
 
 [data-theme='dark'] .msci-github-stats-profile-link {
-    color: #4da3ff;
-    border-color: rgba(77, 163, 255, 0.35);
+    color: var(--msci-gold);
+    border-color: rgba(200, 169, 110, 0.35);
 }
 
 [data-theme='dark'] .msci-github-stats-profile-link:hover {
-    background: rgba(77, 163, 255, 0.12);
-    color: #7bb8ff;
+    background: rgba(200, 169, 110, 0.12);
+    color: var(--msci-gold-light);
 }
 
 .msci-github-stats-calendar-wrap {

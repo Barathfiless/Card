@@ -275,9 +275,10 @@
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.09);
 }
 
-[data-theme='dark'] .pd-card {
+[data-theme='dark'] .pd-card,
+[data-theme='dark'] .pd-card-redesign {
   background: var(--card-bg);
-  border-color: rgba(255, 255, 255, 0.1);
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 

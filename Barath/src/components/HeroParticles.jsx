@@ -262,9 +262,10 @@ function HeroParticles({ isHovered = false }) {
       // Slowly float the whole word up and down in unison on the same place
       const wordYOffset = Math.sin(elapsed * 0.0006) * 8 * hoverProgress;
 
-      const pr = Math.round(frameLerp(255, 0, hoverProgress));
-      const pg = Math.round(frameLerp(255, 0, hoverProgress));
-      const pb = Math.round(frameLerp(255, 0, hoverProgress));
+      // Background dots color: always white in the hero banner
+      const pr = 255;
+      const pg = 255;
+      const pb = 255;
 
       clearBuckets();
 
@@ -348,10 +349,11 @@ function HeroParticles({ isHovered = false }) {
         }
       }
 
-      // Calculate text dot color for this frame
-      const tr = Math.round(pr + (27 - pr) * hoverProgress);
-      const tg = Math.round(pg + (80 - pg) * hoverProgress);
-      const tb = Math.round(pb + (220 - pb) * hoverProgress);
+      // Text particles color: gold in dark theme, blue in light theme
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const tr = isDark ? 200 : 27;
+      const tg = isDark ? 169 : 80;
+      const tb = isDark ? 110 : 220;
 
       drawBuckets(textBuckets, tr, tg, tb, 1.4);
       drawBuckets(floatBuckets, pr, pg, pb, 1.0);

@@ -130,6 +130,8 @@ function HomeHero() {
     <div className="home-hero-container">
       {/* 1. Dark Gradient Hero Banner */}
       <section className={`msci-hero-banner${profileHovered ? ' hero-hovered' : ''}`}>
+        <div className="msci-cloud-blob blob-top-right"></div>
+        <div className="msci-cloud-blob blob-bottom-left"></div>
         <HeroParticles isHovered={profileHovered} />
         <div className="container">
           <div className="msci-hero-grid">

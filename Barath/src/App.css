@@ -13,64 +13,64 @@
     transform: translateZ(0);
 }
 
-/* ── Hero image hover: flip navbar to light theme ── */
-.hero-image-hovered .navbar {
+/* ── Unscrolled navbar: light theme styles (since hero is light gradient) ── */
+.navbar:not(.navbar-scrolled) {
     border-bottom-color: rgba(0, 0, 0, 0.08);
 }
 
-.hero-image-hovered .logo-section .logo {
+.navbar:not(.navbar-scrolled) .logo-section .logo {
     color: #0b1a30;
     transition: color 0.5s ease;
 }
 
-.hero-image-hovered .msci-globe-icon {
+.navbar:not(.navbar-scrolled) .msci-globe-icon {
     color: rgba(11, 26, 48, 0.75);
     transition: color 0.5s ease;
 }
 
-.hero-image-hovered .nav-links a {
+.navbar:not(.navbar-scrolled) .nav-links a {
     color: rgba(11, 26, 48, 0.8);
     transition: color 0.5s ease;
 }
 
-.hero-image-hovered .nav-links a:hover {
+.navbar:not(.navbar-scrolled) .nav-links a:hover {
     color: #0b1a30;
 }
 
-.hero-image-hovered .msci-get-in-touch-link {
+.navbar:not(.navbar-scrolled) .msci-get-in-touch-link {
     color: rgba(11, 26, 48, 0.8);
     transition: color 0.5s ease;
 }
 
-.hero-image-hovered .msci-get-in-touch-link:hover {
+.navbar:not(.navbar-scrolled) .msci-get-in-touch-link:hover {
     color: #0b1a30;
 }
 
-.hero-image-hovered .msci-search-bar {
+.navbar:not(.navbar-scrolled) .msci-search-bar {
     background: rgba(0, 0, 0, 0.07);
     transition: background 0.5s ease;
 }
 
-.hero-image-hovered .msci-search-bar svg {
+.navbar:not(.navbar-scrolled) .msci-search-bar svg {
     color: rgba(11, 26, 48, 0.6);
     transition: color 0.5s ease;
 }
 
-.hero-image-hovered .msci-search-bar input {
+.navbar:not(.navbar-scrolled) .msci-search-bar input {
     color: #0b1a30;
     transition: color 0.5s ease;
 }
 
-.hero-image-hovered .msci-search-bar input::placeholder {
+.navbar:not(.navbar-scrolled) .msci-search-bar input::placeholder {
     color: rgba(11, 26, 48, 0.45);
 }
 
-.hero-image-hovered .nav-actions .theme-btn {
+.navbar:not(.navbar-scrolled) .nav-actions .theme-btn {
     color: rgba(11, 26, 48, 0.7);
     transition: color 0.5s ease;
 }
 
-.hero-image-hovered .mobile-menu-btn span {
+.navbar:not(.navbar-scrolled) .mobile-menu-btn span {
     background: #0b1a30;
     transition: background 0.5s ease;
 }
