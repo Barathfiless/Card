@@ -270,9 +270,10 @@ function HeroParticles({ isHovered = false }) {
 
       clearBuckets();
 
-      // 1. Process and draw background floating particles
-      for (let pi = 0; pi < bgParticles.length; pi++) {
-        const p = bgParticles[pi];
+      // 1. Process and draw background floating particles (only in light theme / blue overlay mode)
+      if (!isDark) {
+        for (let pi = 0; pi < bgParticles.length; pi++) {
+          const p = bgParticles[pi];
 
         if (p.opacity < p.targetOpacity) {
           const appearElapsed = elapsed - p.appearDelay;
@@ -351,6 +352,7 @@ function HeroParticles({ isHovered = false }) {
         const floatOpacity = Math.min(baseOpacity + totalShine * 1.4, 0.99);
         const opacityIdx = Math.max(0, Math.min(10, Math.round(floatOpacity * 10)));
         floatBuckets[opacityIdx].push({ x: p.x, y: p.y, r: floatRadius });
+        }
       }
 
       // 2. Process and draw text outline particles (only when hovered or text is forming/dissolving)
@@ -414,7 +416,9 @@ function HeroParticles({ isHovered = false }) {
       const tb = isDark ? 110 : 220;
 
       drawBuckets(textBuckets, tr, tg, tb, 1.4);
-      drawBuckets(floatBuckets, pr, pg, pb, 1.0);
+      if (!isDark) {
+        drawBuckets(floatBuckets, pr, pg, pb, 1.0);
+      }
     };
 
     const onVisibilityChange = () => {
