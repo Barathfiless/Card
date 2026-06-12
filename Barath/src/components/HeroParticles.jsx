@@ -119,7 +119,8 @@ function HeroParticles({ isHovered = false }) {
     if (!ctx) return undefined;
 
     let animationId = 0;
-    let particles = [];
+    let bgParticles = [];
+    let textParticles = [];
     let width = 0;
     let height = 0;
     let startTime = performance.now();
@@ -148,28 +149,38 @@ function HeroParticles({ isHovered = false }) {
     const createParticles = () => {
       if (!width || !height) return;
       const textPositions = getTextDotPositions(width, height);
-      const count = textPositions.length + 200;
 
-      particles = Array.from({ length: count }, (_, i) => {
+      // Independent background particles (medium density, 800 dots)
+      bgParticles = Array.from({ length: 800 }, () => {
         const x = Math.random() * width;
         const y = Math.random() * height;
-        const textPos = textPositions[i];
-
         return {
           x,
           y,
-          idleX: x,
-          idleY: y,
-          targetX: textPos ? textPos.x : x,
-          targetY: textPos ? textPos.y : y,
-          hasTarget: !!textPos,
           radius: randomBetween(0.5, 1.1),
           opacity: 0,
           targetOpacity: randomBetween(0.12, 0.55),
           vx: randomBetween(-0.12, 0.12),
           vy: randomBetween(-0.12, 0.12),
-          appearDelay: randomBetween(0, 2200),
-          appearDuration: randomBetween(900, 2400),
+          appearDelay: randomBetween(0, 1500),
+          appearDuration: randomBetween(800, 2000),
+        };
+      });
+
+      // Independent text outline particles
+      textParticles = textPositions.map((pos) => {
+        const x = Math.random() * width;
+        const y = Math.random() * height;
+        return {
+          x,
+          y,
+          idleX: x,
+          idleY: y,
+          targetX: pos.x,
+          targetY: pos.y,
+          radius: randomBetween(0.5, 1.1),
+          vx: randomBetween(-0.12, 0.12),
+          vy: randomBetween(-0.12, 0.12),
         };
       });
     };
@@ -224,7 +235,7 @@ function HeroParticles({ isHovered = false }) {
       const inSpeed = 0.28;
       const outSpeed = 0.16;
 
-      // Linear time-based hoverProgress accumulator (exactly 1.5 seconds/180 frames to fully assemble)
+      // Linear time-based hoverProgress accumulator (starts immediately)
       if (hovered) {
         hoverProgress = Math.min(1, hoverProgress + deltaTime / 180);
       } else {
@@ -237,8 +248,9 @@ function HeroParticles({ isHovered = false }) {
 
       clearBuckets();
 
-      for (let pi = 0; pi < particles.length; pi++) {
-        const p = particles[pi];
+      // 1. Process and draw background floating particles
+      for (let pi = 0; pi < bgParticles.length; pi++) {
+        const p = bgParticles[pi];
 
         if (p.opacity < p.targetOpacity) {
           const appearElapsed = elapsed - p.appearDelay;
@@ -248,77 +260,74 @@ function HeroParticles({ isHovered = false }) {
           }
         }
 
-        const normalX = p.hasTarget ? p.targetX / width : 0.5;
-        const staggerDelay = p.hasTarget ? 0.35 * normalX : 0;
-        const individualProgress = Math.max(0, Math.min(1, (hoverProgress - staggerDelay) / (1 - staggerDelay)));
+        p.x += p.vx * deltaTime;
+        p.y += p.vy * deltaTime;
+        
+        if (p.x < -4) p.x = width + 4;
+        if (p.x > width + 4) p.x = -4;
+        if (p.y < -4) p.y = height + 4;
+        if (p.y > height + 4) p.y = -4;
 
-        if (!prefersReducedMotion) {
-          if (hovered && p.hasTarget) {
-            if (individualProgress > 0) {
-              const easedIndividual = 1 - (1 - individualProgress) ** 3;
-              
-              // Zoom in/expand from behind Spider-Man: start scaled down at 0.05x and expand to 1.0x
-              const currentScale = 0.05 + 0.95 * easedIndividual;
-              const dynamicTargetX = width / 2 + (p.targetX - width / 2) * currentScale;
-              const dynamicTargetY = height * 0.72 + (p.targetY - height * 0.72) * currentScale;
+        if (p.opacity <= 0) continue;
 
-              const currentInLerp = expDecay(inSpeed, deltaTime);
-              p.x = frameLerp(p.x, dynamicTargetX, currentInLerp);
-              p.y = frameLerp(p.y, dynamicTargetY, currentInLerp);
+        const floatRadius = p.radius * 0.85;
+        const floatOpacity = Math.min(p.opacity * (1 + hoverProgress * 2.5), 0.82);
+        const opacityIdx = Math.max(0, Math.min(10, Math.round(floatOpacity * 10)));
+        floatBuckets[opacityIdx].push({ x: p.x, y: p.y, r: floatRadius });
+      }
+
+      // 2. Process and draw text outline particles (only when hovered or text is forming/dissolving)
+      if (hoverProgress > 0.001 || hovered) {
+        for (let pi = 0; pi < textParticles.length; pi++) {
+          const p = textParticles[pi];
+
+          const normalX = p.targetX / width;
+          const staggerDelay = 0.35 * normalX;
+          const individualProgress = Math.max(0, Math.min(1, (hoverProgress - staggerDelay) / (1 - staggerDelay)));
+
+          if (!prefersReducedMotion) {
+            if (hovered) {
+              if (individualProgress > 0) {
+                const currentInLerp = expDecay(inSpeed, deltaTime);
+                p.x = frameLerp(p.x, p.targetX, currentInLerp);
+                p.y = frameLerp(p.y, p.targetY, currentInLerp);
+              } else {
+                p.x += p.vx * deltaTime;
+                p.y += p.vy * deltaTime;
+              }
+              p.idleX += p.vx * deltaTime;
+              p.idleY += p.vy * deltaTime;
             } else {
-              p.x += p.vx * deltaTime;
-              p.y += p.vy * deltaTime;
+              const currentOutLerp = expDecay(outSpeed, deltaTime);
+              p.x = frameLerp(p.x, p.idleX, currentOutLerp);
+              p.y = frameLerp(p.y, p.idleY, currentOutLerp);
+              p.idleX += p.vx * deltaTime;
+              p.idleY += p.vy * deltaTime;
             }
-            p.idleX += p.vx * deltaTime;
-            p.idleY += p.vy * deltaTime;
-          } else if (!hovered && p.hasTarget) {
-            const currentOutLerp = expDecay(outSpeed, deltaTime);
-            p.x = frameLerp(p.x, p.idleX, currentOutLerp);
-            p.y = frameLerp(p.y, p.idleY, currentOutLerp);
-            p.idleX += p.vx * deltaTime;
-            p.idleY += p.vy * deltaTime;
+
             if (p.idleX < -4) p.idleX = width + 4;
             if (p.idleX > width + 4) p.idleX = -4;
             if (p.idleY < -4) p.idleY = height + 4;
             if (p.idleY > height + 4) p.idleY = -4;
-          } else {
-            p.x += p.vx * deltaTime;
-            p.y += p.vy * deltaTime;
-            p.idleX = p.x;
-            p.idleY = p.y;
-            if (p.x < -4) { p.x = width + 4; p.idleX = p.x; }
-            if (p.x > width + 4) { p.x = -4; p.idleX = p.x; }
-            if (p.y < -4) { p.y = height + 4; p.idleY = p.y; }
-            if (p.y > height + 4) { p.y = -4; p.idleY = p.y; }
           }
-        }
 
-        if (p.opacity <= 0) continue;
+          if (individualProgress > 0.01) {
+            const easedIndividual = 1 - (1 - individualProgress) ** 3;
+            
+            const dx = p.x - p.targetX;
+            const dy = p.y - p.targetY;
+            const distToTarget = Math.hypot(dx, dy);
+            const nearTarget = distToTarget < 6;
 
-        const isTextDot = p.hasTarget && individualProgress > 0.01;
-        if (isTextDot) {
-          const easedIndividual = 1 - (1 - individualProgress) ** 3;
-          
-          const dx = p.x - p.targetX;
-          const dy = p.y - p.targetY;
-          const distToTarget = Math.hypot(dx, dy);
-          const nearTarget = distToTarget < 6;
+            const displayRadius = p.radius * (0.85 + (nearTarget ? 0.4 : 0.1) * easedIndividual);
 
-          const startRadius = p.radius * 0.85;
-          const endRadius = p.radius * (nearTarget ? 1.25 : 0.95);
-          const displayRadius = startRadius + (endRadius - startRadius) * easedIndividual;
+            const targetOpacity = 0.45;
+            const endOpacity = Math.min(targetOpacity * (nearTarget ? 2.0 : 1.4), 0.98);
+            const displayOpacity = endOpacity * easedIndividual;
 
-          const startOpacity = p.opacity;
-          const endOpacity = Math.min(p.opacity * (nearTarget ? 2.5 : 1.5), 0.98);
-          const displayOpacity = startOpacity + (endOpacity - startOpacity) * easedIndividual;
-
-          const opacityIdx = Math.max(0, Math.min(10, Math.round(displayOpacity * 10)));
-          textBuckets[opacityIdx].push({ x: p.x, y: p.y, r: displayRadius });
-        } else {
-          const floatRadius = p.radius * 0.85;
-          const floatOpacity = Math.min(p.opacity * (1 + hoverProgress * 2.5), 0.82);
-          const opacityIdx = Math.max(0, Math.min(10, Math.round(floatOpacity * 10)));
-          floatBuckets[opacityIdx].push({ x: p.x, y: p.y, r: floatRadius });
+            const opacityIdx = Math.max(0, Math.min(10, Math.round(displayOpacity * 10)));
+            textBuckets[opacityIdx].push({ x: p.x, y: p.y, r: displayRadius });
+          }
         }
       }
 
