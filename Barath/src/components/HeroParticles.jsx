@@ -188,6 +188,7 @@ function HeroParticles({ isHovered = false }) {
           idleY: y,
           targetX: pos.x,
           targetY: pos.y,
+          normalX: pos.x / width,
           radius: randomBetween(0.5, 1.1),
           vx: randomBetween(-0.12, 0.12),
           vy: randomBetween(-0.12, 0.12),
@@ -262,18 +263,39 @@ function HeroParticles({ isHovered = false }) {
       // Slowly float the whole word up and down in unison on the same place
       const wordYOffset = Math.sin(elapsed * 0.0006) * 8 * hoverProgress;
 
-      // Background dots color: white on blue background (light theme), black on white background (dark theme)
+      // Background dots color: always white for a clean shimmering contrast
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      const pr = isDark ? 0 : 255;
-      const pg = isDark ? 0 : 255;
-      const pb = isDark ? 0 : 255;
+      const pr = 255;
+      const pg = 255;
+      const pb = 255;
 
       clearBuckets();
 
-      // 1. Process and draw background floating particles (only in light theme / blue overlay mode)
-      if (!isDark) {
-        for (let pi = 0; pi < bgParticles.length; pi++) {
-          const p = bgParticles[pi];
+      // Pre-calculate bubble wave path global variables once per frame (enormous CPU optimization!)
+      const wavePeriod = 6500;
+      const waveCycle = (elapsed % wavePeriod) / wavePeriod;
+      
+      // Define bubble base radius (55% of canvas height)
+      const bubbleRadius = height * 0.55;
+      const waveThickness = 160; // Thicker transition thickness for the softest, smoothest glow
+      
+      // Sweep center from completely left offscreen to completely right offscreen
+      const startX = -(bubbleRadius + waveThickness + 20);
+      const endX = width + bubbleRadius + waveThickness + 20;
+      const bubbleX = startX + waveCycle * (endX - startX);
+      
+      // Travel along a gorgeous, organic wave path across the screen (Y depends on X and time)
+      const bubbleY = height * 0.5 
+        + Math.sin(bubbleX * 0.003 + elapsed * 0.0008) * (height * 0.16)
+        + Math.cos(bubbleX * 0.0015 - elapsed * 0.0004) * (height * 0.06);
+        
+      // Pre-calculate squared distance threshold for quick early-exit/bounding check
+      const maxAffectedDist = bubbleRadius * 1.12 + waveThickness;
+      const maxAffectedDistSq = maxAffectedDist * maxAffectedDist;
+
+      // 1. Process and draw background floating particles
+      for (let pi = 0; pi < bgParticles.length; pi++) {
+        const p = bgParticles[pi];
 
         if (p.opacity < p.targetOpacity) {
           const appearElapsed = elapsed - p.appearDelay;
@@ -290,69 +312,50 @@ function HeroParticles({ isHovered = false }) {
 
         if (p.opacity <= 0) continue;
 
-        // Bubble-like wave animation floating left to right (6.5s cycle for extra elegant, smooth glide)
-        const wavePeriod = 6500;
-        const waveCycle = (elapsed % wavePeriod) / wavePeriod;
-        
-        // Define bubble base radius (55% of canvas height)
-        const bubbleRadius = height * 0.55;
-        const waveThickness = 160; // Thicker transition thickness for the softest, smoothest glow
-        
-        // Sweep center from completely left offscreen to completely right offscreen
-        // (Includes radius + waveThickness to ensure seamless wrap-around with zero pop)
-        const startX = -(bubbleRadius + waveThickness + 20);
-        const endX = width + bubbleRadius + waveThickness + 20;
-        const bubbleX = startX + waveCycle * (endX - startX);
-        
-        // Travel along a gorgeous, organic wave path across the screen (Y depends on X and time)
-        const bubbleY = height * 0.5 
-          + Math.sin(bubbleX * 0.003 + elapsed * 0.0008) * (height * 0.16)
-          + Math.cos(bubbleX * 0.0015 - elapsed * 0.0004) * (height * 0.06);
-        
-        // Calculate vector from bubble center to particle
+        // Bypasses complex square roots and trig computations if the grid point is far from the bubble highlight
         const dx = p.anchorX - bubbleX;
         const dy = p.anchorY - bubbleY;
-        const dist = Math.sqrt(dx * dx + dy * dy);
+        const distSq = dx * dx + dy * dy;
         
-        // Calculate angle to add organic, liquid-like deformation to the bubble boundary
-        const angle = Math.atan2(dy, dx);
-        const dynamicRadius = bubbleRadius * (1 + 
-          Math.sin(angle * 3 + elapsed * 0.0025) * 0.07 + 
-          Math.cos(angle * 5 - elapsed * 0.0018) * 0.04
-        );
-        
-        // Outer ring highlight of the organic bubble
-        const distToEdge = Math.abs(dist - dynamicRadius);
-        let shineBoost = 0;
-        if (distToEdge < waveThickness) {
-          const normDist = distToEdge / waveThickness;
-          // Cosine interpolation for the smoothest brightness fade
-          shineBoost = Math.cos(normDist * Math.PI / 2) * 0.82; // Shiniest peak glow
+        let totalShine = 0;
+        if (distSq < maxAffectedDistSq) {
+          const dist = Math.sqrt(distSq);
+          const angle = Math.atan2(dy, dx);
+          const dynamicRadius = bubbleRadius * (1 + 
+            Math.sin(angle * 3 + elapsed * 0.0025) * 0.07 + 
+            Math.cos(angle * 5 - elapsed * 0.0018) * 0.04
+          );
+          
+          const distToEdge = Math.abs(dist - dynamicRadius);
+          let shineBoost = 0;
+          if (distToEdge < waveThickness) {
+            const normDist = distToEdge / waveThickness;
+            shineBoost = Math.cos(normDist * Math.PI / 2) * 0.82;
+          }
+          
+          const specX = bubbleX - dynamicRadius * 0.32;
+          const specY = bubbleY - dynamicRadius * 0.32;
+          const specDx = p.anchorX - specX;
+          const specDy = p.anchorY - specY;
+          const specDistSq = specDx * specDx + specDy * specDy;
+          const specRadius = dynamicRadius * 0.35;
+          const specRadiusSq = specRadius * specRadius;
+          
+          let specBoost = 0;
+          if (specDistSq < specRadiusSq) {
+            const specDist = Math.sqrt(specDistSq);
+            const normSpec = specDist / specRadius;
+            specBoost = Math.cos(normSpec * Math.PI / 2) * 0.90;
+          }
+          
+          totalShine = Math.max(shineBoost, specBoost);
         }
-        
-        // Specular reflection highlight on the top-left of the bubble (makes it look glossy & shiny)
-        const specX = bubbleX - dynamicRadius * 0.32;
-        const specY = bubbleY - dynamicRadius * 0.32;
-        const specDx = p.anchorX - specX;
-        const specDy = p.anchorY - specY;
-        const specDist = Math.sqrt(specDx * specDx + specDy * specDy);
-        const specRadius = dynamicRadius * 0.35;
-        
-        let specBoost = 0;
-        if (specDist < specRadius) {
-          const normSpec = specDist / specRadius;
-          specBoost = Math.cos(normSpec * Math.PI / 2) * 0.90; // Bright specular shine
-        }
-        
-        // Combine ring glow and specular reflection
-        const totalShine = Math.max(shineBoost, specBoost);
 
-        const floatRadius = p.radius * (1 + totalShine * 1.05); // Thicker dots inside the wave/specular regions
+        const floatRadius = p.radius * (1 + totalShine * 1.05);
         const baseOpacity = Math.min(p.opacity * (1.2 + hoverProgress * 1.8), 0.95);
         const floatOpacity = Math.min(baseOpacity + totalShine * 1.4, 0.99);
         const opacityIdx = Math.max(0, Math.min(10, Math.round(floatOpacity * 10)));
         floatBuckets[opacityIdx].push({ x: p.x, y: p.y, r: floatRadius });
-        }
       }
 
       // 2. Process and draw text outline particles (only when hovered or text is forming/dissolving)
@@ -360,7 +363,7 @@ function HeroParticles({ isHovered = false }) {
         for (let pi = 0; pi < textParticles.length; pi++) {
           const p = textParticles[pi];
 
-          const normalX = p.targetX / width;
+          const normalX = p.normalX;
           const staggerDelay = 0.35 * normalX;
           const individualProgress = Math.max(0, Math.min(1, (hoverProgress - staggerDelay) / (1 - staggerDelay)));
 
@@ -416,9 +419,7 @@ function HeroParticles({ isHovered = false }) {
       const tb = isDark ? 110 : 220;
 
       drawBuckets(textBuckets, tr, tg, tb, 1.4);
-      if (!isDark) {
-        drawBuckets(floatBuckets, pr, pg, pb, 1.0);
-      }
+      drawBuckets(floatBuckets, pr, pg, pb, 1.0);
     };
 
     const onVisibilityChange = () => {
