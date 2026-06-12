@@ -278,25 +278,33 @@ function HomeHero() {
               <p className="msci-edu-desc">
                 A structured academic background in Computer Science and Business Systems, combining core technological principles with business strategy.
               </p>
-              <div className="msci-edu-graphic">
-                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="edu-svg">
-                  <circle cx="100" cy="100" r="80" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="4 4" />
-                  <circle cx="100" cy="100" r="50" fill="none" stroke="currentColor" strokeWidth="1.5" />
-                  <circle cx="100" cy="100" r="20" fill="none" stroke="currentColor" strokeWidth="2" />
-                  <line x1="20" y1="100" x2="180" y2="100" stroke="currentColor" strokeWidth="1" />
-                  <line x1="100" y1="20" x2="100" y2="180" stroke="currentColor" strokeWidth="1" />
-                  <circle cx="100" cy="50" r="4" fill="#00c0a5" />
-                  <circle cx="100" cy="150" r="4" fill="#00c0a5" />
-                  <circle cx="50" cy="100" r="4" fill="#00c0a5" />
-                  <circle cx="150" cy="100" r="4" fill="#00c0a5" />
-                </svg>
+              <div className="msci-edu-icons-grid">
+                {/* 1. Graduation Cap */}
+                <div className="msci-edu-icon-wrapper">
+                  <img src="/graduation-cap.png" alt="Academic Graduation" className="edu-grid-png-img" />
+                </div>
+
+                {/* 2. Growing Bar Chart with Flag */}
+                <div className="msci-edu-icon-wrapper">
+                  <img src="/software.png" alt="Academic Goal" className="edu-grid-png-img" />
+                </div>
+
+                {/* 3. Head Silhouette with Gears */}
+                <div className="msci-edu-icon-wrapper">
+                  <img src="/thought.png" alt="Logical Thinking" className="edu-grid-png-img" />
+                </div>
+
+                {/* 4. Code Block Symbol */}
+                <div className="msci-edu-icon-wrapper">
+                  <img src="/increase.png" alt="Development Skills" className="edu-grid-png-img" />
+                </div>
               </div>
             </div>
 
             <div className="msci-timeline">
               <div className="msci-timeline-item milestone-card-green">
                 <div className="msci-timeline-dot"></div>
-                <div className="msci-timeline-date">Nov 2022 — Apr 2026</div>
+                <div className="msci-timeline-date">NOV 2022 — APR 2026</div>
                 <h3 className="msci-timeline-title">UG - Bachelor of Technology in Computer Science and Business Systems</h3>
                 <div className="msci-timeline-inst">
                   Bannari Amman Institute of Technology
@@ -316,7 +324,7 @@ function HomeHero() {
 
               <div className="msci-timeline-item milestone-card-blue">
                 <div className="msci-timeline-dot"></div>
-                <div className="msci-timeline-date">Jun 2021 — Mar 2022</div>
+                <div className="msci-timeline-date">JUN 2021 — MAR 2022</div>
                 <h3 className="msci-timeline-title">Higher Secondary Education</h3>
                 <div className="msci-timeline-inst">Amala Matriculation · Gobi</div>
                 <p className="msci-timeline-desc">
@@ -326,7 +334,7 @@ function HomeHero() {
 
               <div className="msci-timeline-item milestone-card-black">
                 <div className="msci-timeline-dot"></div>
-                <div className="msci-timeline-date">Jul 2019 — Mar 2020</div>
+                <div className="msci-timeline-date">JUL 2019 — MAR 2020</div>
                 <h3 className="msci-timeline-title">Secondary Education</h3>
                 <div className="msci-timeline-inst">Amala Matriculation · Gobi</div>
                 <p className="msci-timeline-desc">

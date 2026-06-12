@@ -646,16 +646,19 @@
     opacity: 0;
     overflow: hidden;
     pointer-events: none;
-    margin-left: -12px; /* cancels the flex gap of parent dock-container */
+    margin-left: -12px;
+    /* cancels the flex gap of parent dock-container */
     transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .social-dock-wrapper.social-visible {
-    width: 181px; /* 3 items (3*48) + divider (1) + gaps (3*12 = 36) = 181px (exact fit) */
+    width: 181px;
+    /* 3 items (3*48) + divider (1) + gaps (3*12 = 36) = 181px (exact fit) */
     opacity: 1;
     margin-left: 0;
     pointer-events: auto;
-    overflow: visible; /* Prevents icons from being clipped/cut off on hover translation */
+    overflow: visible;
+    /* Prevents icons from being clipped/cut off on hover translation */
 }
 
 /* Social Divider (themed blue to match core buttons) */
@@ -688,6 +691,7 @@
     --social-bg: rgba(10, 102, 194, 0.05);
     --social-border: rgba(10, 102, 194, 0.25);
 }
+
 .social-dock-item[aria-label="LinkedIn"]:hover {
     color: #ffffff !important;
     background: #0a66c2 !important;
@@ -701,17 +705,20 @@
     --social-bg: rgba(24, 23, 23, 0.05);
     --social-border: rgba(24, 23, 23, 0.25);
 }
+
 [data-theme='dark'] .social-dock-item[aria-label="GitHub"] {
     --social-color: #ffffff;
     --social-bg: rgba(255, 255, 255, 0.05);
     --social-border: rgba(255, 255, 255, 0.15);
 }
+
 .social-dock-item[aria-label="GitHub"]:hover {
     color: #ffffff !important;
     background: #181717 !important;
     box-shadow: 0 12px 30px rgba(24, 23, 23, 0.4);
     border-color: #181717 !important;
 }
+
 [data-theme='dark'] .social-dock-item[aria-label="GitHub"]:hover {
     color: #181717 !important;
     background: #ffffff !important;
@@ -725,6 +732,7 @@
     --social-bg: rgba(225, 48, 108, 0.05);
     --social-border: rgba(225, 48, 108, 0.25);
 }
+
 .social-dock-item[aria-label="Instagram"]:hover {
     color: #ffffff !important;
     background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%) !important;
@@ -759,6 +767,7 @@
     background: #0a66c2 !important;
     border-color: #0a66c2 !important;
 }
+
 .footer-reached .social-dock-item[aria-label="LinkedIn"]:hover {
     box-shadow: 0 12px 30px rgba(10, 102, 194, 0.45) !important;
 }
@@ -769,14 +778,17 @@
     background: #181717 !important;
     border-color: #181717 !important;
 }
+
 [data-theme='dark'] .footer-reached .social-dock-item[aria-label="GitHub"] {
     color: #181717 !important;
     background: #ffffff !important;
     border-color: #ffffff !important;
 }
+
 .footer-reached .social-dock-item[aria-label="GitHub"]:hover {
     box-shadow: 0 12px 30px rgba(24, 23, 23, 0.45) !important;
 }
+
 [data-theme='dark'] .footer-reached .social-dock-item[aria-label="GitHub"]:hover {
     box-shadow: 0 12px 30px rgba(255, 255, 255, 0.45) !important;
 }
@@ -787,6 +799,7 @@
     background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%) !important;
     border-color: #e1306c !important;
 }
+
 .footer-reached .social-dock-item[aria-label="Instagram"]:hover {
     box-shadow: 0 12px 30px rgba(225, 48, 108, 0.45) !important;
 }
@@ -804,14 +817,14 @@
     .msci-bottom-dock {
         bottom: 16px;
     }
-    
+
     .dock-container {
         padding: 6px 10px;
         gap: 6px;
         border-radius: 30px;
         border-width: 1px;
     }
-    
+
     .dock-item {
         width: 40px;
         height: 40px;
@@ -821,18 +834,20 @@
         gap: 6px;
         margin-left: -6px;
     }
-    
+
     .social-dock-wrapper.social-visible {
-        width: 139px; /* 3 items (3*40) + divider (1) + gaps (3*6 = 18) = 139px (exact fit) */
+        width: 139px;
+        /* 3 items (3*40) + divider (1) + gaps (3*6 = 18) = 139px (exact fit) */
         margin-left: 0;
     }
-    
+
     .dock-icon svg {
         width: 16px;
         height: 16px;
     }
-    
+
     .dock-label {
-        display: none !important; /* Hide hover labels on touch mobile screen to avoid tap overlays */
+        display: none !important;
+        /* Hide hover labels on touch mobile screen to avoid tap overlays */
     }
 }

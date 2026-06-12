@@ -133,7 +133,7 @@
     object-fit: cover;
     object-position: center;
     transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-                transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
     will-change: opacity, transform;
     backface-visibility: hidden;
     transform: translateZ(0) scale(1);
@@ -209,14 +209,14 @@
 .msci-ticker-item {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 0.8rem;
-    font-weight: 500;
+    gap: 10px;
+    font-size: 0.95rem;
+    font-weight: 600;
 }
 
 .msci-ticker-logo {
-    width: 14px;
-    height: 14px;
+    width: 20px;
+    height: 20px;
     object-fit: contain;
     flex-shrink: 0;
 }
@@ -793,22 +793,52 @@
     color: #a0a0a0;
 }
 
-.msci-edu-graphic {
-    max-width: 180px;
-    opacity: 0.8;
+.msci-edu-icons-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+    max-width: 440px;
+    margin: 48px auto 0;
 }
 
-[data-theme='dark'] .msci-edu-graphic {
-    opacity: 0.5;
+.msci-edu-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1;
+    background: transparent;
+    color: #030812;
+    transition: transform 0.3s ease, color 0.3s ease;
 }
 
-.edu-svg {
+[data-theme='dark'] .msci-edu-icon-wrapper {
+    color: #ffffff;
+}
+
+.edu-grid-svg {
     width: 100%;
-    color: #1b36d1;
+    height: 100%;
+    display: block;
+    transition: transform 0.3s ease;
 }
 
-[data-theme='dark'] .edu-svg {
-    color: #4da3ff;
+.edu-grid-png-img {
+    width: 90%;
+    height: 90%;
+    object-fit: contain;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.msci-edu-icon-wrapper:hover .edu-grid-svg,
+.msci-edu-icon-wrapper:hover .edu-grid-png-img {
+    transform: scale(1.1);
+}
+
+/* Invert black PNGs in dark mode to look crisp and white */
+[data-theme='dark'] .edu-grid-png-img,
+[data-theme='dark'] .mortarboard-img {
+    filter: invert(1) brightness(2);
 }
 
 .msci-timeline {
@@ -820,15 +850,15 @@
 .msci-timeline::before {
     content: '';
     position: absolute;
-    top: 30px;
+    top: 35px;
     left: 7px;
-    width: 2px;
-    height: calc(100% - 60px);
-    background: linear-gradient(to bottom, #1b36d1, rgba(27, 54, 209, 0.1));
+    width: 2.5px;
+    height: calc(100% - 70px);
+    background: #1b36d1;
 }
 
 [data-theme='dark'] .msci-timeline::before {
-    background: linear-gradient(to bottom, #4da3ff, rgba(77, 163, 255, 0.1));
+    background: #4da3ff;
 }
 
 .msci-timeline-item {
@@ -845,47 +875,47 @@
 .milestone-card-green,
 .milestone-card-blue,
 .milestone-card-black {
-    padding: 24px 28px;
-    border-radius: 16px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+    padding: 28px 32px;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
     border: none;
     transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .milestone-card-green {
-    background: linear-gradient(135deg, #00c0a5 0%, #009c85 100%);
+    background: #00a58a;
 }
 
 .milestone-card-blue {
-    background: linear-gradient(135deg, #1b5cfc 0%, #1142bc 100%);
+    background: #1142bc;
 }
 
 .milestone-card-black {
-    background: linear-gradient(135deg, #0d121c 0%, #030812 100%);
+    background: #080d16;
     border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 /* Hover effects */
 .milestone-card-green:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 30px rgba(0, 192, 165, 0.3);
+    box-shadow: 0 12px 30px rgba(0, 165, 138, 0.35);
 }
 
 .milestone-card-blue:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 30px rgba(27, 92, 252, 0.3);
+    box-shadow: 0 12px 30px rgba(17, 66, 188, 0.35);
 }
 
 .milestone-card-black:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
 }
 
 /* Adjust timeline dot positioning for padded card */
 .msci-timeline-item.milestone-card-green .msci-timeline-dot,
 .msci-timeline-item.milestone-card-blue .msci-timeline-dot,
 .msci-timeline-item.milestone-card-black .msci-timeline-dot {
-    top: 26px;
+    top: 35px;
 }
 
 /* Date colors inside cards */
@@ -918,19 +948,19 @@
 
 .msci-timeline-dot {
     position: absolute;
-    left: -36px;
-    top: 5px;
-    width: 16px;
-    height: 16px;
+    left: -37px;
+    top: 35px;
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
     background: #f4f6f9;
-    border: 2px solid #1b36d1;
+    border: 2.5px solid #1b36d1;
     z-index: 2;
     transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 [data-theme='dark'] .msci-timeline-dot {
-    background: var(--msci-light-gray);
+    background: var(--msci-light-gray, #0d121c);
     border-color: #4da3ff;
 }
 
@@ -940,44 +970,44 @@
 }
 
 .milestone-card-blue .msci-timeline-dot {
-    border-color: #1b5cfc;
+    border-color: #1142bc;
 }
 
 .milestone-card-black .msci-timeline-dot {
-    border-color: #0d121c;
+    border-color: #718096;
 }
 
 [data-theme='dark'] .milestone-card-black .msci-timeline-dot {
-    border-color: #ffffff;
+    border-color: #cbd5e1;
 }
 
 /* Hover dot fills */
 .milestone-card-green:hover .msci-timeline-dot {
-    background: #00c0a5;
-    border-color: #00c0a5;
-    transform: scale(1.25);
-    box-shadow: 0 0 10px rgba(0, 192, 165, 0.4);
+    background: #00a58a;
+    border-color: #00a58a;
+    transform: scale(1.2);
+    box-shadow: 0 0 12px rgba(0, 165, 138, 0.5);
 }
 
 .milestone-card-blue:hover .msci-timeline-dot {
-    background: #1b5cfc;
-    border-color: #1b5cfc;
-    transform: scale(1.25);
-    box-shadow: 0 0 10px rgba(27, 92, 252, 0.4);
+    background: #1142bc;
+    border-color: #1142bc;
+    transform: scale(1.2);
+    box-shadow: 0 0 12px rgba(17, 66, 188, 0.5);
 }
 
 .milestone-card-black:hover .msci-timeline-dot {
-    background: #0d121c;
-    border-color: #0d121c;
-    transform: scale(1.25);
-    box-shadow: 0 0 10px rgba(13, 18, 28, 0.4);
+    background: #080d16;
+    border-color: #080d16;
+    transform: scale(1.2);
+    box-shadow: 0 0 12px rgba(8, 13, 22, 0.5);
 }
 
 [data-theme='dark'] .milestone-card-black:hover .msci-timeline-dot {
-    background: #ffffff;
-    border-color: #ffffff;
-    transform: scale(1.25);
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+    background: #cbd5e1;
+    border-color: #cbd5e1;
+    transform: scale(1.2);
+    box-shadow: 0 0 12px rgba(203, 213, 225, 0.5);
 }
 
 .msci-timeline-date {
@@ -1671,8 +1701,10 @@
         position: static;
     }
 
-    .msci-edu-graphic {
-        display: none;
+    .msci-edu-icons-grid {
+        margin: 32px auto 0;
+        max-width: 260px;
+        gap: 20px;
     }
 }
 
@@ -2013,6 +2045,7 @@
 }
 
 @media (max-width: 768px) {
+
     .msci-featured-header,
     .msci-edu-info,
     .msci-news-header {

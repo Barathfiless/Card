@@ -4,7 +4,8 @@
     left: 0;
     width: 32px;
     height: 32px;
-    z-index: 2147483647; /* Set to absolute max z-index so it stays on top of all composited containers/docks */
+    z-index: 2147483647;
+    /* Set to absolute max z-index so it stays on top of all composited containers/docks */
     pointer-events: none;
     user-select: none;
     will-change: transform;
@@ -13,9 +14,10 @@
 }
 
 .custom-cursor svg {
-    filter: drop-shadow(0 2px 5px rgba(0,0,0,0.15));
+    filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.15));
     transform: rotate(-15deg) scale(1);
-    transform-origin: 8px 4px; /* Scale from the actual tip of the cursor path (M8 4) so the pointer coordinate never shifts */
+    transform-origin: 8px 4px;
+    /* Scale from the actual tip of the cursor path (M8 4) so the pointer coordinate never shifts */
     transition: transform 0.15s ease;
 }
 
@@ -31,12 +33,14 @@
 }
 
 .cursor-pointer svg path {
-    fill: #1b5cfc; /* Premium blue hover state */
+    fill: #1b5cfc;
+    /* Premium blue hover state */
     stroke: #ffffff;
 }
 
 [data-theme='dark'] .cursor-pointer svg path {
-    fill: #c8a96e; /* Premium gold hover state in dark mode */
+    fill: #c8a96e;
+    /* Premium gold hover state in dark mode */
     stroke: #000000;
 }
 
@@ -48,10 +52,12 @@
 
 /* Disable custom cursor and restore standard pointer on touch-capable mobile devices */
 @media (pointer: coarse) {
+
     .has-custom-cursor,
     .has-custom-cursor * {
         cursor: auto !important;
     }
+
     .custom-cursor {
         display: none !important;
     }

@@ -199,6 +199,13 @@ function HeroParticles({ isHovered = false }) {
       startTime = performance.now();
       lastTime = performance.now();
       createParticles();
+
+      // Ensure rounded custom fonts (Nunito / Varela Round) are used once loaded instead of system sans-serif fallback
+      if (document.fonts) {
+        document.fonts.ready.then(() => {
+          createParticles();
+        });
+      }
     };
 
     const drawBuckets = (buckets, r, g, b, alphaMultiplier = 1) => {
@@ -288,9 +295,16 @@ function HeroParticles({ isHovered = false }) {
           if (!prefersReducedMotion) {
             if (hovered) {
               if (individualProgress > 0) {
+                const easedIndividual = 1 - (1 - individualProgress) ** 3;
+                
+                // Zoom-in transition: start scaled down at 0.05x and expand to 1.0x from center
+                const currentScale = 0.05 + 0.95 * easedIndividual;
+                const dynamicTargetX = width / 2 + (p.targetX - width / 2) * currentScale;
+                const dynamicTargetY = height * 0.72 + (p.targetY - height * 0.72) * currentScale;
+
                 const currentInLerp = expDecay(inSpeed, deltaTime);
-                p.x = frameLerp(p.x, p.targetX, currentInLerp);
-                p.y = frameLerp(p.y, p.targetY, currentInLerp);
+                p.x = frameLerp(p.x, dynamicTargetX, currentInLerp);
+                p.y = frameLerp(p.y, dynamicTargetY, currentInLerp);
               } else {
                 p.x += p.vx * deltaTime;
                 p.y += p.vy * deltaTime;
