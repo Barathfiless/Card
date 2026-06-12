@@ -208,7 +208,7 @@ function HomeHero() {
         <div className="container">
           <div className="msci-featured-header">
             <TypingHeader text="About Me" className="msci-featured-title" />
-            <h3 className="msci-featured-subtitle">Forward-thinking Software Development Engineer</h3>
+            <h3 className="msci-featured-subtitle">Forward Thinking Software Development Engineer</h3>
           </div>
 
           <div className="msci-featured-cols">

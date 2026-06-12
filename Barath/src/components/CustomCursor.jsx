@@ -10,6 +10,9 @@ const CustomCursor = () => {
     const cursor = cursorRef.current;
     if (!cursor) return undefined;
 
+    // Enable custom cursor style configuration on page html tag
+    document.documentElement.classList.add('has-custom-cursor');
+
     let isPointer = false;
 
     const onMouseMove = (e) => {
@@ -29,6 +32,7 @@ const CustomCursor = () => {
     window.addEventListener('mousemove', onMouseMove, { passive: true });
 
     return () => {
+      document.documentElement.classList.remove('has-custom-cursor');
       window.removeEventListener('mousemove', onMouseMove);
     };
   }, []);
@@ -42,8 +46,6 @@ const CustomCursor = () => {
       <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
           d="M8 4L26 16L8 28V4Z"
-          fill="#000000"
-          stroke="#ffffff"
           strokeWidth="1.5"
           strokeLinejoin="round"
         />

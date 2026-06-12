@@ -120,7 +120,6 @@ function App() {
 
   return (
     <>
-      {!isAdminPage && <CustomCursor />}
       {!isPortalPage && showIntro && <Intro onFinish={() => setShowIntro(false)} />}
       {!hideHeaderFooter && <Navbar toggleTheme={toggleTheme} theme={theme} />}
       
@@ -147,6 +146,7 @@ function App() {
       )}
       
       {!hideHeaderFooter && <Footer />}
+      {!isAdminPage && <CustomCursor />}
     </>
   );
 }
