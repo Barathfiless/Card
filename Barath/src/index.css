@@ -179,3 +179,17 @@ li,
     text-justify: inter-word;
     hyphens: none;
 }
+
+/* Global Text Justification Reset for Mobile */
+@media (max-width: 768px) {
+    p,
+    li,
+    .msci-about-text,
+    .msci-about-highlight-item span,
+    .msci-edu-desc,
+    .msci-timeline-desc,
+    .pd-overview-text {
+        text-align: left;
+        text-justify: auto;
+    }
+}

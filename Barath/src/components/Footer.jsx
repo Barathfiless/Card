@@ -42,17 +42,7 @@ function Footer() {
         </div>
       </div>
 
-      <div className="footer-bottom">
-        <div className="footer-bottom-links">
-          <a href="/login">Admin Access</a>
-          <a href="#terms">Terms of Use</a>
-          <a href="#privacy">Privacy Statement</a>
-          <a href="#cookies">Cookie Preferences</a>
-        </div>
-        <div>
-          &copy; {new Date().getFullYear()} Barath M. All rights reserved.
-        </div>
-      </div>
+
     </footer>
   );
 }

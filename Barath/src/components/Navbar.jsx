@@ -32,6 +32,11 @@ function Navbar({ toggleTheme, theme }) {
         document.body.classList.remove('footer-reached');
       }
 
+      if (hasScrolled) {
+        setSearchOpen(false);
+        setSearchQuery('');
+      }
+
       setScrolled((prev) => (prev !== hasScrolled ? hasScrolled : prev));
       setReachedFooter((prev) => (prev !== isAtBottom ? isAtBottom : prev));
     };

@@ -1,7 +1,7 @@
 .footer {
     background: var(--msci-navy-dark);
     color: rgba(255, 255, 255, 0.75);
-    padding: 60px 0 32px;
+    padding: 60px 0 120px;
     margin-top: 0;
     border-top: none;
 }
@@ -17,7 +17,7 @@
     display: grid;
     grid-template-columns: 2fr 1.2fr 1.2fr 1.2fr;
     gap: 48px;
-    margin-bottom: 48px;
+    margin-bottom: 16px;
 }
 
 .footer-brand .footer-logo {

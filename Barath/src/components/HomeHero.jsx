@@ -259,11 +259,11 @@ function HomeHero() {
             <div className="msci-featured-card light-card">
               <div className="light-card-content">
                 <h4>Track Record of Excellence</h4>
-                <p>B.Tech CSBS graduate with 15+ completed projects, mastering 5+ core technologies with a 99.9% code performance target.</p>
+                <p>Software Development Engineer skilled in 5+ technologies, with a track record of delivering 15+ academic and real-world projects.</p>
                 <Link to="#projects" className="msci-outline-btn">View my work</Link>
               </div>
               <div className="light-card-image">
-                <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=600&auto=format&fit=crop" alt="Modern Architecture" />
+                <img src="/track_record_excellence.png" alt="Track Record of Excellence" />
               </div>
             </div>
           </div>
@@ -306,7 +306,7 @@ function HomeHero() {
             <div className="msci-timeline">
               <div className="msci-timeline-item milestone-card-green">
                 <div className="msci-timeline-dot"></div>
-                <div className="msci-timeline-date">NOV 2022 — APR 2026</div>
+                <div className="msci-timeline-date">2022 - 2026</div>
                 <h3 className="msci-timeline-title">UG - Bachelor of Technology in Computer Science and Business Systems</h3>
                 <div className="msci-timeline-inst">
                   Bannari Amman Institute of Technology
@@ -315,7 +315,7 @@ function HomeHero() {
                       <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
                     </svg>
                     <a href="https://maps.google.com/?q=Bannari+Amman+Institute+of+Technology+Sathyamangalam" target="_blank" rel="noopener noreferrer">
-                      Sathyamangalam, Tamil Nadu
+                      Location
                     </a>
                   </span>
                 </div>
@@ -326,7 +326,7 @@ function HomeHero() {
 
               <div className="msci-timeline-item milestone-card-blue">
                 <div className="msci-timeline-dot"></div>
-                <div className="msci-timeline-date">JUN 2021 — MAR 2022</div>
+                <div className="msci-timeline-date">2021 - 2022</div>
                 <h3 className="msci-timeline-title">Higher Secondary Education</h3>
                 <div className="msci-timeline-inst">Amala Matriculation · Gobi</div>
                 <p className="msci-timeline-desc">
@@ -336,7 +336,7 @@ function HomeHero() {
 
               <div className="msci-timeline-item milestone-card-black">
                 <div className="msci-timeline-dot"></div>
-                <div className="msci-timeline-date">JUL 2019 — MAR 2020</div>
+                <div className="msci-timeline-date">2019 - 2020</div>
                 <h3 className="msci-timeline-title">Secondary Education</h3>
                 <div className="msci-timeline-inst">Amala Matriculation · Gobi</div>
                 <p className="msci-timeline-desc">
@@ -400,7 +400,7 @@ function HomeHero() {
 
               {projectChunks.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '80px 20px', background: 'var(--msci-light-gray)', borderRadius: '16px', border: '1px dashed var(--msci-border)' }}>
-                  <p style={{ fontSize: '1.2rem', color: 'var(--text-muted)', margin: '0' }}>No engineering projects published yet.</p>
+                  <p style={{ fontSize: '1.2rem', color: 'var(--text-muted)', margin: '0', textAlign: 'center' }}>Yet to Publish by Barath</p>
                 </div>
               ) : (
                 <div className="msci-projects-slider-viewport">

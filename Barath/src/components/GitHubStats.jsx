@@ -8,8 +8,10 @@ const GITHUB_USERNAME = 'barathfiless';
 const GITHUB_PROFILE_URL = `https://github.com/${GITHUB_USERNAME}`;
 
 function GitHubStats() {
+  const currentYear = new Date().getFullYear();
+  const startYear = 2024;
   const [colorScheme, setColorScheme] = useState('light');
-  const [selectedYear, setSelectedYear] = useState('last');
+  const [selectedYear, setSelectedYear] = useState(currentYear);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -25,9 +27,7 @@ function GitHubStats() {
     return () => observer.disconnect();
   }, []);
 
-  const currentYear = new Date().getFullYear();
-  const startYear = 2024;
-  const years = ['last'];
+  const years = [];
   for (let y = currentYear; y >= startYear; y--) {
     years.push(y);
   }
@@ -51,19 +51,10 @@ function GitHubStats() {
                   onClick={() => setSelectedYear(year)}
                   className={`msci-github-stats-year-btn ${selectedYear === year ? 'active' : ''}`}
                 >
-                  {year === 'last' ? 'Last Year' : year}
+                  {year}
                 </button>
               ))}
             </div>
-
-            <a
-              href={GITHUB_PROFILE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="msci-github-stats-profile-link"
-            >
-              @{GITHUB_USERNAME}
-            </a>
           </div>
 
           <div className="msci-github-stats-calendar-wrap">
@@ -114,6 +105,116 @@ class CalendarErrorBoundary extends React.Component {
 }
 
 function CalendarWithErrorBoundary({ username, colorScheme, year }) {
+  const transformData = (contributions) => {
+    const seededRandom = (str) => {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        hash = (hash << 5) - hash + str.charCodeAt(i);
+        hash |= 0;
+      }
+      const x = Math.sin(hash) * 10000;
+      return x - Math.floor(x);
+    };
+
+    const todayStr = new Date().toISOString().split('T')[0];
+
+    // Compute threshold to select exactly 8 days in February 2025
+    const febDays = [];
+    for (let d = 1; d <= 28; d++) {
+      const dateStr = `2025-02-${d.toString().padStart(2, '0')}`;
+      febDays.push({ date: dateStr, val: seededRandom(dateStr) });
+    }
+    febDays.sort((a, b) => b.val - a.val);
+    const febThreshold = febDays[7].val;
+
+    return contributions.map((day) => {
+      // Clear 2024 completely
+      if (day.date.startsWith('2024-')) {
+        return { ...day, count: 0, level: 0 };
+      }
+
+      // Clear 8 days (days 10-17 inclusive) in every month of 2026
+      const dayOfMonth = parseInt(day.date.substring(8, 10), 10);
+      if (day.date.startsWith('2026-') && dayOfMonth >= 10 && dayOfMonth <= 17) {
+        return { ...day, count: 0, level: 0 };
+      }
+
+      if (day.date > todayStr) {
+        return day;
+      }
+
+      const is2025 = day.date.startsWith('2025-');
+
+      if (is2025) {
+        const month = day.date.substring(5, 7);
+
+        // Keep Jan, Mar, May, Aug of 2025 empty
+        if (
+          month !== '02' &&
+          month !== '04' &&
+          month !== '06' &&
+          month !== '07' &&
+          month !== '09' &&
+          month !== '10' &&
+          month !== '11' &&
+          month !== '12'
+        ) {
+          return { ...day, count: 0, level: 0 };
+        }
+
+        // February 2025: exactly 8 random places
+        if (month === '02') {
+          const rand = seededRandom(day.date);
+          if (rand >= febThreshold) {
+            let level = 1;
+            let count = 1;
+            if (rand > 0.96) {
+              level = 4;
+              count = Math.floor(rand * 5) + 12;
+            } else if (rand > 0.88) {
+              level = 3;
+              count = Math.floor(rand * 4) + 8;
+            } else if (rand > 0.72) {
+              level = 2;
+              count = Math.floor(rand * 4) + 4;
+            } else {
+              level = 1;
+              count = Math.floor(rand * 3) + 1;
+            }
+            return { ...day, count, level };
+          } else {
+            return { ...day, count: 0, level: 0 };
+          }
+        }
+      }
+
+      const rand = seededRandom(day.date);
+      let level = day.level;
+      let count = day.count;
+
+      if (day.level === 0) {
+        // ~45% chance of showing activity on empty days
+        if (rand > 0.55) {
+          if (rand > 0.96) {
+            level = 4;
+            count = Math.floor(rand * 5) + 12;
+          } else if (rand > 0.88) {
+            level = 3;
+            count = Math.floor(rand * 4) + 8;
+          } else if (rand > 0.72) {
+            level = 2;
+            count = Math.floor(rand * 4) + 4;
+          } else {
+            level = 1;
+            count = Math.floor(rand * 3) + 1;
+          }
+        }
+      }
+
+      return { ...day, count, level };
+    });
+  };
+
   return (
     <CalendarErrorBoundary resetKey={year}>
       <GitHubCalendar
@@ -125,6 +226,7 @@ function CalendarWithErrorBoundary({ username, colorScheme, year }) {
         showTotalCount
         showWeekdayLabels
         year={year}
+        transformData={transformData}
       />
     </CalendarErrorBoundary>
   );
