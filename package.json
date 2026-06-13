@@ -1,0 +1,11 @@
+{
+  "name": "portfolio-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "install-all": "npm install --prefix Barath && npm install --prefix Portfolio",
+    "build-frontend": "npm run build --prefix Barath",
+    "build": "npm run install-all && npm run build-frontend",
+    "start": "npm start --prefix Portfolio"
+  }
+}
