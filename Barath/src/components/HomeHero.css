@@ -12,7 +12,7 @@
     isolation: isolate;
     background: url('/hero-bg.png') no-repeat center / cover;
     color: #0b1a30;
-    padding: 108px 0 28px;
+    padding: 108px 0 0;
     overflow: hidden;
     transform: translateZ(0);
 }
@@ -1830,7 +1830,7 @@
 /* Media Query Overrides */
 @media (max-width: 1024px) {
     .msci-hero-banner {
-        padding: 100px 0 28px;
+        padding: 100px 0 0;
     }
 
     .msci-hero-title {
@@ -1938,7 +1938,7 @@
 
 @media (max-width: 768px) {
     .msci-hero-banner {
-        padding: 48px 0 60px;
+        padding: 48px 0 0;
     }
 
     /* Section Title & Subtitle Mobile Font Sizes */
