@@ -10,7 +10,7 @@
 .msci-hero-banner {
     position: relative;
     isolation: isolate;
-    background: #ffffff;
+    background: url('/hero-bg.png') no-repeat center / cover;
     color: #0b1a30;
     padding: 108px 0 28px;
     overflow: hidden;
@@ -20,6 +20,7 @@
 
 /* Animating Cloud Blobs */
 .msci-cloud-blob {
+    display: none;
     position: absolute;
     width: min(1180px, 150vw);
     height: min(1180px, 150vw);
@@ -86,7 +87,7 @@
 
 /* Dark theme overrides for the hero banner background and texts */
 [data-theme='dark'] .msci-hero-banner {
-    background: #ffffff;
+    background: url('/hero-bg.png') no-repeat center / cover;
     color: #000000;
 }
 
@@ -228,7 +229,7 @@
     font-family: 'Nunito', 'Google Sans Text', 'Google Sans', system-ui, sans-serif;
     font-size: 1.25rem;
     font-weight: 800;
-    color: #000000;
+    color: rgba(0, 0, 0, 0.85);
     line-height: 1.45;
     margin-bottom: 12px;
     max-width: 580px;
@@ -240,7 +241,7 @@
 }
 
 .msci-hero-banner.hero-hovered .msci-hero-subtitle {
-    color: #000000;
+    color: rgba(0, 0, 0, 0.85);
 }
 
 .msci-hero-profile {

@@ -151,20 +151,54 @@ function HeroParticles({ isHovered = false }) {
       const textPositions = getTextDotPositions(width, height);
 
       // Independent background particles arranged in a linear grid pattern
-      const bgSpacing = 30; // Increased spacing slightly to optimize background dot counts
+      const bgSpacing = 30; // Spacing of the background dots
       const cols = Math.ceil(width / bgSpacing);
       const rows = Math.ceil(height / bgSpacing);
       bgParticles = [];
+      const thresholdSq = 8 * 8; // Keep white dots at least 8px away from text outlines
+
+      // Bin text positions by Y coordinate for rapid O(1) spatial lookups
+      const binSize = 30;
+      const bins = {};
+      for (let i = 0; i < textPositions.length; i++) {
+        const pos = textPositions[i];
+        const b = Math.floor(pos.y / binSize);
+        if (!bins[b]) bins[b] = [];
+        bins[b].push(pos);
+      }
+
       for (let r = 0; r <= rows; r++) {
+        const y = r * bgSpacing;
+        const startBin = Math.floor((y - 8) / binSize);
+        const endBin = Math.floor((y + 8) / binSize);
+
         for (let c = 0; c <= cols; c++) {
           const x = c * bgSpacing;
-          const y = r * bgSpacing;
+
+          // Check Y-bins to see if grid point falls near any text outline positions
+          let isNearText = false;
+          for (let b = startBin; b <= endBin; b++) {
+            const bin = bins[b];
+            if (!bin) continue;
+            for (let i = 0; i < bin.length; i++) {
+              const dx = x - bin[i].x;
+              const dy = y - bin[i].y;
+              if (dx * dx + dy * dy < thresholdSq) {
+                isNearText = true;
+                break;
+              }
+            }
+            if (isNearText) break;
+          }
+
+          if (isNearText) continue;
+
           bgParticles.push({
             x,
             y,
             anchorX: x,
             anchorY: y,
-            radius: randomBetween(0.65, 0.95),
+            radius: randomBetween(0.3, 0.5),
             opacity: 0,
             targetOpacity: randomBetween(0.4, 0.75),
             phaseX: Math.random() * Math.PI * 2,
@@ -211,7 +245,7 @@ function HeroParticles({ isHovered = false }) {
       lastTime = performance.now();
       createParticles();
 
-      // Ensure rounded custom fonts (Nunito / Varela Round) are used once loaded instead of system sans-serif fallback
+      // Ensure rounded custom fonts are used once loaded instead of system sans-serif fallback
       if (document.fonts) {
         document.fonts.ready.then(() => {
           createParticles();
@@ -219,19 +253,27 @@ function HeroParticles({ isHovered = false }) {
       }
     };
 
-    const drawBuckets = (buckets, r, g, b, alphaMultiplier = 1) => {
+    const drawBuckets = (buckets, r, g, b, alphaMultiplier = 1, useRect = false) => {
       for (let i = 1; i <= 10; i++) {
         const bucket = buckets[i];
         if (bucket.length === 0) continue;
 
         ctx.fillStyle = `rgba(${r},${g},${b},${Math.min(1, (i / 10) * alphaMultiplier)})`;
-        ctx.beginPath();
-        for (let j = 0; j < bucket.length; j++) {
-          const pt = bucket[j];
-          ctx.moveTo(pt.x + pt.r, pt.y);
-          ctx.arc(pt.x, pt.y, pt.r, 0, Math.PI * 2);
+        if (useRect) {
+          for (let j = 0; j < bucket.length; j++) {
+            const pt = bucket[j];
+            const size = pt.r * 2;
+            ctx.fillRect(pt.x - pt.r, pt.y - pt.r, size, size);
+          }
+        } else {
+          ctx.beginPath();
+          for (let j = 0; j < bucket.length; j++) {
+            const pt = bucket[j];
+            ctx.moveTo(pt.x + pt.r, pt.y);
+            ctx.arc(pt.x, pt.y, pt.r, 0, Math.PI * 2);
+          }
+          ctx.fill();
         }
-        ctx.fill();
       }
     };
 
@@ -271,23 +313,30 @@ function HeroParticles({ isHovered = false }) {
 
       clearBuckets();
 
-      // Pre-calculate bubble wave path global variables once per frame (enormous CPU optimization!)
-      const wavePeriod = 6500;
-      const waveCycle = (elapsed % wavePeriod) / wavePeriod;
+      // Circular "O" loop period: 9 seconds (slower, floating feel)
+      const wavePeriod = 9000;
+      const angle = (elapsed / wavePeriod) * Math.PI * 2;
       
-      // Define bubble base radius (55% of canvas height)
+      // Define bubble base radius (55% of height to make it thick and fully cover the screen)
       const bubbleRadius = height * 0.55;
-      const waveThickness = 160; // Thicker transition thickness for the softest, smoothest glow
+      const waveThickness = 160;
       
-      // Sweep center from completely left offscreen to completely right offscreen
-      const startX = -(bubbleRadius + waveThickness + 20);
-      const endX = width + bubbleRadius + waveThickness + 20;
-      const bubbleX = startX + waveCycle * (endX - startX);
+      // Calculate O-shaped path (centered on canvas, wide and tall to cover full screen)
+      const centerX = width * 0.5;
+      const centerY = height * 0.5;
+      const radiusX = width * 0.45;
+      const radiusY = height * 0.35;
       
-      // Travel along a gorgeous, organic wave path across the screen (Y depends on X and time)
-      const bubbleY = height * 0.5 
-        + Math.sin(bubbleX * 0.003 + elapsed * 0.0008) * (height * 0.16)
-        + Math.cos(bubbleX * 0.0015 - elapsed * 0.0004) * (height * 0.06);
+      // Base loop position
+      const loopX = centerX + Math.cos(angle) * radiusX;
+      const loopY = centerY + Math.sin(angle) * radiusY;
+      
+      // Add slow, pseudo-random organic drift (noise waves) so it floats like a ball
+      const driftX = Math.sin(elapsed * 0.0004) * (width * 0.07) + Math.cos(elapsed * 0.00015) * (width * 0.03);
+      const driftY = Math.cos(elapsed * 0.00035) * (height * 0.07) + Math.sin(elapsed * 0.0001) * (height * 0.03);
+      
+      const bubbleX = loopX + driftX;
+      const bubbleY = loopY + driftY;
         
       // Pre-calculate squared distance threshold for quick early-exit/bounding check
       const maxAffectedDist = bubbleRadius * 1.12 + waveThickness;
@@ -305,11 +354,6 @@ function HeroParticles({ isHovered = false }) {
           }
         }
 
-        // Float slowly in place around its linear grid anchor position
-        const floatTime = elapsed * p.speed;
-        p.x = p.anchorX + Math.sin(floatTime + p.phaseX) * p.amp;
-        p.y = p.anchorY + Math.cos(floatTime + p.phaseY) * p.amp;
-
         if (p.opacity <= 0) continue;
 
         // Bypasses complex square roots and trig computations if the grid point is far from the bubble highlight
@@ -320,17 +364,17 @@ function HeroParticles({ isHovered = false }) {
         let totalShine = 0;
         if (distSq < maxAffectedDistSq) {
           const dist = Math.sqrt(distSq);
-          const angle = Math.atan2(dy, dx);
-          const dynamicRadius = bubbleRadius * (1 + 
-            Math.sin(angle * 3 + elapsed * 0.0025) * 0.07 + 
-            Math.cos(angle * 5 - elapsed * 0.0018) * 0.04
-          );
+          
+          // Use a fixed bubbleRadius modulated slightly by time globally to avoid per-particle calculations
+          const dynamicRadius = bubbleRadius * (1 + Math.sin(elapsed * 0.001) * 0.03);
           
           const distToEdge = Math.abs(dist - dynamicRadius);
           let shineBoost = 0;
           if (distToEdge < waveThickness) {
             const normDist = distToEdge / waveThickness;
-            shineBoost = Math.cos(normDist * Math.PI / 2) * 0.82;
+            // Quadratic approximation of cosine curve for high speed
+            const t = 1 - normDist;
+            shineBoost = t * t * 0.82;
           }
           
           const specX = bubbleX - dynamicRadius * 0.32;
@@ -345,17 +389,25 @@ function HeroParticles({ isHovered = false }) {
           if (specDistSq < specRadiusSq) {
             const specDist = Math.sqrt(specDistSq);
             const normSpec = specDist / specRadius;
-            specBoost = Math.cos(normSpec * Math.PI / 2) * 0.90;
+            // Quadratic approximation of cosine curve for high speed
+            const t = 1 - normSpec;
+            specBoost = t * t * 0.90;
           }
           
           totalShine = Math.max(shineBoost, specBoost);
         }
 
-        const floatRadius = p.radius * (1 + totalShine * 1.05);
-        const baseOpacity = Math.min(p.opacity * (1.2 + hoverProgress * 1.8), 0.95);
-        const floatOpacity = Math.min(baseOpacity + totalShine * 1.4, 0.99);
+        if (totalShine <= 0) continue;
+
+        // Float slowly in place around its linear grid anchor position (computed only when visible/active)
+        const floatTime = elapsed * p.speed;
+        const px = p.anchorX + Math.sin(floatTime + p.phaseX) * p.amp;
+        const py = p.anchorY + Math.cos(floatTime + p.phaseY) * p.amp;
+
+        const floatRadius = p.radius * (1 + totalShine * 3.5);
+        const floatOpacity = Math.min(totalShine * 1.4, 0.99);
         const opacityIdx = Math.max(0, Math.min(10, Math.round(floatOpacity * 10)));
-        floatBuckets[opacityIdx].push({ x: p.x, y: p.y, r: floatRadius });
+        floatBuckets[opacityIdx].push({ x: px, y: py, r: floatRadius });
       }
 
       // 2. Process and draw text outline particles (only when hovered or text is forming/dissolving)
@@ -418,8 +470,8 @@ function HeroParticles({ isHovered = false }) {
       const tg = isDark ? 169 : 80;
       const tb = isDark ? 110 : 220;
 
-      drawBuckets(textBuckets, tr, tg, tb, 1.4);
-      drawBuckets(floatBuckets, pr, pg, pb, 1.0);
+      drawBuckets(textBuckets, tr, tg, tb, 1.4, false); // Keep text dots circular
+      drawBuckets(floatBuckets, pr, pg, pb, 1.0, true);  // Use super-fast rects for background float dots
     };
 
     const onVisibilityChange = () => {

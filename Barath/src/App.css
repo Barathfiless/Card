@@ -886,3 +886,46 @@
         /* Hide hover labels on touch mobile screen to avoid tap overlays */
     }
 }
+
+/* When hero image is hovered in light theme, make unscrolled navbar elements black */
+body:not([data-theme='dark']).hero-image-hovered .navbar:not(.navbar-scrolled) .logo-section .logo,
+body:not([data-theme='dark']).hero-image-hovered .navbar:not(.navbar-scrolled) .logo-section .logo span,
+body:not([data-theme='dark']).hero-image-hovered .navbar:not(.navbar-scrolled) .logo-section .logo .msci-globe-icon {
+    color: #000000 !important;
+}
+
+body:not([data-theme='dark']).hero-image-hovered .navbar:not(.navbar-scrolled) .nav-links a {
+    color: rgba(0, 0, 0, 0.85);
+}
+
+body:not([data-theme='dark']).hero-image-hovered .navbar:not(.navbar-scrolled) .nav-links a:hover {
+    color: #000000;
+}
+
+body:not([data-theme='dark']).hero-image-hovered .navbar:not(.navbar-scrolled) .msci-get-in-touch-link {
+    color: rgba(0, 0, 0, 0.85);
+}
+
+body:not([data-theme='dark']).hero-image-hovered .navbar:not(.navbar-scrolled) .msci-get-in-touch-link:hover {
+    color: #000000;
+}
+
+body:not([data-theme='dark']).hero-image-hovered .navbar:not(.navbar-scrolled) .msci-search-bar {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+body:not([data-theme='dark']).hero-image-hovered .navbar:not(.navbar-scrolled) .msci-search-bar svg {
+    color: rgba(0, 0, 0, 0.75);
+}
+
+body:not([data-theme='dark']).hero-image-hovered .navbar:not(.navbar-scrolled) .msci-search-bar input {
+    color: #000000;
+}
+
+body:not([data-theme='dark']).hero-image-hovered .navbar:not(.navbar-scrolled) .msci-search-bar input::placeholder {
+    color: rgba(0, 0, 0, 0.55);
+}
+
+body:not([data-theme='dark']).hero-image-hovered .navbar:not(.navbar-scrolled) .nav-actions .theme-btn {
+    color: rgba(0, 0, 0, 0.85);
+}
