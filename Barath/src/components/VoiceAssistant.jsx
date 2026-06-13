@@ -1607,7 +1607,7 @@ function VoiceAssistant() {
           {isListening && transcript && (
             <span className="transcript-preview" style={{ fontStyle: 'normal' }}>Heard: {transcript}</span>
           )}
-          {!isListening && (
+          {!isListening && typeof window !== 'undefined' && window.innerWidth > 768 && (
             <span className="keyboard-hint">Shortcut: Ctrl + V</span>
           )}
         </div>
@@ -1618,7 +1618,7 @@ function VoiceAssistant() {
         className="voice-assistant-orb"
         onClick={toggleListening}
         aria-label={isListening ? "Turn off Voice Assistant" : "Turn on Voice Assistant"}
-        title="Toggle Voice Assistant (Ctrl + V)"
+        title={typeof window !== 'undefined' && window.innerWidth <= 768 ? "Toggle Voice Assistant" : "Toggle Voice Assistant (Ctrl + V)"}
       >
         {/* Outer Pulsing Ripples */}
         {isListening && (
