@@ -2009,7 +2009,7 @@
 
     .msci-hero-profile-wrapper {
         display: inline-block;
-        width: min(280px, 75vw);
+        width: 100%;
         margin: 0 auto;
         aspect-ratio: 848/682;
     }
