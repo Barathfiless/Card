@@ -113,7 +113,6 @@ function HeroParticles({ isHovered = false }) {
 
     const ctx = canvas.getContext('2d', {
       alpha: true,
-      desynchronized: true,
       willReadFrequently: false,
     });
     if (!ctx) return undefined;
