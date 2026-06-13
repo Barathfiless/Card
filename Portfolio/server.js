@@ -29,12 +29,14 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'healthy', database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected' });
 });
 
-// Serve static assets from the React frontend build folder
-app.use(express.static(path.join(__dirname, '../Barath/dist')));
+// Fallback route for non-API requests
+app.get('/', (req, res) => {
+  res.send('Portfolio API is running...');
+});
 
-// Fallback to React index.html for SPA client-side routing
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../Barath/dist/index.html'));
+// 404 handler for unknown routes
+app.use((req, res) => {
+  res.status(404).json({ error: 'Endpoint not found' });
 });
 
 // Connect to MongoDB & Start Server
