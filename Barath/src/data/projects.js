@@ -8,7 +8,8 @@ import { adminFetch } from '../utils/adminApi';
 // GET active projects (isDeleted: false) — public
 export const getProjects = async () => {
   try {
-    const res = await fetch('/api/projects');
+    const baseUrl = import.meta.env.VITE_API_BASE_URL || '';
+    const res = await fetch(`${baseUrl}/api/projects`);
     if (!res.ok) throw new Error('Failed to fetch active projects');
     return await res.json();
   } catch (err) {

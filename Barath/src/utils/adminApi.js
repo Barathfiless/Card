@@ -18,7 +18,9 @@ export async function adminFetch(url, options = {}) {
   const headers = new Headers(options.headers || {});
   headers.set('Authorization', `Bearer ${token}`);
 
-  const res = await fetch(url, { ...options, headers });
+  const baseUrl = import.meta.env.VITE_API_BASE_URL || '';
+  const fullUrl = url.startsWith('/') ? `${baseUrl}${url}` : url;
+  const res = await fetch(fullUrl, { ...options, headers });
 
   if (res.status === 401 || res.status === 403) {
     unauthorizedHandler?.();
