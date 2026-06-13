@@ -37,6 +37,10 @@ function Navbar({ toggleTheme, theme }) {
         setSearchQuery('');
       }
 
+      if (window.scrollY > 20) {
+        setMobileOpen(false);
+      }
+
       setScrolled((prev) => (prev !== hasScrolled ? hasScrolled : prev));
       setReachedFooter((prev) => (prev !== isAtBottom ? isAtBottom : prev));
     };
