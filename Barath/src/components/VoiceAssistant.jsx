@@ -139,6 +139,15 @@ function VoiceAssistant() {
       }
       shouldRestartOnSpeechEndRef.current = isListeningRef.current;
 
+      // Disable vocal feedback entirely in mobile view
+      if (typeof window !== 'undefined' && window.innerWidth <= 768) {
+        isSpeakingRef.current = false;
+        if (shouldRestartOnSpeechEndRef.current) {
+          restartListening();
+        }
+        return;
+      }
+
       // Clear previous utterance handlers and timeouts to prevent duplicate starts
       if (activeUtteranceRef.current) {
         activeUtteranceRef.current.onend = null;
@@ -342,6 +351,11 @@ function VoiceAssistant() {
           active.blur();
         }
 
+        // Mobile haptic vibration feedback on stop
+        if (typeof navigator !== 'undefined' && navigator.vibrate) {
+          navigator.vibrate(50);
+        }
+
         speak("Voice assistant turned off due to inactivity.");
       }, 10000); // 10 seconds
     }
@@ -374,6 +388,11 @@ function VoiceAssistant() {
         }
         if (recognitionRef.current) {
           try { recognitionRef.current.stop(); } catch (_) {}
+        }
+
+        // Mobile haptic vibration feedback on stop
+        if (typeof navigator !== 'undefined' && navigator.vibrate) {
+          navigator.vibrate(50);
         }
         const active = document.activeElement;
         if (active && (active.id === 'email' || active.id === 'message')) {
@@ -1477,11 +1496,21 @@ function VoiceAssistant() {
         silenceTimerRef.current = null;
       }
       try { recognitionRef.current.stop(); } catch (_) {}
+
+      // Mobile haptic vibration feedback on stop
+      if (typeof navigator !== 'undefined' && navigator.vibrate) {
+        navigator.vibrate(50);
+      }
     } else {
       // Turn ON — always create a fresh instance so Chrome never throttles
       setIsListening(true);
       isListeningRef.current = true;
       hasExecutedCommandThisSessionRef.current = false;
+
+      // Mobile haptic vibration feedback on start (Siri-like double-pulse)
+      if (typeof navigator !== 'undefined' && navigator.vibrate) {
+        navigator.vibrate([60, 40, 60]);
+      }
 
       // If active cursor or last focused cursor is inside the contact form inputs, enter dictation mode immediately
       const activeId = lastFocusedInputRef.current;
@@ -1502,7 +1531,9 @@ function VoiceAssistant() {
 
       // Default (not in form input)
       conversationStateRef.current = 'idle';
-      if ('speechSynthesis' in window) {
+      if (typeof window !== 'undefined' && window.innerWidth <= 768) {
+        restartListening();
+      } else if ('speechSynthesis' in window) {
         speak("Hello, this is Voice Assistant, what's up??");
       } else {
         restartListening();
@@ -1587,6 +1618,12 @@ function VoiceAssistant() {
           isListeningRef.current = false;
           setStatus('idle');
           setTooltipText(getTooltipDefault());
+          
+          // Mobile haptic vibration feedback on stop
+          if (typeof navigator !== 'undefined' && navigator.vibrate) {
+            navigator.vibrate(50);
+          }
+
           dictationStateRef.current.hasStartedUtterance = false;
           hasExecutedCommandThisSessionRef.current = false;
           if (silenceTimerRef.current) {
