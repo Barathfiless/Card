@@ -715,7 +715,7 @@ function VoiceAssistant() {
     if (!SpeechRecognition) return null;
 
     const rec = new SpeechRecognition();
-    rec.continuous = false;
+    rec.continuous = true;
     rec.interimResults = true;
     // Set to local browser language for high accuracy regional accents
     rec.lang = navigator.language || 'en-US';
