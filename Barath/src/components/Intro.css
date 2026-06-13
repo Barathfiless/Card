@@ -98,3 +98,30 @@
         transform: scale(1) translateY(0);
     }
 }
+
+.intro-subtitle {
+    margin-top: 16px;
+    font-size: clamp(0.65rem, 2.2vw, 0.95rem);
+    font-weight: 500;
+    font-family: 'Space Grotesk', sans-serif;
+    color: rgba(255, 255, 255, 0.65);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(12px);
+    animation: fadeSlideIn 0.7s cubic-bezier(0.25, 1, 0.5, 1) 2.2s forwards;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    will-change: transform, opacity;
+}
+
+@keyframes fadeSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
