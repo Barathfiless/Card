@@ -150,7 +150,7 @@ function HomeHero() {
                   onMouseLeave={() => setProfileHovered(false)}
                 >
                   <img
-                    src="/hero-profile.png?v=2"
+                    src="/hero-profile-transparent.png"
                     alt="Barath M"
                     className="msci-hero-profile-img"
                     width={420}
