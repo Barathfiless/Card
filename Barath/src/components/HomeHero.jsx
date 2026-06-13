@@ -161,6 +161,7 @@ function HomeHero() {
             </div>
           </div>
         </div>
+      </section>
 
       {/* 2. Floating Index Ticker Bar */}
       <div className="container msci-ticker-wrapper">
@@ -198,7 +199,6 @@ function HomeHero() {
           </button>
         </div>
       </div>
-      </section>
 
       {/* 2. About Section (using Featured Solutions UI) */}
       <section id="about" className="msci-featured-section">
