@@ -14,11 +14,15 @@ const CustomCursor = () => {
     document.documentElement.classList.add('has-custom-cursor');
 
     let isPointer = false;
+    let lastTarget = null;
 
     const onMouseMove = (e) => {
       cursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
 
       const target = e.target;
+      if (target === lastTarget) return;
+      lastTarget = target;
+
       if (!target) return;
 
       const clickable = target.closest(CLICKABLE_SELECTOR);

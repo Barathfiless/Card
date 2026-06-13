@@ -148,7 +148,7 @@ function App() {
       
       {!hideHeaderFooter && <Footer />}
       {!isAdminPage && <CustomCursor />}
-      {!isAdminPage && <VoiceAssistant />}
+      {!isAdminPage && !showIntro && <VoiceAssistant />}
     </>
   );
 }

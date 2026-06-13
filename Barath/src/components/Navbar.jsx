@@ -26,6 +26,12 @@ function Navbar({ toggleTheme, theme }) {
       dockRef.current?.classList.toggle('dock-visible', hasScrolled);
       dockRef.current?.classList.toggle('footer-reached', isAtBottom);
 
+      if (isAtBottom) {
+        document.body.classList.add('footer-reached');
+      } else {
+        document.body.classList.remove('footer-reached');
+      }
+
       setScrolled((prev) => (prev !== hasScrolled ? hasScrolled : prev));
       setReachedFooter((prev) => (prev !== isAtBottom ? isAtBottom : prev));
     };
@@ -39,6 +45,7 @@ function Navbar({ toggleTheme, theme }) {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => {
       window.removeEventListener('scroll', handleScroll);
+      document.body.classList.remove('footer-reached');
       if (scrollRafRef.current) cancelAnimationFrame(scrollRafRef.current);
     };
   }, []);
@@ -340,7 +347,7 @@ function Navbar({ toggleTheme, theme }) {
 
             {/* Instagram Social Icon */}
             <a
-              href="https://www.instagram.com/"
+              href="https://www.instagram.com/me.barathh"
               target="_blank"
               rel="noopener noreferrer"
               className="dock-item social-dock-item"

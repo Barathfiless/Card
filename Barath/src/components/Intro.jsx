@@ -35,6 +35,9 @@ const Intro = ({ onFinish }) => {
             </span>
           ))}
         </h1>
+        <p className="intro-device-hint">
+          Use Laptop or Desktop view for better view
+        </p>
       </div>
     </div>
   );

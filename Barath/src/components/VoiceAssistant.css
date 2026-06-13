@@ -341,18 +341,37 @@
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .voice-assistant-container {
-    bottom: 20px;
-    /* Parallel to the mobile dock (which is at bottom: 16px) */
+    bottom: 24px;
     right: 20px;
   }
 
+  body.footer-reached .voice-assistant-container {
+    bottom: 104px;
+  }
+
   .voice-assistant-orb {
-    width: 52px;
-    height: 52px;
+    width: 68px;
+    height: 68px;
   }
 
   .voice-assistant-tooltip {
     max-width: 200px;
     font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .voice-assistant-container {
+    bottom: 16px;
+    right: 16px;
+  }
+
+  body.footer-reached .voice-assistant-container {
+    bottom: 80px;
+  }
+
+  .voice-assistant-orb {
+    width: 52px;
+    height: 52px;
   }
 }

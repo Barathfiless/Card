@@ -26,7 +26,7 @@ function GitHubStats() {
   }, []);
 
   const currentYear = new Date().getFullYear();
-  const startYear = 2023;
+  const startYear = 2024;
   const years = ['last'];
   for (let y = currentYear; y >= startYear; y--) {
     years.push(y);

@@ -470,7 +470,7 @@ function HeroParticles({ isHovered = false }) {
       const tg = isDark ? 169 : 80;
       const tb = isDark ? 110 : 220;
 
-      drawBuckets(textBuckets, tr, tg, tb, 1.4, false); // Keep text dots circular
+      drawBuckets(textBuckets, tr, tg, tb, 1.4, true); // Use super-fast rects for text particles too!
       drawBuckets(floatBuckets, pr, pg, pb, 1.0, true);  // Use super-fast rects for background float dots
     };
 
