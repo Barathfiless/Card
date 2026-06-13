@@ -27,6 +27,7 @@ function VoiceAssistant() {
   const shouldRestartOnSpeechEndRef = useRef(false);
   const isProgrammaticInputRef = useRef(false);
   const dictationBaseValueRef = useRef('');
+  const lastFocusedInputRef = useRef(null);
   const silenceTimerRef = useRef(null);
   const timeoutRef = useRef(null);
   const projectsRef = useRef([]);
@@ -1482,23 +1483,29 @@ function VoiceAssistant() {
       isListeningRef.current = true;
       hasExecutedCommandThisSessionRef.current = false;
 
-      // If active cursor is already inside the contact form inputs, enter dictation mode immediately
-      const active = document.activeElement;
-      if (active && (active.id === 'email' || active.id === 'message')) {
-        conversationStateRef.current = `dictating_${active.id}`;
-        dictationBaseValueRef.current = active.value || '';
-        dictationStateRef.current.hasStartedUtterance = false;
-        
-        setStatus('listening');
-        setTooltipText(`Dictating to ${active.id === 'email' ? 'email' : 'queries'}...`);
-        restartListening();
-      } else {
-        conversationStateRef.current = 'idle';
-        if ('speechSynthesis' in window) {
-          speak("Hello, this is Voice Assistant, what's up??");
-        } else {
+      // If active cursor or last focused cursor is inside the contact form inputs, enter dictation mode immediately
+      const activeId = lastFocusedInputRef.current;
+      if (activeId === 'email' || activeId === 'message') {
+        const input = document.getElementById(activeId);
+        if (input) {
+          input.focus(); // Restore cursor focus inside the input field
+          conversationStateRef.current = `dictating_${activeId}`;
+          dictationBaseValueRef.current = input.value || '';
+          dictationStateRef.current.hasStartedUtterance = false;
+          
+          setStatus('listening');
+          setTooltipText(`Dictating to ${activeId === 'email' ? 'email' : 'queries'}...`);
           restartListening();
+          return;
         }
+      }
+
+      // Default (not in form input)
+      conversationStateRef.current = 'idle';
+      if ('speechSynthesis' in window) {
+        speak("Hello, this is Voice Assistant, what's up??");
+      } else {
+        restartListening();
       }
     }
   };
@@ -1532,7 +1539,9 @@ function VoiceAssistant() {
     const handleFocusIn = (e) => {
       const target = e.target;
       if (target && (target.id === 'email' || target.id === 'message')) {
-        // Do not auto-start voice assistant blindly on focus.
+        // Track the last focused input field for manual voice assistant activation
+        lastFocusedInputRef.current = target.id;
+
         // Only switch to dictation state if the assistant has already been turned on.
         if (isListeningRef.current) {
           conversationStateRef.current = `dictating_${target.id}`;
@@ -1543,6 +1552,16 @@ function VoiceAssistant() {
           setStatus('listening');
           setTooltipText(`Dictating to ${target.id === 'email' ? 'email' : 'queries'}...`);
         }
+      } else {
+        // If the focused target is outside form inputs and not part of the voice assistant container,
+        // clear the last focused input reference.
+        const isVoiceAssistant = target && (
+          (target.closest && target.closest('.voice-assistant-container')) ||
+          (target.classList && target.classList.contains('voice-assistant-orb'))
+        );
+        if (!isVoiceAssistant) {
+          lastFocusedInputRef.current = null;
+        }
       }
     };
 
@@ -1550,6 +1569,19 @@ function VoiceAssistant() {
       const target = e.target;
       if (target && (target.id === 'email' || target.id === 'message')) {
         if (conversationStateRef.current === `dictating_${target.id}`) {
+          // If the focus moved to the voice assistant orb/container or another dictate input field,
+          // do NOT turn off the voice assistant. Let toggleListening or handleFocusIn handle it.
+          const related = e.relatedTarget;
+          const isVoiceAssistant = related && (
+            (related.closest && related.closest('.voice-assistant-container')) ||
+            (related.classList && related.classList.contains('voice-assistant-orb'))
+          );
+          const isDictateInput = related && (related.id === 'email' || related.id === 'message');
+          
+          if (isVoiceAssistant || isDictateInput) {
+            return;
+          }
+
           conversationStateRef.current = 'idle';
           setIsListening(false);
           isListeningRef.current = false;
