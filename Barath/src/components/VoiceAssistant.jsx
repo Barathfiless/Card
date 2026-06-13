@@ -3,12 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import { getProjects } from '../data/projects';
 import './VoiceAssistant.css';
 
+const getTooltipDefault = () => {
+  return typeof window !== 'undefined' && window.innerWidth <= 768 
+    ? 'Tap to ON/OFF' 
+    : 'Press Ctrl + V to talk';
+};
+
 function VoiceAssistant() {
   const navigate = useNavigate();
   const [isListening, setIsListening] = useState(false);
   const [status, setStatus] = useState('idle'); // 'idle' | 'listening' | 'success' | 'error'
   const [transcript, setTranscript] = useState('');
-  const [tooltipText, setTooltipText] = useState('Press Ctrl + V to talk');
+  const [tooltipText, setTooltipText] = useState(getTooltipDefault);
   const [showTooltip, setShowTooltip] = useState(false);
   const [projects, setProjects] = useState([]);
 
@@ -275,7 +281,7 @@ function VoiceAssistant() {
         setTranscript('');
       } else {
         setStatus('idle');
-        setTooltipText('Press Ctrl + V to talk');
+        setTooltipText(getTooltipDefault());
       }
     }, 1500); // reduced from 3500ms → 1500ms for snappier UI reset
   };
@@ -322,7 +328,7 @@ function VoiceAssistant() {
         isListeningRef.current = false;
         conversationStateRef.current = 'idle';
         setStatus('idle');
-        setTooltipText('Press Ctrl + V to talk');
+        setTooltipText(getTooltipDefault());
         
         if (recognitionRef.current) {
           recognitionRef.current.onend = null;
@@ -360,7 +366,7 @@ function VoiceAssistant() {
         setIsListening(false);
         isListeningRef.current = false;
         setStatus('idle');
-        setTooltipText('Press Ctrl + V to talk');
+        setTooltipText(getTooltipDefault());
         if (silenceTimerRef.current) {
           clearTimeout(silenceTimerRef.current);
           silenceTimerRef.current = null;
@@ -900,7 +906,7 @@ function VoiceAssistant() {
         }
       } else {
         setStatus('idle');
-        setTooltipText('Press Ctrl + V to talk');
+        setTooltipText(getTooltipDefault());
       }
     };
 
@@ -999,7 +1005,7 @@ function VoiceAssistant() {
       conversationStateRef.current = 'idle';
       speak("Command cancelled.");
       setStatus('idle');
-      setTooltipText('Press Ctrl + V to talk');
+      setTooltipText(getTooltipDefault());
       resetStatusTimer();
       return;
     }
@@ -1474,12 +1480,25 @@ function VoiceAssistant() {
       // Turn ON — always create a fresh instance so Chrome never throttles
       setIsListening(true);
       isListeningRef.current = true;
-      conversationStateRef.current = 'idle';
       hasExecutedCommandThisSessionRef.current = false;
-      if ('speechSynthesis' in window) {
-        speak("Hello, this is Voice Assistant, what's up??");
-      } else {
+
+      // If active cursor is already inside the contact form inputs, enter dictation mode immediately
+      const active = document.activeElement;
+      if (active && (active.id === 'email' || active.id === 'message')) {
+        conversationStateRef.current = `dictating_${active.id}`;
+        dictationBaseValueRef.current = active.value || '';
+        dictationStateRef.current.hasStartedUtterance = false;
+        
+        setStatus('listening');
+        setTooltipText(`Dictating to ${active.id === 'email' ? 'email' : 'queries'}...`);
         restartListening();
+      } else {
+        conversationStateRef.current = 'idle';
+        if ('speechSynthesis' in window) {
+          speak("Hello, this is Voice Assistant, what's up??");
+        } else {
+          restartListening();
+        }
       }
     }
   };
@@ -1513,17 +1532,17 @@ function VoiceAssistant() {
     const handleFocusIn = (e) => {
       const target = e.target;
       if (target && (target.id === 'email' || target.id === 'message')) {
-        setIsListening(true);
-        isListeningRef.current = true;
-        conversationStateRef.current = `dictating_${target.id}`;
-        dictationBaseValueRef.current = target.value || '';
-        dictationStateRef.current.hasStartedUtterance = false;
-        hasExecutedCommandThisSessionRef.current = false;
-        
-        setStatus('listening');
-        setTooltipText(`Dictating to ${target.id === 'email' ? 'email' : 'queries'}...`);
-        
-        restartListening();
+        // Do not auto-start voice assistant blindly on focus.
+        // Only switch to dictation state if the assistant has already been turned on.
+        if (isListeningRef.current) {
+          conversationStateRef.current = `dictating_${target.id}`;
+          dictationBaseValueRef.current = target.value || '';
+          dictationStateRef.current.hasStartedUtterance = false;
+          hasExecutedCommandThisSessionRef.current = false;
+          
+          setStatus('listening');
+          setTooltipText(`Dictating to ${target.id === 'email' ? 'email' : 'queries'}...`);
+        }
       }
     };
 
@@ -1535,7 +1554,7 @@ function VoiceAssistant() {
           setIsListening(false);
           isListeningRef.current = false;
           setStatus('idle');
-          setTooltipText('Press Ctrl + V to talk');
+          setTooltipText(getTooltipDefault());
           dictationStateRef.current.hasStartedUtterance = false;
           hasExecutedCommandThisSessionRef.current = false;
           if (silenceTimerRef.current) {
