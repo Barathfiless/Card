@@ -160,6 +160,8 @@ function HomeHero() {
               </div>
             </div>
           </div>
+        </div>
+
       {/* 2. Floating Index Ticker Bar */}
       <div className="container msci-ticker-wrapper">
         <div className="msci-ticker-bar">
