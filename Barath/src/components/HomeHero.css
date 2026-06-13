@@ -1886,6 +1886,55 @@
         max-width: 260px;
         gap: 20px;
     }
+
+    /* Reflow the 2 featured cards into vertical single column on tablets/high-DPI mobile */
+    .msci-featured-cards-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .msci-featured-card {
+        min-height: auto;
+    }
+
+    .blue-card-graphic {
+        height: 180px;
+        padding: 24px;
+        justify-content: center;
+    }
+
+    .card-marquee-wrapper {
+        padding: 10px 0;
+        gap: 12px;
+    }
+
+    .blue-card-content {
+        padding: 24px;
+    }
+
+    .blue-card-content p {
+        text-align: justify;
+        hyphens: none;
+    }
+
+    .light-card {
+        flex-direction: column-reverse;
+    }
+
+    .light-card-content {
+        padding: 30px 24px;
+    }
+
+    .light-card-content p {
+        margin-bottom: 24px;
+        text-align: justify;
+        hyphens: none;
+    }
+
+    .light-card-image {
+        width: 100%;
+        height: 200px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -1993,55 +2042,6 @@
     .msci-featured-col p {
         text-align: justify;
         hyphens: none;
-    }
-
-    /* Reflow the 2 featured cards into vertical single column */
-    .msci-featured-cards-grid {
-        grid-template-columns: 1fr;
-        gap: 24px;
-    }
-
-    .msci-featured-card {
-        min-height: auto;
-    }
-
-    .blue-card-graphic {
-        height: 180px;
-        padding: 24px;
-        justify-content: center;
-    }
-
-    .card-marquee-wrapper {
-        padding: 10px 0;
-        gap: 12px;
-    }
-
-    .blue-card-content {
-        padding: 24px;
-    }
-
-    .blue-card-content p {
-        text-align: justify;
-        hyphens: none;
-    }
-
-    .light-card {
-        flex-direction: column-reverse;
-    }
-
-    .light-card-content {
-        padding: 30px 24px;
-    }
-
-    .light-card-content p {
-        margin-bottom: 24px;
-        text-align: justify;
-        hyphens: none;
-    }
-
-    .light-card-image {
-        width: 100%;
-        height: 200px;
     }
 
     /* Justify about section text on mobile */
