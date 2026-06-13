@@ -3,7 +3,7 @@
   position: fixed;
   bottom: 28px;
   /* Parallel to the bottom dock (which is at bottom: 24px + padding) */
-  right: 30px;
+  right: 20px;
   z-index: 9999;
   display: flex;
   flex-direction: column;
@@ -342,7 +342,7 @@
 @media (max-width: 768px) {
   .voice-assistant-container {
     bottom: 24px;
-    right: 20px;
+    right: 12px;
   }
 
   body.footer-reached .voice-assistant-container {
@@ -363,7 +363,7 @@
 @media (max-width: 520px) {
   .voice-assistant-container {
     bottom: 16px;
-    right: 16px;
+    right: 8px;
   }
 
   body.footer-reached .voice-assistant-container {
