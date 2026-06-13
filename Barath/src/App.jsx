@@ -26,6 +26,7 @@ function App() {
       return 'light';
     }
   });
+  const [showDarkThemeModal, setShowDarkThemeModal] = useState(false);
   const location = useLocation();
   const { logout } = useAdminAuth();
 
@@ -50,7 +51,11 @@ function App() {
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+    const nextTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(nextTheme);
+    if (nextTheme === 'dark') {
+      setShowDarkThemeModal(true);
+    }
   };
 
   useEffect(() => {
@@ -149,6 +154,30 @@ function App() {
       {!hideHeaderFooter && <Footer />}
       {!isAdminPage && <CustomCursor />}
       {!isAdminPage && !showIntro && <VoiceAssistant />}
+
+      {showDarkThemeModal && (
+        <div className="dark-theme-alert-overlay">
+          <div className="dark-theme-alert-box">
+            <div className="dark-theme-alert-header">
+              <svg className="dark-theme-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              <span>Notification</span>
+            </div>
+            <div className="dark-theme-alert-body">
+              Yet to make dark theme
+            </div>
+            <button className="dark-theme-alert-btn" onClick={() => {
+              setShowDarkThemeModal(false);
+              setTheme('light');
+            }}>
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }

@@ -929,3 +929,97 @@ body:not([data-theme='dark']).hero-image-hovered .navbar:not(.navbar-scrolled) .
 body:not([data-theme='dark']).hero-image-hovered .navbar:not(.navbar-scrolled) .nav-actions .theme-btn {
     color: rgba(0, 0, 0, 0.85);
 }
+
+/* Dark Theme Alert Modal */
+.dark-theme-alert-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    animation: fadeInModal 0.3s ease;
+}
+
+.dark-theme-alert-box {
+    background: rgba(30, 20, 20, 0.95);
+    border: 2px solid #ff4d4d;
+    box-shadow: 0 0 25px rgba(255, 77, 77, 0.4);
+    border-radius: 16px;
+    padding: 30px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    color: #ffffff;
+    animation: scaleInModal 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.dark-theme-alert-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    color: #ff4d4d;
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.dark-theme-alert-icon {
+    width: 24px;
+    height: 24px;
+    stroke: #ff4d4d;
+}
+
+.dark-theme-alert-body {
+    font-size: 1.15rem;
+    font-weight: 500;
+    margin-bottom: 24px;
+    color: #f5f5f5;
+}
+
+.dark-theme-alert-btn {
+    background: #ff4d4d;
+    color: #ffffff;
+    border: none;
+    padding: 10px 30px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(255, 77, 77, 0.3);
+}
+
+.dark-theme-alert-btn:hover {
+    background: #ff3333;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 77, 77, 0.5);
+}
+
+.dark-theme-alert-btn:active {
+    transform: translateY(0);
+}
+
+@keyframes fadeInModal {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes scaleInModal {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
