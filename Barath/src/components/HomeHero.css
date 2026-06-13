@@ -1938,7 +1938,7 @@
 
 @media (max-width: 768px) {
     .msci-hero-banner {
-        padding: 48px 0 0;
+        padding: 48px 0 60px;
     }
 
     /* Section Title & Subtitle Mobile Font Sizes */
@@ -2012,6 +2012,10 @@
         width: min(280px, 75vw);
         margin: 0 auto;
         aspect-ratio: 420/525;
+    }
+
+    .msci-ticker-wrapper {
+        margin-top: -76px;
     }
 
     .msci-ticker-bar {
