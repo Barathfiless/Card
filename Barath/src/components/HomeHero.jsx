@@ -153,8 +153,8 @@ function HomeHero() {
                     src="/hero-profile-transparent.png?v=3"
                     alt="Barath M"
                     className="msci-hero-profile-img"
-                    width={420}
-                    height={525}
+                    width={848}
+                    height={682}
                   />
                 </div>
               </div>
