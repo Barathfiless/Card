@@ -9,11 +9,11 @@ const Intro = ({ onFinish }) => {
     // Start exit transition after letters fully appear and hold
     const exitTimer = setTimeout(() => {
       setExit(true);
-    }, 2500);
+    }, 3600);
 
     const finishTimer = setTimeout(() => {
       onFinish();
-    }, 3300);
+    }, 4400);
 
     return () => {
       clearTimeout(exitTimer);
@@ -33,12 +33,15 @@ const Intro = ({ onFinish }) => {
             <span
               key={index}
               className="intro-letter"
-              style={{ animationDelay: `${index * 0.08 + 0.8}s` }}
+              style={{ animationDelay: `${index * 0.08 + 1.6}s` }}
             >
               {char}
             </span>
           ))}
         </h1>
+        <p className="intro-subtitle">
+          use Laptop or Desktop site for better view
+        </p>
       </div>
     </div>
   );

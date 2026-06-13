@@ -7,7 +7,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: transparent;
+    background-color: #ffffff; /* 1st White screen appears fully without animation */
     pointer-events: all;
     transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
 }
@@ -29,19 +29,19 @@
 
 .intro-panel-left {
     left: 0;
-    transform: translateX(-100vw);
-    animation: slideInLeft 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    transform: translateX(-50vw);
+    animation: slideInLeft 0.8s cubic-bezier(0.25, 1, 0.5, 1) 0.8s forwards;
 }
 
 .intro-panel-right {
     right: 0;
-    transform: translateX(100vw);
-    animation: slideInRight 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    transform: translateX(50vw);
+    animation: slideInRight 0.8s cubic-bezier(0.25, 1, 0.5, 1) 0.8s forwards;
 }
 
 @keyframes slideInLeft {
     0% {
-        transform: translateX(-100vw);
+        transform: translateX(-50vw);
     }
     100% {
         transform: translateX(0);
@@ -50,7 +50,7 @@
 
 @keyframes slideInRight {
     0% {
-        transform: translateX(100vw);
+        transform: translateX(50vw);
     }
     100% {
         transform: translateX(0);
