@@ -1,0 +1,668 @@
+/* Vercel-style admin theme — scoped to admin shell + login */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+.admin-shell,
+.login-page,
+.admin-auth-gate {
+  --vc-black: #000000;
+  --vc-white: #ffffff;
+
+  /* Default (Dark Mode) variables */
+  --vc-bg: #000000;
+  --vc-elevated: #000000;
+  --vc-elevated-2: #111111;
+  --vc-border: #222222;
+  --vc-border-hover: #444444;
+  --vc-text: #ffffff;
+  --vc-text-muted: #888888;
+  --vc-text-dim: #666666;
+  --vc-header-bg: rgba(0, 0, 0, 0.8);
+
+  --vc-button-primary-bg: #ffffff;
+  --vc-button-primary-fg: #000000;
+  --vc-button-primary-border: #ffffff;
+  --vc-button-primary-hover-bg: #eaeaea;
+  --vc-button-primary-hover-border: #eaeaea;
+
+  --admin-bg: var(--vc-bg);
+  --admin-card-bg: var(--vc-elevated);
+  --admin-sidebar-bg: var(--vc-black);
+  --admin-sidebar-text: var(--vc-text-muted);
+  --admin-sidebar-active-bg: var(--vc-elevated-2);
+  --admin-sidebar-active-text: var(--vc-text);
+  --admin-border: var(--vc-border);
+  --admin-text-main: var(--vc-text);
+  --admin-text-muted: var(--vc-text-muted);
+  --admin-card-hover: rgba(255, 255, 255, 0.03);
+  --admin-btn-secondary-bg: var(--vc-elevated-2);
+  --admin-btn-secondary-text: var(--vc-text-muted);
+  --admin-table-header-bg: var(--vc-black);
+  --admin-table-row-hover: rgba(255, 255, 255, 0.03);
+  --admin-sidebar-toggle-bg: var(--vc-elevated-2);
+  --admin-sidebar-toggle-color: var(--vc-text-muted);
+  --admin-shadow: 0 0 0 1px var(--vc-border);
+}
+
+/* Light Mode Overrides */
+html[data-theme='light'] .admin-shell,
+html[data-theme='light'] .login-page,
+html[data-theme='light'] .admin-auth-gate {
+  --vc-bg: #ffffff;
+  --vc-elevated: #ffffff;
+  --vc-elevated-2: #fafafa;
+  --vc-border: #eaeaea;
+  --vc-border-hover: #cccccc;
+  --vc-text: #000000;
+  --vc-text-muted: #666666;
+  --vc-text-dim: #888888;
+  --vc-header-bg: rgba(255, 255, 255, 0.8);
+
+  --vc-button-primary-bg: #000000;
+  --vc-button-primary-fg: #ffffff;
+  --vc-button-primary-border: #000000;
+  --vc-button-primary-hover-bg: #111111;
+  --vc-button-primary-hover-border: #111111;
+
+  --admin-bg: var(--vc-bg);
+  --admin-card-bg: var(--vc-elevated);
+  --admin-sidebar-bg: var(--vc-white);
+  --admin-sidebar-text: var(--vc-text-muted);
+  --admin-sidebar-active-bg: var(--vc-elevated-2);
+  --admin-sidebar-active-text: var(--vc-text);
+  --admin-border: var(--vc-border);
+  --admin-text-main: var(--vc-text);
+  --admin-text-muted: var(--vc-text-muted);
+  --admin-card-hover: rgba(0, 0, 0, 0.02);
+  --admin-btn-secondary-bg: var(--vc-elevated-2);
+  --admin-btn-secondary-text: var(--vc-text-muted);
+  --admin-table-header-bg: var(--vc-bg);
+  --admin-table-row-hover: rgba(0, 0, 0, 0.02);
+  --admin-sidebar-toggle-bg: var(--vc-elevated-2);
+  --admin-sidebar-toggle-color: var(--vc-text-muted);
+  --admin-shadow: 0 0 0 1px var(--vc-border);
+}
+
+.admin-shell,
+.admin-shell *,
+.login-page,
+.login-page *,
+.admin-auth-gate,
+.admin-auth-gate * {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+  font-style: normal !important;
+}
+
+/* Overriding Netflix Red buttons and accent colors to Vercel black & white */
+
+/* Primary buttons */
+.admin-shell .upload-project-btn,
+.admin-shell .submit-project-btn,
+.admin-shell .save-btn-primary,
+.admin-shell .action-btn-primary {
+  background: var(--vc-white) !important;
+  color: var(--vc-black) !important;
+  border: 1px solid var(--vc-white) !important;
+  border-radius: 6px !important;
+  font-weight: 500 !important;
+  padding: 8px 16px !important;
+  transition: background 0.2s, border-color 0.2s, color 0.2s !important;
+}
+
+.admin-shell .upload-project-btn:hover,
+.admin-shell .submit-project-btn:hover,
+.admin-shell .save-btn-primary:hover,
+.admin-shell .action-btn-primary:hover {
+  background: #eaeaea !important;
+  border-color: #eaeaea !important;
+  box-shadow: none !important;
+}
+
+/* Secondary/outline buttons */
+.admin-shell .btn-secondary,
+.admin-shell .action-bar-btn {
+  background: var(--vc-bg) !important;
+  color: var(--vc-text) !important;
+  border: 1px solid var(--vc-border) !important;
+  border-radius: 6px !important;
+  font-weight: 500 !important;
+  transition: background 0.2s, border-color 0.2s !important;
+}
+
+.admin-shell .btn-secondary:hover,
+.admin-shell .action-bar-btn:hover {
+  background: var(--vc-elevated-2) !important;
+  border-color: var(--vc-border-hover) !important;
+}
+
+/* Input elements focus state */
+.admin-shell .form-input:focus,
+.admin-shell .form-textarea:focus,
+.admin-shell .form-select:focus {
+  border-color: var(--vc-white) !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Badges override */
+.admin-shell .category-badge {
+  background: var(--vc-elevated-2) !important;
+  color: var(--vc-text-muted) !important;
+  border: 1px solid var(--vc-border) !important;
+  border-radius: 6px !important;
+}
+
+.admin-shell .tab-btn.active {
+  color: var(--vc-white) !important;
+  border-bottom-color: var(--vc-white) !important;
+}
+
+/* Hide Netflix red spinner overrides */
+.admin-auth-gate-spinner,
+.admin-shell .upload-spinner {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  border-top-color: var(--vc-white) !important;
+}
+
+/* Project preset/custom picker hover */
+.admin-shell .picker-card:hover {
+  border-color: var(--vc-white) !important;
+}
+
+.admin-shell .picker-card--new:hover {
+  border-color: var(--vc-white) !important;
+}
+
+.admin-shell .picker-card--new .picker-new-icon {
+  color: var(--vc-white) !important;
+}
+
+/* ── Vercel Dashboard Container Overrides ── */
+
+.admin-shell .dashboard-content-panel {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+.admin-shell .panel-header {
+  margin-bottom: 20px !important;
+}
+
+.admin-shell .panel-header h2 {
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.02em !important;
+  color: var(--vc-white) !important;
+}
+
+/* Rounded corners for table box standard to Vercel (6px) */
+.admin-shell .inventory-action-bar {
+  border-top-left-radius: 6px !important;
+  border-top-right-radius: 6px !important;
+}
+
+.admin-shell .projects-table-wrapper {
+  border-bottom-left-radius: 6px !important;
+  border-bottom-right-radius: 6px !important;
+}
+
+/* Minimalist Stat Cards override */
+.admin-shell .stat-card {
+  border-radius: 6px !important;
+  background: var(--admin-card-bg) !important; /* theme-sensitive background */
+  border: 1px solid var(--admin-border) !important;
+}
+
+.admin-shell .stat-card:hover {
+  border-color: var(--vc-border-hover) !important;
+  background: rgba(255, 255, 255, 0.01) !important;
+}
+
+/* Inventory Action Bar and Table Header theme overrides */
+.admin-shell .inventory-action-bar {
+  background: var(--admin-table-header-bg) !important;
+  border: 1px solid var(--admin-border) !important;
+  border-bottom: none !important;
+}
+
+.admin-shell .projects-table th {
+  background: var(--admin-table-header-bg) !important;
+  color: var(--admin-text-muted) !important;
+  border-bottom: 1px solid var(--admin-border) !important;
+}
+
+.admin-shell .table-checkbox {
+  border: 1.5px solid var(--admin-border) !important;
+}
+
+.admin-shell .table-checkbox:checked {
+  background: var(--admin-text-main) !important;
+  border-color: var(--admin-text-main) !important;
+}
+
+/* Remove default link highlight styles for stat values */
+.admin-shell .stat-link-value {
+  color: inherit !important;
+  text-decoration: none !important;
+}
+
+.admin-shell .stat-link-value:hover {
+  color: var(--vc-white) !important;
+  text-decoration: underline !important;
+}
+
+/* Active buttons and search wrapper theme overrides */
+.admin-shell .action-bar-btn.active {
+  background: var(--vc-elevated-2) !important;
+  border-color: var(--vc-border-hover) !important;
+  color: var(--vc-text) !important;
+}
+
+.admin-shell .action-bar-search-wrapper.expanded,
+.admin-shell .action-bar-search-wrapper:focus-within {
+  background: var(--vc-bg) !important;
+  border-color: var(--vc-border-hover) !important;
+}
+
+.admin-shell .row-actions-dropdown,
+.admin-shell .status-select-menu {
+  background: var(--vc-elevated-2) !important;
+  border: 1px solid var(--vc-border) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Active tab hover transition details */
+.vercel-nav-btn.theme-toggle-btn:hover,
+.vercel-nav-btn.refresh-btn:hover {
+  background: var(--vc-elevated-2) !important;
+  border-color: var(--vc-border-hover) !important;
+}
+
+/* ── Upload Project Page Theme & Aesthetics Overrides ── */
+
+.admin-shell .form-panel-card-premium {
+  background: var(--admin-card-bg) !important;
+  border: 1px solid var(--admin-border) !important;
+  box-shadow: var(--admin-shadow) !important;
+}
+
+.admin-shell .premium-form-title {
+  color: var(--vc-text) !important;
+  border-bottom: 1px dashed var(--admin-border) !important;
+}
+
+.admin-shell .form-group-premium label {
+  color: var(--vc-text) !important;
+}
+
+.admin-shell .form-group-premium input[type="text"],
+.admin-shell .form-group-premium textarea {
+  background: var(--vc-bg) !important;
+  border: 1px solid var(--admin-border) !important;
+  color: var(--vc-text) !important;
+}
+
+.admin-shell .form-group-premium input[type="text"]:focus,
+.admin-shell .form-group-premium textarea:focus {
+  border-color: var(--vc-text) !important;
+  box-shadow: none !important;
+}
+
+/* Image Upload Dropzone */
+.admin-shell .image-upload-dropzone-premium {
+  background: var(--vc-elevated-2) !important;
+  border: 1.5px dashed var(--admin-border) !important;
+  color: var(--vc-text-muted) !important;
+}
+
+.admin-shell .image-upload-dropzone-premium:hover,
+.admin-shell .image-upload-dropzone-premium.drag-active {
+  border-color: var(--vc-text) !important;
+  background: var(--vc-elevated-2) !important;
+}
+
+.admin-shell .image-upload-dropzone-premium.has-image {
+  border-style: solid !important;
+  background: var(--vc-bg) !important;
+  border-color: var(--admin-border) !important;
+}
+
+.admin-shell .dropzone-text-primary-premium {
+  color: var(--vc-text) !important;
+}
+
+.admin-shell .dropzone-text-secondary-premium {
+  color: var(--vc-text-muted) !important;
+}
+
+.admin-shell .uploaded-image-preview-container-premium {
+  border: 1px solid var(--admin-border) !important;
+}
+
+/* Accent Color Custom Picker */
+.admin-shell .custom-color-picker-wrapper {
+  color: var(--vc-text-muted) !important;
+}
+
+.admin-shell .custom-color-picker::-webkit-color-swatch {
+  border: 1px solid var(--admin-border) !important;
+}
+
+.admin-shell .preset-color-circle.selected {
+  border-color: var(--vc-bg) !important;
+  box-shadow: 0 0 0 2px var(--vc-text) !important;
+}
+
+/* Premium Rich Text Editor */
+.admin-shell .premium-rich-editor {
+  background: var(--vc-bg) !important;
+  border: 1px solid var(--admin-border) !important;
+}
+
+.admin-shell .premium-rich-editor:focus-within {
+  border-color: var(--vc-text) !important;
+  box-shadow: none !important;
+}
+
+.admin-shell .rich-editor-toolbar {
+  background: var(--vc-elevated-2) !important;
+  border-bottom: 1px solid var(--admin-border) !important;
+}
+
+.admin-shell .toolbar-btn {
+  color: var(--vc-text-muted) !important;
+}
+
+.admin-shell .toolbar-btn:hover {
+  background: var(--vc-border) !important;
+  color: var(--vc-text) !important;
+}
+
+.admin-shell .toolbar-btn.active {
+  background: var(--vc-border) !important;
+  color: var(--vc-text) !important;
+}
+
+.admin-shell .toolbar-separator {
+  background: var(--admin-border) !important;
+}
+
+.admin-shell .rich-editor-content {
+  color: var(--vc-text) !important;
+}
+
+.admin-shell .rich-editor-content:empty::before {
+  color: var(--vc-text-muted) !important;
+}
+
+/* Form Actions */
+.admin-shell .form-actions-premium {
+  border-top: 1px solid var(--admin-border) !important;
+}
+
+.admin-shell .cancel-btn-premium {
+  background: var(--vc-bg) !important;
+  color: var(--vc-text) !important;
+  border: 1px solid var(--admin-border) !important;
+}
+
+.admin-shell .cancel-btn-premium:hover {
+  background: var(--vc-elevated-2) !important;
+  border-color: var(--vc-border-hover) !important;
+}
+
+.admin-shell .submit-project-btn-premium {
+  background: var(--vc-button-primary-bg) !important;
+  color: var(--vc-button-primary-fg) !important;
+  border: 1px solid var(--vc-button-primary-border) !important;
+  box-shadow: none !important;
+}
+
+.admin-shell .submit-project-btn-premium:hover {
+  background: var(--vc-button-primary-hover-bg) !important;
+  border-color: var(--vc-button-primary-hover-border) !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Card Preview Panel Header */
+.admin-shell .preview-card-column-premium .preview-card-column-header h3 {
+  color: var(--vc-text) !important;
+}
+
+.admin-shell .preview-card-column-premium .preview-card-column-header p {
+  color: var(--vc-text-muted) !important;
+}
+
+/* Tab switchers in Vercel Style */
+.admin-shell .premium-tab-switcher-pill {
+  background: var(--vc-elevated-2) !important;
+  border: 1px solid var(--admin-border) !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+}
+
+.admin-shell .premium-tab-pill-btn {
+  color: var(--vc-text-muted) !important;
+  font-weight: 500 !important;
+  font-size: 0.875rem !important;
+  border-radius: 6px !important;
+  padding: 6px 16px !important;
+}
+
+.admin-shell .premium-tab-pill-btn:hover:not(.active) {
+  color: var(--vc-text) !important;
+  background: transparent !important;
+}
+
+.admin-shell .premium-tab-pill-btn.active {
+  background: var(--vc-bg) !important;
+  color: var(--vc-text) !important;
+  box-shadow: var(--admin-shadow) !important;
+}
+
+/* Overview Tab Full Page Preview Container */
+.admin-shell .overview-tab-content-premium {
+  background: var(--vc-bg) !important;
+  border: 1px solid var(--admin-border) !important;
+}
+
+.admin-shell .ov-tag-badge-premium {
+  background: var(--vc-elevated-2) !important;
+  color: var(--vc-text) !important;
+  border: 1px solid var(--admin-border) !important;
+  box-shadow: none !important;
+}
+
+.admin-shell .tech-stack-add-btn {
+  background: var(--vc-bg) !important;
+  border: 1px solid var(--admin-border) !important;
+  color: var(--vc-text) !important;
+}
+
+.admin-shell .tech-stack-add-btn:hover {
+  background: var(--vc-elevated-2) !important;
+  border-color: var(--vc-border-hover) !important;
+}
+
+.admin-shell .tech-stack-popover {
+  background: var(--vc-elevated-2) !important;
+  border: 1px solid var(--admin-border) !important;
+  color: var(--vc-text) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3) !important;
+}
+
+.admin-shell .tech-stack-popover *,
+.admin-shell .tech-stack-popover input {
+  color: var(--vc-text) !important;
+}
+
+.admin-shell .tech-stack-custom-input {
+  background: var(--vc-bg) !important;
+  border: 1px solid var(--admin-border) !important;
+  color: var(--vc-text) !important;
+  -webkit-text-fill-color: var(--vc-text) !important;
+}
+
+.admin-shell .tech-stack-custom-input:focus {
+  border-color: var(--vc-text) !important;
+  box-shadow: none !important;
+}
+
+.admin-shell .tech-stack-custom-add {
+  background: var(--vc-button-primary-bg) !important;
+  color: var(--vc-button-primary-fg) !important;
+}
+
+.admin-shell .tech-stack-custom-add:hover {
+  background: var(--vc-button-primary-hover-bg) !important;
+}
+
+.admin-shell .tech-stack-option {
+  background: var(--vc-bg) !important;
+  border: 1px solid var(--admin-border) !important;
+  color: var(--vc-text) !important;
+}
+
+.admin-shell .tech-stack-option:hover {
+  background: var(--vc-elevated-2) !important;
+  border-color: var(--vc-border-hover) !important;
+}
+
+.admin-shell .tech-stack-option.is-selected {
+  background: var(--vc-border) !important;
+  border-color: var(--vc-text) !important;
+}
+
+/* 3-Column Editor Boxes */
+.admin-shell .ov-column-box-premium {
+  background: var(--vc-bg) !important;
+  border: 1px solid var(--admin-border) !important;
+  color: var(--vc-text) !important;
+  box-shadow: none !important;
+}
+
+.admin-shell .ov-features-list-premium {
+  color: var(--vc-text) !important;
+}
+
+.admin-shell .clips-box-premium {
+  background: var(--vc-bg) !important;
+}
+
+.admin-shell .ov-clips-img-premium {
+  border: 1px solid var(--admin-border) !important;
+}
+
+.admin-shell .ov-clips-placeholder-premium {
+  color: var(--vc-text-muted) !important;
+}
+
+/* Redesigned columns within dynamic-color container */
+.admin-shell .ov-header-box-admin,
+.admin-shell .ov-content-box-admin,
+.admin-shell .ov-clip-desc-box-admin {
+  background: var(--vc-bg) !important;
+  border: 1px solid var(--admin-border) !important;
+  box-shadow: none !important;
+}
+
+.admin-shell .section-title-editor-redesign .rich-editor-content,
+.admin-shell .ov-content-editor-redesign .rich-editor-content,
+.admin-shell .gallery-item-desc-input-admin {
+  color: var(--vc-text) !important;
+  -webkit-text-fill-color: var(--vc-text) !important;
+  caret-color: var(--vc-text) !important;
+}
+
+.admin-shell .section-title-editor-redesign .rich-editor-content *,
+.admin-shell .ov-content-editor-redesign .rich-editor-content * {
+  color: var(--vc-text) !important;
+  -webkit-text-fill-color: var(--vc-text) !important;
+}
+
+.admin-shell .section-title-editor-redesign .rich-editor-toolbar,
+.admin-shell .ov-content-editor-redesign .rich-editor-toolbar {
+  background: var(--vc-elevated-2) !important;
+  border-bottom: 1px solid var(--admin-border) !important;
+}
+
+.admin-shell .section-title-editor-redesign .toolbar-btn,
+.admin-shell .section-title-editor-redesign .color-picker-btn-wrapper,
+.admin-shell .ov-content-editor-redesign .toolbar-btn,
+.admin-shell .ov-content-editor-redesign .color-picker-btn-wrapper {
+  color: var(--vc-text-muted) !important;
+}
+
+.admin-shell .section-title-editor-redesign .toolbar-btn:hover,
+.admin-shell .section-title-editor-redesign .color-picker-btn-wrapper:hover,
+.admin-shell .ov-content-editor-redesign .toolbar-btn:hover,
+.admin-shell .ov-content-editor-redesign .color-picker-btn-wrapper:hover {
+  background: var(--vc-border) !important;
+  color: var(--vc-text) !important;
+}
+
+.admin-shell .clips-empty-upload-dropzone-admin {
+  background: var(--vc-elevated-2) !important;
+  border: 1.5px dashed var(--admin-border) !important;
+  color: var(--vc-text-muted) !important;
+}
+
+.admin-shell .clips-empty-upload-dropzone-admin span {
+  color: var(--vc-text) !important;
+}
+
+.admin-shell .add-clip-thumbnail-btn-admin {
+  background: var(--vc-elevated-2) !important;
+  border: 1.5px dashed var(--admin-border) !important;
+  color: var(--vc-text) !important;
+}
+
+.admin-shell .add-clip-thumbnail-btn-admin:hover {
+  background: var(--vc-border) !important;
+}
+
+.admin-shell .ov-clip-thumb-admin {
+  background: var(--vc-bg) !important;
+  border: 1px solid var(--admin-border) !important;
+}
+
+.admin-shell .ov-clip-thumb-admin.active {
+  border-color: var(--vc-text) !important;
+}
+
+/* Step 1 Project Chooser overrides */
+.admin-shell .picker-card {
+  border-radius: 6px !important;
+}
+.admin-shell .picker-card--new {
+  border-radius: 6px !important;
+  background: var(--vc-elevated) !important;
+}
+.admin-shell .picker-card--new:hover {
+  border-color: var(--vc-text) !important;
+  background: var(--vc-elevated-2) !important;
+}
+.admin-shell .picker-card--existing {
+  border: 2px solid var(--picker-accent, var(--vc-border)) !important;
+  transition: transform 0.25s ease, border-color 0.25s ease !important;
+}
+.admin-shell .picker-card--existing:hover {
+  border-color: var(--picker-accent, var(--vc-text)) !important;
+  background: var(--vc-elevated-2) !important;
+}
+.admin-shell .picker-card-new-icon {
+  background: var(--vc-elevated-2) !important;
+  color: var(--vc-text) !important;
+}
+.admin-shell .picker-card--new:hover .picker-card-new-icon {
+  background: var(--vc-border) !important;
+}
+.admin-shell .picker-card-new-label {
+  color: var(--vc-text) !important;
+}
+.admin-shell .picker-card-new-sub {
+  color: var(--vc-text-muted) !important;
+}

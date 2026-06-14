@@ -30,7 +30,7 @@ const BLANK_FORM = {
   impact: '',
   bannerPosY: '50',
   bannerImage: '',
-  bannerHeight: '170',
+  bannerHeight: '45',
   sectionTitleOverview: '<span style="color:#ffffff">Overview</span>',
   sectionTitleFeatures: '<span style="color:#ffffff">Key Features</span>',
   sectionTitleClips: '<span style="color:#ffffff">Clips</span>',
@@ -347,7 +347,7 @@ function UploadProject() {
       impact: project.impact || '',
       bannerPosY: project.bannerPosY || '50',
       bannerImage: project.bannerImage || '',
-      bannerHeight: project.bannerHeight || '170',
+      bannerHeight: project.bannerHeight && parseInt(project.bannerHeight, 10) <= 100 ? project.bannerHeight : '45',
       sectionTitleOverview: normalizeSectionTitleHtml(project.sectionTitleOverview, 'Overview'),
       sectionTitleFeatures: normalizeSectionTitleHtml(project.sectionTitleFeatures, 'Key Features'),
       sectionTitleClips: normalizeSectionTitleHtml(project.sectionTitleClips, 'Clips'),
@@ -558,7 +558,7 @@ function UploadProject() {
       impact: formData.impact?.trim() || '',
       bannerPosY: formData.bannerPosY || '50',
       bannerImage: formData.bannerImage || '',
-      bannerHeight: formData.bannerHeight || '170',
+      bannerHeight: formData.bannerHeight && parseInt(formData.bannerHeight, 10) <= 100 ? formData.bannerHeight : '45',
       sectionTitleOverview: formData.sectionTitleOverview?.trim() || 'Overview',
       sectionTitleFeatures: formData.sectionTitleFeatures?.trim() || 'Key Features',
       sectionTitleClips: formData.sectionTitleClips?.trim() || 'Clips',
@@ -610,41 +610,44 @@ function UploadProject() {
               <div className="loader-spinner" style={{ marginBottom: '15px' }}></div>
               <span style={{ color: 'var(--admin-text-muted)' }}>Retrieving projects inventory...</span>
             </div>
-          ) : allProjects.map(project => (
-            <button
-              key={project.id}
-              className="picker-card picker-card--existing"
-              onClick={() => handleSelectExistingProject(project)}
-              style={{ '--picker-accent': project.color || '#7c3aed' }}
-            >
-              <div className="picker-card-accent-bar" />
-              <div className="picker-card-thumb">
-                {project.image ? (
-                  <img src={project.image} alt={project.title} />
-                ) : (
-                  <div className="picker-card-thumb-placeholder">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                      <rect x="3" y="3" width="18" height="18" rx="2" />
-                      <circle cx="8.5" cy="8.5" r="1.5" />
-                      <polyline points="21 15 16 10 5 21" />
-                    </svg>
-                  </div>
-                )}
-              </div>
-              <div className="picker-card-body">
-                <h3 className="picker-card-title">{project.title}</h3>
-                <span className="picker-card-category">{project.subtitle}</span>
-                <p className="picker-card-desc">{project.description?.substring(0, 80)}{project.description?.length > 80 ? '…' : ''}</p>
-              </div>
-              <div className="picker-card-edit-badge">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                </svg>
-                Edit
-              </div>
-            </button>
-          ))}
+          ) : allProjects.map(project => {
+            const cleanDesc = project.description ? project.description.replace(/<[^>]*>/g, '') : '';
+            const truncatedDesc = cleanDesc.substring(0, 80) + (cleanDesc.length > 80 ? '…' : '');
+            return (
+              <button
+                key={project.id}
+                className="picker-card picker-card--existing"
+                onClick={() => handleSelectExistingProject(project)}
+                style={{ '--picker-accent': project.color || '#7c3aed' }}
+              >
+                <div className="picker-card-accent-bar" />
+                <div className="picker-card-thumb">
+                  {project.image ? (
+                    <img src={project.image} alt={project.title ? project.title.replace(/<[^>]*>/g, '') : ''} />
+                  ) : (
+                    <div className="picker-card-thumb-placeholder">
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                        <rect x="3" y="3" width="18" height="18" rx="2" />
+                        <circle cx="8.5" cy="8.5" r="1.5" />
+                        <polyline points="21 15 16 10 5 21" />
+                      </svg>
+                    </div>
+                  )}
+                </div>
+                <div className="picker-card-body">
+                  <h3 className="picker-card-title" dangerouslySetInnerHTML={{ __html: project.title }} />
+                  <p className="picker-card-desc">{truncatedDesc}</p>
+                </div>
+                <div className="picker-card-edit-badge">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                  </svg>
+                  Edit
+                </div>
+              </button>
+            );
+          })}
         </div>
       </div>
     );
@@ -667,7 +670,13 @@ function UploadProject() {
           </button>
           <div>
             <h1 className="admin-page-title">
-              {selectedProject ? `Editing: ${selectedProject.title}` : 'New Project'}
+              {selectedProject ? (
+                <>
+                  Editing: <span dangerouslySetInnerHTML={{ __html: selectedProject.title }} />
+                </>
+              ) : (
+                'New Project'
+              )}
             </h1>
             <p className="admin-page-subtitle">
               {selectedProject

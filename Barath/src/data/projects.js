@@ -97,3 +97,16 @@ export const isProjectDeleted = async (id) => {
     return false;
   }
 };
+
+// PUT - Update project status (live/suspended) — admin only
+export const updateProjectStatus = async (id, status) => {
+  const res = await adminFetch(`/api/projects/${id}/status`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status })
+  });
+  if (!res.ok) {
+    throw new Error(`Failed to update status for project ${id}`);
+  }
+  return await res.json();
+};

@@ -1186,5 +1186,66 @@
   }
 }
 
+/* ── Dark Mode Overrides for Project Overview / Detail page ── */
+
+[data-theme='dark'] .pd-header-box,
+[data-theme='dark'] .pd-content-box,
+[data-theme='dark'] .pd-clip-desc-box {
+  background: #111111 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: none !important;
+}
+
+[data-theme='dark'] .pd-header-title,
+[data-theme='dark'] .pd-overview-text,
+[data-theme='dark'] .pd-feature-item,
+[data-theme='dark'] .pd-bullet,
+[data-theme='dark'] .pd-features-rich,
+[data-theme='dark'] .pd-features-rich li,
+[data-theme='dark'] .pd-clip-desc-box span {
+  color: #ffffff !important;
+}
+
+[data-theme='dark'] .pd-clip-main-redesign,
+[data-theme='dark'] .pd-clip-placeholder-redesign {
+  background: #111111 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #888888 !important;
+}
+
+[data-theme='dark'] .pd-clip-placeholder-redesign span {
+  color: #888888 !important;
+}
+
+[data-theme='dark'] .pd-clip-thumb-redesign {
+  background: #111111 !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-theme='dark'] .pd-clip-thumb-redesign.active {
+  border-color: #ffffff !important;
+}
+
+/* Lightbox Dark Mode Overrides */
+[data-theme='dark'] .pd-lightbox-image-wrapper {
+  background: #111111 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6) !important;
+}
+
+[data-theme='dark'] .pd-lightbox-img {
+  background: #111111 !important;
+}
+
+[data-theme='dark'] .pd-lightbox-caption {
+  background: #1a1a1a !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-theme='dark'] .pd-lightbox-caption span {
+  color: #ffffff !important;
+}
+
+
 
 

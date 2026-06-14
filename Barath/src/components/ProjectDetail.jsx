@@ -83,6 +83,9 @@ function ProjectDetail() {
   const liveUrlIsHtml = liveUrlRaw.startsWith('<');
   const defaultLiveLabel = `Live : www.${titleSlug}-barath.com`;
 
+  const rawHeight = project.bannerHeight || '45';
+  const bannerHeight = parseInt(rawHeight, 10) <= 100 ? rawHeight : '45';
+
   const headerStyle = {
     '--project-color': project.color || '#1b36d1',
     backgroundColor: project.color || '#1b36d1',
@@ -91,8 +94,8 @@ function ProjectDetail() {
       : 'none',
     backgroundSize: 'cover',
     backgroundPosition: `center ${project.bannerPosY || '50'}%`,
-    minHeight: '45vh',
-    height: '45vh',
+    minHeight: `${bannerHeight}vh`,
+    height: `${bannerHeight}vh`,
   };
 
   const pageStyle = {

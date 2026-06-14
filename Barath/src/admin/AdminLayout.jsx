@@ -8,13 +8,28 @@ function AdminLayout() {
   const { getSession, logout } = useAdminAuth();
   const session = getSession();
   const userName = session?.name || 'Admin';
-  const userEmail = session?.email || '';
   const userPicture = session?.picture || '';
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  const [adminTheme, setAdminTheme] = useState(() => {
+    try {
+      return localStorage.getItem('theme') || 'dark';
+    } catch (e) {
+      return 'dark';
+    }
+  });
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', 'dark');
-  }, []);
+    document.documentElement.setAttribute('data-theme', adminTheme);
+    try {
+      localStorage.setItem('theme', adminTheme);
+    } catch (e) {
+      // ignore
+    }
+  }, [adminTheme]);
+
+  const toggleAdminTheme = () => {
+    setAdminTheme(prev => (prev === 'light' ? 'dark' : 'light'));
+  };
 
   const handleLogout = () => {
     logout();
@@ -26,106 +41,81 @@ function AdminLayout() {
       to: '/admin',
       end: true,
       label: 'Dashboard',
-      icon: (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="3" y="3" width="7" height="7" rx="1"/>
-          <rect x="14" y="3" width="7" height="7" rx="1"/>
-          <rect x="3" y="14" width="7" height="7" rx="1"/>
-          <rect x="14" y="14" width="7" height="7" rx="1"/>
-        </svg>
-      ),
     },
     {
       to: '/admin/upload',
       label: 'Upload Project',
-      icon: (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-          <polyline points="17 8 12 3 7 8"/>
-          <line x1="12" y1="3" x2="12" y2="15"/>
-        </svg>
-      ),
     },
     {
       to: '/admin/trash',
       label: 'Trash',
-      icon: (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.0" strokeLinecap="round" strokeLinejoin="round">
-          <polyline points="3 6 5 6 21 6"/>
-          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-        </svg>
-      ),
     },
   ];
 
   return (
-    <div className={`admin-shell admin-netflix ${sidebarOpen ? 'sidebar-open' : 'sidebar-collapsed'}`}>
-      {/* ── Sidebar ── */}
-      <aside className="admin-sidebar">
-        <div className="sidebar-header">
-          <div className="sidebar-logo">
-            <div className="logo-mark">B</div>
-            {sidebarOpen && <span className="logo-text">Studio</span>}
+    <div className="admin-shell admin-vercel">
+      {/* ── Vercel Top Navigation Header ── */}
+      <header className="vercel-header">
+        <div className="vercel-header-main">
+          <div className="vercel-header-left">
+            <div className="vercel-user-selector">
+              <span className="vercel-username">{userName}'s Studio</span>
+              <span className="vercel-badge">Inventory</span>
+            </div>
           </div>
-          <button className="sidebar-toggle" onClick={() => setSidebarOpen(o => !o)} aria-label="Toggle sidebar">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-              {sidebarOpen
-                ? <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>
-                : <><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></>
-              }
-            </svg>
-          </button>
-        </div>
-
-        <nav className="sidebar-nav">
-          <div className="nav-section-label">{sidebarOpen && 'Browse'}</div>
-          {navItems.map(item => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.end}
-              className={({ isActive }) => `sidebar-nav-item ${isActive ? 'active' : ''}`}
-              title={!sidebarOpen ? item.label : ''}
+          <div className="vercel-header-right">
+            <a href="/" className="vercel-nav-btn outline-btn">View Portfolio</a>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="vercel-nav-btn refresh-btn"
+              title="Refresh Portal Data"
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '6px' }}
             >
-              <span className="nav-icon">{item.icon}</span>
-              {sidebarOpen && <span className="nav-label">{item.label}</span>}
-              {sidebarOpen && <span className="nav-indicator"/>}
-            </NavLink>
-          ))}
-        </nav>
-
-        <div className="sidebar-footer">
-          <div className="user-card">
-            {userPicture
-              ? <img src={userPicture} alt={userName} className="user-avatar" />
-              : <div className="user-avatar-placeholder">{userName[0]}</div>
-            }
-            {sidebarOpen && (
-              <div className="user-info">
-                <span className="user-name">{userName}</span>
-                <span className="user-email">{userEmail}</span>
-              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/>
+                <polyline points="21 3 21 8 16 8"/>
+              </svg>
+            </button>
+            <button 
+              onClick={toggleAdminTheme} 
+              className="vercel-nav-btn theme-toggle-btn"
+              title={`Switch to ${adminTheme === 'light' ? 'dark' : 'light'} theme`}
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '6px' }}
+            >
+              {adminTheme === 'light' ? (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+                </svg>
+              ) : (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="4"/>
+                  <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+                </svg>
+              )}
+            </button>
+            <button onClick={handleLogout} className="vercel-nav-btn text-btn">Sign out</button>
+            {userPicture ? (
+              <img src={userPicture} alt={userName} className="vercel-avatar" />
+            ) : (
+              <div className="vercel-avatar-placeholder">{userName[0]}</div>
             )}
           </div>
-
-          <button className="logout-btn" onClick={handleLogout} title="Sign out">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-              <polyline points="16 17 21 12 16 7"/>
-              <line x1="21" y1="12" x2="9" y2="12"/>
-            </svg>
-            {sidebarOpen && <span>Sign out</span>}
-          </button>
-
-          <a href="/" className="back-to-site-btn" title="Back to site">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-              <polyline points="9 22 9 12 15 12 15 22"/>
-            </svg>
-            {sidebarOpen && <span>View Portfolio</span>}
-          </a>
         </div>
-      </aside>
+        <div className="vercel-header-tabs">
+          <div className="vercel-tabs-container">
+            {navItems.map(item => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end={item.end}
+                className={({ isActive }) => `vercel-tab-item ${isActive ? 'active' : ''}`}
+              >
+                {item.label}
+              </NavLink>
+            ))}
+          </div>
+        </div>
+      </header>
 
       {/* ── Main content ── */}
       <main className="admin-main">

@@ -1,356 +1,201 @@
-@import './admin-netflix.css';
-
-.admin-auth-gate {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--admin-bg, #f8fafc);
-}
-
-.admin-auth-gate-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  padding: 32px 40px;
-  border-radius: 16px;
-  background: var(--admin-card-bg, #fff);
-  border: 1px solid var(--admin-border, #e2e8f0);
-  box-shadow: var(--admin-shadow);
-  color: var(--admin-text-main, #0f172a);
-  font-weight: 600;
-}
-
-.admin-auth-gate-spinner {
-  width: 28px;
-  height: 28px;
-  border: 3px solid rgba(124, 58, 237, 0.2);
-  border-top-color: #7c3aed;
-  border-radius: 50%;
-  animation: admin-auth-spin 0.8s linear infinite;
-}
-
-@keyframes admin-auth-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
+@import './admin-vercel.css';
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-.admin-shell {
-  display: flex;
-  min-height: 100vh;
-  background: var(--admin-bg, #141414);
-  color: var(--admin-text-main, #ffffff);
-}
-
-/* ═══════════════════════════════════════
-   SIDEBAR
-   ═══════════════════════════════════════ */
-.admin-sidebar {
-  position: fixed;
+/* ── Vercel Top Navigation Header ── */
+.vercel-header {
+  position: sticky;
   top: 0;
-  left: 0;
-  height: 100vh;
-  width: 240px;
-  background: var(--admin-sidebar-bg);
-  border-right: 1px solid var(--admin-border);
+  width: 100%;
+  background: var(--vc-header-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--admin-border);
+  z-index: 1000;
   display: flex;
   flex-direction: column;
-  transition: width 0.28s cubic-bezier(0.4, 0, 0.2, 1), background 0.25s, border-color 0.25s;
-  z-index: 100;
-  overflow: hidden;
+  transition: background-color 0.2s, border-color 0.2s;
 }
 
-.sidebar-collapsed .admin-sidebar {
-  width: 68px;
-}
-
-/* ── Header ── */
-.sidebar-header {
+.vercel-header-main {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 12px 24px;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 20px 16px 18px;
-  border-bottom: 1px solid var(--admin-border);
-  gap: 10px;
-  min-height: 68px;
-  transition: border-color 0.25s;
+  align-items: center;
+  height: 56px;
 }
 
-.sidebar-logo {
+.vercel-header-left {
   display: flex;
   align-items: center;
-  gap: 10px;
-  overflow: hidden;
+  gap: 12px;
 }
 
-.logo-mark {
-  flex-shrink: 0;
-  width: 34px;
-  height: 34px;
-  border-radius: 4px;
-  background: #e50914;
+.vercel-logo-triangle {
+  width: 18px;
+  height: 16px;
+  color: var(--vc-white);
+}
+
+.vercel-slash {
+  color: #333333;
+  font-size: 1.25rem;
+  font-weight: 300;
+  user-select: none;
+}
+
+.vercel-user-selector {
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 1.1rem;
-  color: #fff;
+  gap: 8px;
 }
 
-.logo-text {
-  font-size: 0.9rem;
-  font-weight: 700;
+.vercel-username {
+  font-size: 0.85rem;
+  font-weight: 600;
   color: var(--admin-text-main);
-  white-space: nowrap;
-  letter-spacing: -0.01em;
 }
 
-.sidebar-toggle {
-  flex-shrink: 0;
+.vercel-badge {
+  background: var(--vc-elevated-2);
+  color: var(--admin-text-muted);
+  border: 1px solid var(--admin-border);
+  font-size: 0.68rem;
+  padding: 1px 6px;
+  border-radius: 99px;
+  font-weight: 500;
+}
+
+.vercel-header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.vercel-nav-btn {
+  font-size: 0.82rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 6px;
+  padding: 6px 12px;
+  transition: all 0.2s;
+  background: transparent;
+  border: none;
+}
+
+.vercel-nav-btn.text-btn {
+  color: var(--admin-text-muted);
+}
+
+.vercel-nav-btn.text-btn:hover {
+  color: var(--admin-text-main);
+}
+
+.vercel-nav-btn.outline-btn {
+  color: var(--admin-text-muted);
+  border: 1px solid var(--admin-border);
+}
+
+.vercel-nav-btn.outline-btn:hover {
+  color: var(--admin-text-main);
+  background: var(--vc-elevated-2);
+  border-color: var(--vc-border-hover);
+}
+
+.vercel-avatar {
   width: 28px;
   height: 28px;
-  border: none;
-  background: var(--admin-sidebar-toggle-bg);
-  border-radius: 7px;
-  color: var(--admin-sidebar-toggle-color);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s, color 0.2s;
-}
-.sidebar-toggle:hover { 
-  background: var(--admin-border); 
-  color: var(--admin-text-main); 
+  border-radius: 50%;
+  border: 1px solid var(--admin-border);
 }
 
-/* ── Nav ── */
-.sidebar-nav {
-  flex: 1;
-  padding: 16px 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-.nav-section-label {
-  font-size: 0.68rem;
-  font-weight: 600;
-  color: var(--admin-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  padding: 0 8px 10px;
-  white-space: nowrap;
+.vercel-avatar-placeholder {
+  width: 28px;
   height: 28px;
-}
-
-.sidebar-nav-item {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  padding: 10px 10px;
-  border-radius: 4px;
-  color: var(--admin-sidebar-text);
-  text-decoration: none;
-  font-size: 0.875rem;
-  font-weight: 500;
-  transition: all 0.18s ease;
-  white-space: nowrap;
-  position: relative;
-  overflow: hidden;
-}
-
-.sidebar-nav-item:hover {
-  background: var(--admin-sidebar-active-bg);
-  color: var(--admin-sidebar-active-text);
-}
-
-.sidebar-nav-item.active {
-  background: var(--admin-sidebar-active-bg);
-  color: var(--admin-sidebar-active-text);
-}
-
-.sidebar-nav-item.active::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 3px;
-  height: 60%;
-  background: #e50914;
-  border-radius: 0 2px 2px 0;
-}
-
-.nav-icon {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-}
-
-.nav-label { flex: 1; }
-
-.nav-indicator {
-  width: 6px;
-  height: 6px;
   border-radius: 50%;
-  background: transparent;
-  transition: background 0.2s;
-}
-.sidebar-nav-item.active .nav-indicator { background: #e50914; }
-
-/* ── Footer ── */
-.sidebar-footer {
-  border-top: 1px solid var(--admin-border);
-  padding: 14px 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  transition: border-color 0.25s;
-}
-
-.user-card {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 8px;
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.user-avatar {
-  flex-shrink: 0;
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid rgba(124, 58, 237, 0.4);
-}
-
-.user-avatar-placeholder {
-  flex-shrink: 0;
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: #e50914;
+  background: var(--vc-white);
+  color: var(--vc-black);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 0.9rem;
-  color: #fff;
+  font-size: 0.8rem;
 }
 
-.user-info {
+/* Header Tabs */
+.vercel-header-tabs {
+  border-top: 1px solid transparent;
+}
+
+.vercel-tabs-container {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 24px;
   display: flex;
-  flex-direction: column;
-  overflow: hidden;
+  gap: 20px;
+  height: 36px;
 }
 
-.user-name {
+.vercel-tab-item {
   font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--admin-text-main);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.user-email {
-  font-size: 0.72rem;
   color: var(--admin-text-muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.theme-toggle-btn,
-.logout-btn,
-.back-to-site-btn {
+  text-decoration: none;
   display: flex;
   align-items: center;
-  gap: 9px;
-  padding: 9px 10px;
-  border-radius: 9px;
-  font-size: 0.82rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.18s ease;
-  white-space: nowrap;
-  text-decoration: none;
-  border: none;
-  background: transparent;
-  color: var(--admin-sidebar-text);
-  text-align: left;
-  width: 100%;
-}
-
-.theme-toggle-btn:hover {
-  background: var(--admin-sidebar-active-bg);
-  color: var(--admin-sidebar-active-text);
-}
-
-.logout-btn:hover {
-  background: rgba(239, 68, 68, 0.08);
-  color: #ef4444;
-}
-
-.back-to-site-btn:hover {
-  background: var(--admin-sidebar-active-bg);
-  color: var(--admin-sidebar-active-text);
-}
-
-/* ═══════════════════════════════════════
-   MAIN CONTENT
-   ═══════════════════════════════════════ */
-.admin-main {
-  flex: 1;
-  margin-left: 240px;
-  min-height: 100vh;
-  padding: 36px 40px;
-  transition: margin-left 0.28s cubic-bezier(0.4, 0, 0.2, 1), padding 0.25s;
-  overflow-y: auto;
-}
-
-.sidebar-collapsed .admin-main {
-  margin-left: 68px;
-}
-
-/* ═══════════════════════════════════════
-   SHARED PAGE COMPONENTS
-   ═══════════════════════════════════════ */
-.admin-page-header {
-  margin-bottom: 32px;
-}
-
-.admin-page-title {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--admin-text-main);
-  letter-spacing: 0;
-  margin-bottom: 6px;
-}
-
-.admin-page-subtitle {
-  font-size: 0.875rem;
-  color: var(--admin-text-muted);
+  position: relative;
+  height: 100%;
+  padding: 0 4px;
+  transition: color 0.15s;
   font-weight: 400;
 }
 
-/* ═══════════════════════════════════════
-   RESPONSIVE
-   ═══════════════════════════════════════ */
-@media (max-width: 768px) {
-  .admin-sidebar { width: 68px; }
-  .sidebar-open .admin-sidebar { width: 240px; }
-  .admin-main { margin-left: 68px; padding: 24px 20px; }
-  .sidebar-open .admin-main { margin-left: 240px; }
+.vercel-tab-item::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: transparent;
+  transition: background-color 0.15s;
+}
+
+.vercel-tab-item:hover {
+  color: var(--admin-text-main);
+}
+
+.vercel-tab-item:hover::after {
+  background-color: var(--vc-border-hover);
+}
+
+.vercel-tab-item.active {
+  color: var(--admin-text-main);
+  font-weight: 500;
+}
+
+.vercel-tab-item.active::after {
+  background-color: var(--admin-text-main);
+}
+
+/* Centered content main layout */
+.admin-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--admin-bg);
+}
+
+.admin-main {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px 24px;
+  min-height: calc(100vh - 92px);
 }
 
 /* ── Cursor Restoration inside Admin Shell ── */
@@ -370,11 +215,9 @@
 .admin-shell .upload-project-btn,
 .admin-shell .preset-color-circle,
 .admin-shell .preset-img-btn,
-.admin-shell .sidebar-toggle,
-.admin-shell .sidebar-nav-item,
-.admin-shell .theme-toggle-btn,
-.admin-shell .logout-btn,
-.admin-shell .back-to-site-btn {
+.admin-shell .vercel-nav-btn,
+.admin-shell .vercel-tab-item,
+.admin-shell .action-bar-btn {
   cursor: pointer !important;
 }
 
@@ -390,4 +233,117 @@
   cursor: not-allowed !important;
 }
 
+/* Shared page styling rules */
+.admin-page-header {
+  margin-bottom: 32px;
+}
 
+.admin-page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--admin-text-main);
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+
+.admin-page-subtitle {
+  font-size: 0.875rem;
+  color: var(--admin-text-muted);
+  font-weight: 400;
+}
+
+.admin-auth-gate {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--admin-bg, #000);
+}
+
+.admin-auth-gate-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 32px 40px;
+  border-radius: 6px;
+  background: var(--admin-card-bg, #000);
+  border: 1px solid var(--admin-border, #222);
+  color: var(--admin-text-main, #fff);
+  font-weight: 600;
+}
+
+.admin-auth-gate-spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: admin-auth-spin 0.8s linear infinite;
+}
+
+@keyframes admin-auth-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── Mobile Layout Adjustments ── */
+@media (max-width: 650px) {
+  .vercel-header-main {
+    padding: 10px 16px;
+    height: auto;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .vercel-header-left {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .vercel-header-right {
+    width: 100%;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .vercel-nav-btn {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+  }
+  
+  .vercel-username {
+    font-size: 0.8rem;
+  }
+  
+  .vercel-badge {
+    display: none; /* Hide hobby badge on narrow screens */
+  }
+
+  .vercel-tabs-container {
+    padding: 0 16px;
+    overflow-x: auto; /* Allow horizontal tabs scroll */
+    scrollbar-width: none;
+    height: 38px;
+  }
+  
+  .vercel-tabs-container::-webkit-scrollbar {
+    display: none;
+  }
+
+  .vercel-tab-item {
+    font-size: 0.78rem;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-main {
+    padding: 24px 16px;
+  }
+  
+  .admin-page-title {
+    font-size: 1.6rem;
+  }
+}

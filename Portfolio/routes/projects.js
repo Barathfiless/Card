@@ -4,10 +4,10 @@ import { requireAdminAuth } from '../middleware/requireAdminAuth.js';
 
 const router = express.Router();
 
-// GET all active projects
+// GET all active projects (excluding suspended)
 router.get('/', async (req, res) => {
   try {
-    const projects = await Project.find({ isDeleted: false }).sort({ order: 1, createdAt: -1 });
+    const projects = await Project.find({ isDeleted: false, status: { $ne: 'suspended' } }).sort({ order: 1, createdAt: -1 });
     res.json(projects);
   } catch (err) {
     res.status(500).json({ message: 'Error retrieving active projects', error: err.message });
@@ -56,7 +56,8 @@ router.post('/', requireAdminAuth, async (req, res) => {
     bannerHeight,
     sectionTitleOverview,
     sectionTitleFeatures,
-    sectionTitleClips
+    sectionTitleClips,
+    status
   } = req.body;
 
   if (!id || !title || !subtitle || !description || !longDescription || !image) {
@@ -87,6 +88,7 @@ router.post('/', requireAdminAuth, async (req, res) => {
         bannerPosY: bannerPosY || '50',
         bannerImage: bannerImage || '',
         bannerHeight: bannerHeight || '170',
+        status: status || 'live',
         isDeleted: false // Ensure it becomes active/visible on upsert
       },
       { new: true, upsert: true, runValidators: true }
@@ -145,6 +147,28 @@ router.delete('/:id/permanent', requireAdminAuth, async (req, res) => {
     res.json({ message: 'Project permanently deleted', id: project.id });
   } catch (err) {
     res.status(500).json({ message: 'Error permanently deleting project', error: err.message });
+  }
+});
+
+// PUT - Update project status (live/suspended) — admin only
+router.put('/:id/status', requireAdminAuth, async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  if (!['live', 'suspended'].includes(status)) {
+    return res.status(400).json({ message: 'Invalid status value' });
+  }
+  try {
+    const project = await Project.findOneAndUpdate(
+      { id },
+      { status },
+      { new: true }
+    );
+    if (!project) {
+      return res.status(404).json({ message: 'Project not found' });
+    }
+    res.json({ message: `Project status updated to ${status}`, project });
+  } catch (err) {
+    res.status(500).json({ message: 'Error updating project status', error: err.message });
   }
 });
 

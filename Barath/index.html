@@ -20,6 +20,47 @@
 <body>
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
+  <script>
+    // Strictly disable zoom on Laptops / Computers (Desktop views)
+    (function() {
+      // Disable Ctrl + scroll / pinch-to-zoom on trackpad (desktop)
+      const preventWheelZoom = function(e) {
+        if (e.ctrlKey) {
+          e.preventDefault();
+        }
+      };
+      window.addEventListener('wheel', preventWheelZoom, { passive: false, capture: true });
+      document.addEventListener('wheel', preventWheelZoom, { passive: false, capture: true });
+
+      // Disable Ctrl/Cmd + Plus, Minus, and Zero key zoom shortcuts
+      const preventKeyZoom = function(e) {
+        if ((e.ctrlKey || e.metaKey) && (
+          e.key === '=' || 
+          e.key === '-' || 
+          e.key === '+' || 
+          e.key === '0' || 
+          e.keyCode === 187 || 
+          e.keyCode === 189 || 
+          e.keyCode === 48 ||
+          e.code === 'Equal' ||
+          e.code === 'Minus' ||
+          e.code === 'Digit0'
+        )) {
+          e.preventDefault();
+        }
+      };
+      window.addEventListener('keydown', preventKeyZoom, { capture: true });
+      document.addEventListener('keydown', preventKeyZoom, { capture: true });
+
+      // Disable pinch gestures on macOS Safari trackpads
+      document.addEventListener('gesturestart', function(e) {
+        e.preventDefault();
+      }, { capture: true });
+      window.addEventListener('gesturestart', function(e) {
+        e.preventDefault();
+      }, { capture: true });
+    })();
+  </script>
 </body>
 
 </html>

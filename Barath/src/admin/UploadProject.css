@@ -2511,5 +2511,16 @@
   margin: 2px 0 6px 0;
 }
 
+/* ── Mobile Responsive Form Padding ── */
+@media (max-width: 600px) {
+  .form-panel-card {
+    padding: 20px 16px;
+  }
+  
+  .preview-panel {
+    padding: 18px 14px;
+  }
+}
+
 
 

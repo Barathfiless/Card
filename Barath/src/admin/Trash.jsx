@@ -67,14 +67,13 @@ function Trash() {
             <thead>
               <tr>
                 <th>Project Details</th>
-                <th>Category</th>
                 <th className="text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
               {deletedProjects.length === 0 ? (
                 <tr>
-                  <td colSpan="3" className="empty-table-state">Trash is empty. No deleted projects found!</td>
+                  <td colSpan="2" className="empty-table-state">Trash is empty. No deleted projects found!</td>
                 </tr>
               ) : (
                 deletedProjects.map(project => (
@@ -87,9 +86,6 @@ function Trash() {
                           <span className="project-cell-id">ID: {project.id}</span>
                         </div>
                       </div>
-                    </td>
-                    <td>
-                      <span className="category-badge badge-deleted">{project.subtitle}</span>
                     </td>
                     <td className="text-right">
                       <div className="trash-actions">

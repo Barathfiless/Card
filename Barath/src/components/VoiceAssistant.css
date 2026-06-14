@@ -358,6 +358,10 @@
     max-width: 200px;
     font-size: 0.75rem;
   }
+
+  .voice-assistant-tooltip .keyboard-hint {
+    display: none !important;
+  }
 }
 
 @media (max-width: 520px) {

@@ -99,6 +99,11 @@ const projectSchema = new mongoose.Schema({
     type: String,
     default: '170'
   },
+  status: {
+    type: String,
+    enum: ['live', 'suspended'],
+    default: 'live'
+  },
   isDeleted: {
     type: Boolean,
     default: false
